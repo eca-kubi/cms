@@ -1,6 +1,5 @@
 <?php
   // Load Config
-  //echo 'heyeyeyeeyen';
   require_once 'config/config.php';
   // Load Helpers
   require_once 'helpers/url_helper.php';
@@ -17,4 +16,4 @@
   require_once APP_ROOT.'/../vendor/autoload.php';
   require_once 'helpers/phpmailer.php';
   //Load Telerik Library
-   # require_once APP_ROOT.'/../libraries/Kendo/Autoload.php';
+  require_once APP_ROOT.'/libraries/Kendo/Autoload.php';

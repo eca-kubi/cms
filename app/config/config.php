@@ -11,7 +11,7 @@ define('NAVBAR_MT', '109.516px');
 // App Root
 define('APP_ROOT', dirname(dirname(__FILE__)));
 // URL Root
-define('URL_ROOT', 'http://sms2.arlgh.com/cms');
+define('URL_ROOT', 'http://sms.arlgh.com/cms');
 // Site Name
 define('SITE_NAME', 'Adamus Change Management System');
 define('APP_NAME', 'Adamus CMS');
