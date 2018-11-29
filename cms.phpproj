@@ -32,7 +32,7 @@
     <Compile Include="app\helpers\validation_helper.php" />
     <Compile Include="app\views\errors\blank.php" />
     <Compile Include="app\views\errors\index.php" />
-    <Compile Include="app\views\includes\dashboard.php" />
+    <Compile Include="app\views\users\dashboard.php" />
     <Compile Include="app\views\includes\header.php" />
     <Compile Include="app\views\includes\footer.php" />
     <Compile Include="app\views\includes\navbar.php" />
