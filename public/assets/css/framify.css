@@ -1,0 +1,335 @@
+/* http://www.csscompressor.com/ - highest, leave semicolons */
+
+.framified,
+.framified * {
+  background: none;
+  color: rgba(0,0,0,.5);
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  text-shadow: none;
+  border-color: transparent;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.framify-ui {
+  display: none;
+  font-family: Helvetica, Arial, sans-serif;
+}
+.framified .framify-ui {
+  display: block;
+}
+.framified .framify-ui * {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  color: rgba(0,0,0,.5);
+}
+.framified .framify-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: ' + (zIndex + 1) + ';
+  background-color: rgba(255,255,255,.5);
+}
+.framified .framify-break-point {
+  position: fixed;
+  z-index: ' + (zIndex + 2) + ';
+  border-style: dashed;
+  border-color: rgba(0,0,0,.25);
+  border-width: 0;
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -ms-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
+}
+.framified .framify-break-point.is-highlighted {
+  z-index: ' + (zIndex + 3) + ';
+  background-color: rgba(0,0,0,.2);
+  border-color: rgba(0,0,0,.5);
+}
+.framified .framify-break-point-label {
+  position: fixed;
+  z-index: ' + (zIndex + 4) + ';
+  padding-bottom: 5px;
+  color: rgba(0,0,0,.5);
+  text-shadow:
+    1px 1px 0 rgba(255,255,255,.5),
+    -1px 1px 0 rgba(255,255,255,.5),
+    1px -1px 0 rgba(255,255,255,.5),
+    -1px -1px 0 rgba(255,255,255,.5);
+  white-space: nowrap;
+  line-height: 10px;
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -ms-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
+  cursor: hand;
+  cursor : pointer;
+  text-align: left;
+}
+.framified .framify-break-point-label.is-highlighted {
+  color: rgba(0,0,0,.7);
+}
+.framified .framify-break-point-label span {
+  font-size: 10px;
+}
+.framified .framify-width-break-point,
+.framified .framify-min-width-break-point,
+.framified .framify-max-width-break-point,
+.framified .framify-min-max-width-break-point {
+  bottom: 0;
+  top: 0;
+}
+.framified .framify-width-break-point {
+  border-right-width: 1px;
+  width: 0;
+}
+.framified .framify-min-width-break-point {
+  border-left-width: 1px;
+  width: 100%;
+}
+.framified .framify-max-width-break-point {
+  border-right-width: 1px;
+  left: -1px;
+}
+.framified .framify-min-max-width-break-point {
+  border-right-width: 1px;
+}
+.framified .framify-width-break-point-label {
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  margin-left: -10px;
+}
+.framified .framify-width-break-point-label span {
+  position: absolute;
+  top: 0;
+  left: 15px;
+  -webkit-transform-origin: 0 100%;
+  -moz-transform-origin: 0 100%;
+  -ms-transform-origin: 0 100%;
+  -o-transform-origin: 0 100%;
+  transform-origin: 0 100%;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.framified .framify-height-break-point,
+.framified .framify-min-height-break-point,
+.framified .framify-max-height-break-point,
+.framified .framify-min-max-height-break-point {
+  right: 0;
+  left: 0;
+}
+.framified .framify-height-break-point {
+  border-bottom-width: 1px;
+  height: 0;
+}
+.framified .framify-min-height-break-point {
+  border-top-width: 1px;
+  height: 100%;
+}
+.framified .framify-max-height-break-point {
+  border-bottom-width: 1px;
+  top: -1px;
+}
+.framified .framify-min-max-height-break-point {
+  border-bottom-width: 1px;
+}
+.framified .framify-height-break-point-label {
+  left: 0;
+  right: 0;
+  height: 30px;
+  margin-top: 0px;
+}
+.framified .framify-height-break-point-label span {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+.framified .framify-aspect-break-point,
+.framified .framify-min-aspect-break-point,
+.framified .framify-max-aspect-break-point {
+  left: 0;
+  width: 1000%;
+  height: 1000%;
+}
+.framified .framify-aspect-break-point,
+.framified .framify-max-aspect-break-point {
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+.framified .framify-min-aspect-break-point {
+  -webkit-transform-origin: 0 100%;
+  -moz-transform-origin: 0 100%;
+  -ms-transform-origin: 0 100%;
+  -o-transform-origin: 0 100%;
+  transform-origin: 0 100%;
+}
+.framified .framify-aspect-break-point {
+  border-top-width: 1px;
+  height: 0;
+  top: 0;
+}
+.framified .framify-min-aspect-break-point {
+  border-bottom-width: 1px;
+  height: 1000%;
+  bottom: 100%;
+}
+.framified .framify-max-aspect-break-point {
+  border-top-width: 1px;
+  height: 1000%;
+  top: 0;
+}
+.framified .framify-aspect-break-point-label {
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-top: -20px;
+  height: 30px;
+  -webkit-transform-origin: 0 100%;
+  -moz-transform-origin: 0 100%;
+  -ms-transform-origin: 0 100%;
+  -o-transform-origin: 0 100%;
+  transform-origin: 0 100%;
+}
+.framified .framify-aspect-break-point-label span {
+  position: absolute;
+  top: 5px;
+  left: 40px;
+}
+.framified [data-framify-section],
+.framified [data-framify-section] [data-framify-section] {
+  background-color: rgba(0,0,0,.05);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.1);
+}
+.framified [data-framify-section-color] {
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25);
+}
+.framified [data-framify-section-color="gray"] {
+  background-color: rgba(0,0,0,.1);
+}
+.framified [data-framify-section-color="red"] {
+  background-color: rgba(255,0,0,.1);
+}
+.framified [data-framify-section-color="orange"] {
+  background-color: rgba(255,100,0,.1);
+}
+.framified [data-framify-section-color="yellow"] {
+  background-color: rgba(255,255,0,.1);
+}
+.framified [data-framify-section-color="green"] {
+  background-color: rgba(0,160,0,.1);
+}
+.framified [data-framify-section-color="blue"] {
+  background-color: rgba(17,83,255,.1);
+}
+.framified [data-framify-section-color="purple"] {
+  background-color: rgba(135,0,176,.1);
+}
+.framified img,
+.framified svg,
+.framified video,
+.framified object,
+.framified embed,
+.framified audio[controls] {
+  filter: alpha(opacity=0.1);
+  -ms-filter: "alpha(opacity=0.1)";
+  -moz-opacity: .001;
+  opacity: .001;
+}
+.framified .framify-image-wireframe,
+.framified .framify-video-wireframe,
+.framified .framify-audio-wireframe {
+  height: 30px;
+  display: block;
+  position: absolute;
+  overflow: hidden;
+  z-index: ' + zIndex + ';
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25);
+}
+.framified .framify-image-wireframe,
+.framified .framify-video-wireframe {
+  background-color: rgb(0,0,0,.1);
+}
+.framified .framify-audio-wireframe {
+  background-color: rgba(0,0,0,.15);
+}
+.framified .framify-wireframe-media-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 25px;
+  background-color: rgba(0,0,0,.1);
+}
+.framified .framify-wireframe-media-play {
+  border-width: 8px 14px;
+  border-color: transparent;
+  border-left-color: rgba(0,0,0,.25);
+  border-style: solid;
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  margin-top: -8px;
+}
+.framified .framify-wireframe-media-scrub {
+  position: absolute;
+  height: 4px;
+  background-color: rgba(0,0,0,.25);
+  top: 50%;
+  left: 24px;
+  right: 6px;
+  margin-top: -2px;
+}
+.framified .framify-wireframe-cross-left,
+.framified .framify-wireframe-cross-right {
+  border-top: 1px solid rgba(0,0,0,.25);
+  position: absolute;
+  top: 0;
+  width: 500%;
+  height: 500%;
+}
+.framified .framify-wireframe-label {
+  position: relative;
+  display: block;
+  font-size: 20px;
+  text-align: center;
+}
+.framified .framify-wireframe-play-button {
+  border-width: 25px 40px;
+  border-color: transparent;
+  border-left-color: rgba(0,0,0,.25);
+  border-style: solid;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -25px 0 0 -20px;
+}
+.framified .framify-wireframe-cross-left {
+  left: 0;
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+.framified .framify-wireframe-cross-right {
+  right: 0;
+  -webkit-transform-origin: 100% 0;
+  -moz-transform-origin: 100% 0;
+  -ms-transform-origin: 100% 0;
+  -o-transform-origin: 100% 0;
+  transform-origin: 100% 0;
+}

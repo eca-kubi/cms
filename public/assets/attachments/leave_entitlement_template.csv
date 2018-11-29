@@ -1,0 +1,9 @@
+staff_id,leave_type,days_taken
+ss12,Annual,4
+ss12,Paternity,0
+ss12,Bereavement,0
+ss12,Sick,0
+ss13,Annual,10
+ss13,Paternity,0
+ss13,Bereavement,0
+ss13,Sick,1

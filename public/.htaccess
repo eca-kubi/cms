@@ -1,0 +1,13 @@
+<IfModule rewrite_module>
+  Options -Multiviews
+  RewriteEngine On
+  #RewriteBase /public
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_URI} !\.(?:css|js|jpe?g|gif|png|map)$ [NC]
+  RewriteRule ^(.+)$ index.php?url=$1 [L,QSA]
+</IfModule>
+<IfModule mime_module>
+  AddType text/css .css
+  AddType text/javascript .js
+</IfModule>

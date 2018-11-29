@@ -1,0 +1,13 @@
+ErrorDocument 404 /errors/error/404
+ErrorDocument 400 /errors/error/400
+ErrorDocument 401 /errors/error/401
+ErrorDocument 403 /errors/error/403
+ErrorDocument 404 /errors/error/404
+ErrorDocument 500 /errors/error/500
+<IfModule rewrite_module>
+  Options -MultiViews
+  RewriteEngine on
+  RewriteRule ^$ public/ [L,QSA]
+  RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>
+php_flag display_errors On

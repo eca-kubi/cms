@@ -1,0 +1,112 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "fontastic";
+  src:url("fonts/fontastic.eot");
+  src:url("fonts/fontastic.eot?#iefix") format("embedded-opentype"),
+    url("fonts/fontastic.woff") format("woff"),
+    url("fonts/fontastic.ttf") format("truetype"),
+    url("fonts/fontastic.svg#fontastic") format("svg");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+[data-icon]:before {
+  font-family: "fontastic" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="fontastic-"]:before,
+[class*=" fontastic-"]:before {
+  font-family: "fontastic" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fontastic-engineers:before {
+  content: "\e000";
+}
+.fontastic-004-engineer:before {
+  content: "\e001";
+}
+.fontastic-003-engineer-1:before {
+  content: "\e002";
+}
+.fontastic-001-engineer-2:before {
+  content: "\e003";
+}
+.fontastic-002-worker:before {
+  content: "\e004";
+}
+.fontastic-businessman:before {
+  content: "\e006";
+}
+.fontastic-meeting:before {
+  content: "\e007";
+}
+.fontastic-001-businessman-with-tie:before {
+  content: "\e008";
+}
+.fontastic-002-businessman-3:before {
+  content: "\e009";
+}
+.fontastic-003-businessman-2:before {
+  content: "\e00a";
+}
+.fontastic-004-businessman-1:before {
+  content: "\e00b";
+}
+.fontastic-005-support:before {
+  content: "\e00c";
+}
+.fontastic-006-manager:before {
+  content: "\e00d";
+}
+.fontastic-007-businessman:before {
+  content: "\e00e";
+}
+.fontastic-006-office-block:before {
+  content: "\e00f";
+}
+.fontastic-001-3d-building:before {
+  content: "\e010";
+}
+.fontastic-007-3d-house:before {
+  content: "\e011";
+}
+.fontastic-002-skyscraper:before {
+  content: "\e012";
+}
+.fontastic-note:before {
+  content: "\e005";
+}
+.fontastic-003-stepped-building:before {
+  content: "\e013";
+}
+.fontastic-004-mountain-house:before {
+  content: "\e014";
+}
+.fontastic-005-modern-house:before {
+  content: "\e015";
+}
+.fontastic-001-dot:before {
+  content: "\e016";
+}
+.fontastic-002-dot-1:before {
+  content: "\e017";
+}
