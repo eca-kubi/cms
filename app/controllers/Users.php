@@ -35,7 +35,7 @@ class Users extends Controller
     function dashboard()
     {
     	$data = [
-            'title' => 'Dashboard',
+            'title' => 'CMS Dashboard',
             'user' => getUserSession()
         ];
         $this->view('users/dashboard', $data);

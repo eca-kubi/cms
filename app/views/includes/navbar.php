@@ -1,3 +1,4 @@
+
 <div class="navbar-fixed fixed-top">
     <nav class="main-header navbar navbar-expand bg-white navbar-light border-bottom px-3">
         <!-- Left navbar links -->
@@ -180,48 +181,48 @@
             </li>
         </ul>
     </nav>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light main-header w3-amber" id="navbar2" style="z-index: 0">
+        <a class="navbar-brand d-none" href="<?php echo URL_ROOT; ?>">CMS</a>
+        <button class="navbar-toggler hidden-lg-up text-sm d-none" type="button" data-toggle="" data-target="#collapsibleNavId"
+            aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="" id="collapsibleNavId">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0" style="flex-flow: wrap!important">
+                <li class="nav-item d-none">
+                    <a href="#" class="btn btn-default btn-lg w3-hover-text-grey btn-sm">
+                        <i class="fa fa-angle-double-left  mr-1"></i>Go Back
+                    </a>
+                </li>
+                <li class="nav-item ml-0 ml-sm-4 text-left pr-1 border-right fa">
+                    <a href="<?php echo URL_ROOT.'/users/dashboard' ?>" data-controller="<?php echo URL_ROOT.'/users/dashboard'; ?>"
+                        class="ajax-link nav-link btn border-0 text-bold flat text-left font-raleway">
+                        <i class="fa fa-home ml-4"></i> DASHBOARD
+                    </a>
+                </li>
+                <li class="nav-item dropdown fa  mx-2">
+                    <a class="nav-link dropdown-item dropdown-toggle btn border-0 text-bold flat" data-toggle="dropdown">
+                        CMS Forms
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId" style="position:absolute">
+                        <li class="dropdown-item">
+                            <a href="<?php echo URL_ROOT; ?>/CMS-Forms/Active">
+                                Active
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li class="dropdown-item">
+                            <a href="<?php echo URL_ROOT; ?>/CMS-Forms/Closed">
+                                Closed
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0 d-none">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search" />
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
 </div>
-<nav class="navbar navbar-expand-sm navbar-light bg-light main-header bg-aqua-gradient" id="navbar2" style="z-index: 0">
-    <a class="navbar-brand d-none" href="<?php echo URL_ROOT; ?>">CMS</a>
-    <button class="navbar-toggler hidden-lg-up text-sm d-none" type="button" data-toggle="" data-target="#collapsibleNavId"
-        aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="" id="collapsibleNavId">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0" style="flex-flow: wrap!important">
-            <li class="nav-item d-none">
-                <a href="#" class="btn btn-default btn-lg w3-hover-text-grey btn-sm">
-                    <i class="fa fa-angle-double-left  mr-1"></i>Go Back
-                </a>
-            </li>
-            <li class="nav-item ml-0 ml-sm-4 text-left pr-1 border-right fa">
-                <a href="<?php echo URL_ROOT.'/users/dashboard' ?>" data-controller="<?php echo URL_ROOT.'/users/dashboard'; ?>"
-                    class="ajax-link nav-link btn border-0 text-bold flat text-left font-raleway">
-                    <i class="fa fa-home ml-4"></i> DASHBOARD
-                </a>
-            </li>
-            <li class="nav-item dropdown fa  mx-2">
-                <a class="nav-link dropdown-item dropdown-toggle btn border-0 text-bold flat" data-toggle="dropdown">
-                    CMS Forms
-                </a>
-                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId" style="position:absolute">
-                    <li class="dropdown-item">
-                        <a href="<?php echo URL_ROOT; ?>/CMS-Forms/Active">
-                            Active
-                        </a>
-                    </li>
-                    <li class="dropdown-divider"></li>
-                    <li class="dropdown-item">
-                        <a href="<?php echo URL_ROOT; ?>/CMS-Forms/Closed">
-                            Active
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0 d-none">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" />
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-    </div>
-</nav>

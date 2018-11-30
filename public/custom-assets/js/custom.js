@@ -1,6 +1,6 @@
 var datepicker_shown = 0;
 var moment_format = 'ddd, MMM D, YYYY';
-var URL_ROOT = ''
+var URL_ROOT = '';
 //=============================================================
 // Daterangepicker Plugin
 var date_rangepicker_options = {
@@ -18,12 +18,12 @@ var date_rangepicker_options = {
 };
 
 $(function () {
-    $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
+    $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + '3px');
     URL_ROOT = $('#url_root').val();
     moment.modifyHolidays.add('Ghana');
 
     $(window).resize(function () {
-        $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
+        $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + '3px');
     });
 
     //=============================================================
