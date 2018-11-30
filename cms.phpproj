@@ -16,6 +16,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app\bootstrap.php" />
+    <Compile Include="app\config\host.php" />
     <Compile Include="app\config\config.php" />
     <Compile Include="app\controllers\Helpers.php" />
     <Compile Include="app\controllers\Users.php" />
