@@ -18,12 +18,12 @@ var date_rangepicker_options = {
 };
 
 $(function () {
-    $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + '3px');
+    $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
     URL_ROOT = $('#url_root').val();
     moment.modifyHolidays.add('Ghana');
 
     $(window).resize(function () {
-        $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + '3px');
+        $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
     });
 
     //=============================================================
