@@ -95,12 +95,8 @@ function createReviewerSession($user)
 function logout()
 {
     unset($_SESSION['logged_in_user']);
-    unset($_SESSION['logged_in_admin']);
-    unset($_SESSION['logged_in_reviewer']);
-    reviewSessionOff();
-    adminSessionOff();
     session_destroy();
-    redirect('users/login');
+    redirect('');
 }
 
 function destroySession() {

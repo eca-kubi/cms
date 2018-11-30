@@ -17,6 +17,7 @@
   <ItemGroup>
     <Compile Include="app\bootstrap.php" />
     <Compile Include="app\config\config.php" />
+    <Compile Include="app\controllers\Helpers.php" />
     <Compile Include="app\controllers\Users.php" />
     <Compile Include="app\controllers\Errors.php" />
     <Compile Include="app\controllers\Notices.php" />
@@ -30,6 +31,7 @@
     <Compile Include="app\helpers\sms.php" />
     <Compile Include="app\helpers\url_helper.php" />
     <Compile Include="app\helpers\validation_helper.php" />
+    <Compile Include="app\models\User.php" />
     <Compile Include="app\views\errors\blank.php" />
     <Compile Include="app\views\errors\index.php" />
     <Compile Include="app\views\users\dashboard.php" />
@@ -1164,6 +1166,7 @@
     <Folder Include="app\libraries\Kendo\Data\" />
     <Folder Include="app\libraries\Kendo\Html\" />
     <Folder Include="app\libraries\Kendo\UI\" />
+    <Folder Include="app\models\" />
     <Folder Include="app\views\" />
     <Folder Include="app\views\errors\" />
     <Folder Include="app\views\includes\" />

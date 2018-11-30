@@ -3,7 +3,7 @@ use Respect\Validation\Validator as v;
 function validatePost($form, $id_user = -1)
 {
     // Init data
-    $userModel = new User;
+    $userModel =  requireModel('user');
     $post = initData();
     if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         // Sanitize POST data
@@ -108,12 +108,12 @@ function validatePost($form, $id_user = -1)
                 // Process form
                 $post->staff_id = strtolower(trim($_POST['staff_id']));
                 $post->password = $_POST['password'];
-                
+
                 // Validate Staff ID
                 if (empty($post->staff_id)) {
                     $post->staff_id_err = 'Please enter staff ID';
                     $post->error_count++;
-                    return $post; 
+                    return $post;
                 }
 
                 // Validate Password
@@ -128,7 +128,7 @@ function validatePost($form, $id_user = -1)
                 if (!$userModel->has($post->staff_id)) {
                     $post->staff_id_err = 'No staff found with this id';
                     return $post;
-                } 
+                }
 
                 $loggedInUser = $userModel->login($post->staff_id, $post->password);
                 if(!$loggedInUser) {

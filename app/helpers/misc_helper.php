@@ -181,3 +181,9 @@ function filterPost()
 {
     return  $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 }
+
+function requireModel(string $model)
+{
+    require_once '../app/models/' . ucwords( $model) . '.php';
+    return new $model();
+}

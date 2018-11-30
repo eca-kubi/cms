@@ -158,7 +158,7 @@ body {
   font-weight: 400;
   text-decoration: none;
   background-color: transparent;
-  color: #222225;
+ /* color: #222225;*/
   text-transform: uppercase;
   font-size: 14px;
 }
@@ -191,6 +191,9 @@ body {
   border: 4px solid red;
 }
 
+#forgot_password:hover {
+   color: #0056b3!important;
+}
 @media only screen and (max-width: 480px) {
   .notfound .notfound-404 {
     height: 146px;
@@ -212,7 +215,10 @@ body {
         <div class="notfound-bg"></div>
         <div class="notfound">
             <div class="notfound-404">
-                <h1 class="d-md-block d-none" style="font-size: 50px">CMS Login</h1>
+                <div>
+                    <h1 class="d-md-block d-none" style="font-size: 50px">CMS Login</h1>
+                    <h4>Change Management System</h4>
+                </div>
                 <h5 class="font-passion-one d-md-none text-uppercase text-center">CMS Login</h5>
                 <p style="
     position: fixed;
@@ -230,10 +236,12 @@ body {
                     </small>
                 </p>
             </div>
+            <!-- .col-10 -->
             <div class="col-10 mx-auto">
+                <!-- .row -->
                 <div class="row">
-                    <div class="tab-content col mb-2">
-                        <div class="tab-pane active" id="user_login">
+                    <div class="col mb-2">
+                        <div id="user_login">
                             <form action="<?php echo URL_ROOT; ?>/users/login" enctype="multipart/form-data" method="post" role="form"
                                 data-toggle="validator">
                                 <fieldset class="py-0 text-left fa font-weight-normal col-sm-12 p-2">
@@ -257,9 +265,8 @@ body {
                                     </div>
                                     <div class="form-group">
                                         <button type="submit" class="btn bg-dark text-white w3-btn text-uppercase">Submit</button>
-                                        <a class="float-right" href="#forgot_password" data-toggle="modal">
-                                            Forgot
-                      Password?
+                                        <a class="float-right" id="forgot_password" href="#" data-target="#forgot_password_modal" data-toggle="modal" style="color: #222225;">
+                                            Forgot Password?
                                         </a>
                                     </div>
                                 </fieldset>
@@ -267,9 +274,18 @@ body {
                         </div>
                     </div>
                 </div>
+                <!-- /.row -->
             </div>
-            <div class="notfound-social" style="display: none">
-                <a href="#">
+            <!-- /.col-10 -->
+
+            <div class="text-capitalize mt-5">
+                <a class="mr-5" href="<?php echo HOST; ?>">
+                    <i class="fa fa-windows"></i>  Adamus Apps 
+                </a>
+                <a class="" href="<?php echo INTRANET; ?>">
+                    <i class="fa fa-cloud"></i>  Intranet
+                </a>
+             <!--  <a href="#">
                     <i class="fa fa-facebook"></i>
                 </a>
                 <a href="#">
@@ -280,12 +296,12 @@ body {
                 </a>
                 <a href="#">
                     <i class="fa fa-google-plus"></i>
-                </a>
+                </a>--> 
             </div>
         </div>
     </div>
     <!-- Forgot Password Modal -->
-    <div class="modal fade" id="forgot_password" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal fade" id="forgot_password_modal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content fa font-weight-normal">
                 <div class="modal-header">

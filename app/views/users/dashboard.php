@@ -1,5 +1,6 @@
-<?php require_once APP_ROOT .'\includes\header.php';?>
+<?php require_once APP_ROOT .'\views\includes\header.php';?>
 <?php require_once APP_ROOT .'\views\includes\navbar.php';?>
+<?php require_once APP_ROOT .'\views\includes\sidebar.php';?>
 <!-- .content-wrapper -->
 <div class="content-wrapper animated fadeInRight" style="margin-top: <?php echo NAVBAR_MT; ?>">
     <!-- .content-header-->
@@ -50,4 +51,4 @@
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-<?php require_once APP_ROOT.'\views\inc\footer.php';?>
+<?php require_once APP_ROOT.'\views\includes\footer.php';?>
