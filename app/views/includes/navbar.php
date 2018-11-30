@@ -181,7 +181,7 @@
             </li>
         </ul>
     </nav>
-    <nav class="navbar navbar-expand-sm navbar-light bg-light main-header w3-amber" id="navbar2" style="z-index: 0">
+    <nav class="navbar navbar-expand-sm navbar-light main-header w3-amber" id="navbar2" style="z-index: 0">
         <a class="navbar-brand d-none" href="<?php echo URL_ROOT; ?>">CMS</a>
         <button class="navbar-toggler hidden-lg-up text-sm d-none" type="button" data-toggle="" data-target="#collapsibleNavId"
             aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">

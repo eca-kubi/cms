@@ -18,6 +18,7 @@
     <Compile Include="app\bootstrap.php" />
     <Compile Include="app\config\host.php" />
     <Compile Include="app\config\config.php" />
+    <Compile Include="app\controllers\CMS-Forms.php" />
     <Compile Include="app\controllers\Helpers.php" />
     <Compile Include="app\controllers\Users.php" />
     <Compile Include="app\controllers\Errors.php" />
@@ -32,6 +33,7 @@
     <Compile Include="app\helpers\sms.php" />
     <Compile Include="app\helpers\url_helper.php" />
     <Compile Include="app\helpers\validation_helper.php" />
+    <Compile Include="app\models\CMSForm.php" />
     <Compile Include="app\models\User.php" />
     <Compile Include="app\views\errors\blank.php" />
     <Compile Include="app\views\errors\index.php" />

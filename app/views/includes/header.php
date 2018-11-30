@@ -10,6 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="<?php echo URL_ROOT; ?>/public/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/animate.css" />
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/w3.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/bootstrap.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/bootstrap-fs-modal.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/bootstrap-select.css" />
@@ -26,7 +27,6 @@
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/flaticon/flaticon.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/fontastic/styles.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/fonts.css" />
-    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/w3.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/pignose.calendar.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/custom-assets/css/custom.css" />
 </head>
