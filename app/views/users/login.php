@@ -282,7 +282,7 @@ body {
                 <a class="mr-5" href="<?php echo HOST; ?>">
                     <i class="fa fa-windows"></i>  Adamus Apps 
                 </a>
-                <a class="" href="<?php echo INTRANET; ?>">
+                <a class="" href="<?php echo INTRANET; ?>" target="_blank">
                     <i class="fa fa-cloud"></i>  Intranet
                 </a>
              <!--  <a href="#">
