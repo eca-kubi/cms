@@ -1,3 +1,4 @@
+/// <reference path='../../assets/ts/kendo.all.d.ts' />
 var datepicker_shown = 0;
 var moment_format = 'ddd, MMM D, YYYY';
 var URL_ROOT = '';
@@ -117,11 +118,46 @@ $(function () {
         setTimeout(function () {
             // body...
         resizeTables();
-        }, 1000);
+        }, 1000 );
+        kendo.resize( $( "#action_list" ).parent());
     });
 
     // fix column width for tables in collapse
     $('.hide-child').removeClass('show').trigger('hidden.bs.collapse')
+
+    // '/cms-forms/action-list'
+    $( '#action_list' ).kendoGrid( {
+        columns: [
+            {
+                field: 'no',
+                title: 'No.'
+            },
+            {
+                field: 'action',
+                title: 'Action to be Taken'
+            },
+            {
+                field: 'res_person',
+                title: 'Responsible Person'
+            },
+            {
+                field: 'date',
+                title: 'Date'
+            },
+            {
+                field: 'completed',
+                title: 'Completed?',
+                type: 'boolean'
+            },
+            {
+                command: "destroy"
+            }
+        ],
+        toolbar: ["create", "save", "cancel"],
+        editable: true
+    } );
+
+    // '/cms-forms/pl-closure'
 
     $('.dataTables_length').addClass('d-inline-block mx-3');
     proxyEmail();

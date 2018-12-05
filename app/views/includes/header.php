@@ -14,6 +14,11 @@
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/bootstrap.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/bootstrap-fs-modal.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/bootstrap-select.css" />
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/kendo/kendo.common-bootstrap.min.css" />
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/kendo/kendo.bootstrap.min.css" />
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/kendo/kendo.dataviz.min.css" />
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/kendo/kendo.dataviz.bootstrap.min.css" />
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/kendo/kendo.bootstrap.mobile.min.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/adminlte.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/adminlte-miscellaneous.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/box-widget.css" />

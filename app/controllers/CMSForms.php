@@ -75,4 +75,46 @@ class CMSForms extends Controller
         $data['title'] = 'Project Leader Acceptance';
         $this->view('cms_forms/pl_acceptance', $data);
     }
+
+    public function ActionList(int $cms_form_id = -1)
+    {
+        $data = array();
+        $data['user'] = getUserSession();
+        $data['title'] = 'Action List';
+        $this->view('cms_forms/action_list', $data);
+    }
+
+    public function PLClosure(int $cms_form_id = -1)
+    {
+        $data = array();
+        $data['user'] = getUserSession();
+        $data['title'] = 'Process Closure by Project Leader';
+        $this->view('cms_forms/pl_closure', $data);
+    }
+
+    public function OriginatorClosure(int $cms_form_id = -1)
+    {
+        $data = array();
+        $data['user'] = getUserSession();
+        $data['title'] = 'Process Closure by Originator';
+        $this->view('cms_forms/orig_closure', $data);
+    }
+
+    public function HODClosure(int $cms_form_id = -1)
+    {
+        $data = array();
+        $data['user'] = getUserSession();
+        $data['title'] = 'Process Closure by HOD';
+        $this->view('cms_forms/hod_closure', $data);
+    }
+
+    public function ProcessClosed(int $cms_form_id = -1)
+    {
+        $data = array();
+        $data['user'] = getUserSession();
+        $data['title'] = 'Process Closed';
+        flash('process_closed','This Change Process is complete and has been closed!', 'text-danger text-center',
+                            '&nbsp');
+        $this->view('cms_forms/process_closed', $data);
+    }
 }

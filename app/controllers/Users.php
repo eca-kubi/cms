@@ -34,6 +34,11 @@ class Users extends Controller
 
     function dashboard()
     {
+        if (!isLoggedIn())
+        {
+        	redirect('users/login');
+        }
+        
     	$data = [
             'title' => 'CMS Dashboard',
             'user' => getUserSession()

@@ -32,6 +32,7 @@
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/validator.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/bootstrap-select.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/pignose.calendar.js"></script>
+<script src="<?php echo URL_ROOT; ?>/public/assets/js/kendo/kendo.all.min.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/custom-assets/js/custom.js"></script>
 </body>
 </html>
