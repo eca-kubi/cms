@@ -19,6 +19,7 @@
     <Compile Include="app\config\host.php" />
     <Compile Include="app\config\config.php" />
     <Compile Include="app\controllers\CMS-Forms.php" />
+    <Compile Include="app\controllers\CMSForms.php" />
     <Compile Include="app\controllers\Helpers.php" />
     <Compile Include="app\controllers\Users.php" />
     <Compile Include="app\controllers\Errors.php" />
@@ -35,6 +36,13 @@
     <Compile Include="app\helpers\validation_helper.php" />
     <Compile Include="app\models\CMSForm.php" />
     <Compile Include="app\models\User.php" />
+    <Compile Include="app\views\cms_forms\add.php" />
+    <Compile Include="app\views\cms_forms\pl_acceptance.php" />
+    <Compile Include="app\views\cms_forms\hod_authorisation.php" />
+    <Compile Include="app\views\cms_forms\gm_assessment.php" />
+    <Compile Include="app\views\cms_forms\risk_assessment.php" />
+    <Compile Include="app\views\cms_forms\hod_assessment.php" />
+    <Compile Include="app\views\cms_forms\index.php" />
     <Compile Include="app\views\errors\blank.php" />
     <Compile Include="app\views\errors\index.php" />
     <Compile Include="app\views\users\dashboard.php" />
@@ -1173,6 +1181,7 @@
     <Folder Include="app\views\" />
     <Folder Include="app\views\errors\" />
     <Folder Include="app\views\includes\" />
+    <Folder Include="app\views\cms_forms\" />
     <Folder Include="app\views\notices\" />
     <Folder Include="app\views\users\" />
     <Folder Include="app\views\pages\" />

@@ -30,11 +30,12 @@ $(function () {
     // Datatables Plugin
     if (typeof $.fn.dataTable !== 'undefined') {
         $.extend(true, $.fn.dataTable.defaults, {
+            responsive: true,
             processing: true,
-            scrollY: 300,
+            scrollY: 100,
             scrollX: false,
             deferRender: true,
-            scroller: true,
+            scroller: false,
             select: false,
             "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
@@ -62,6 +63,65 @@ $(function () {
             }
         });
     }
+
+    $('.bs-select')
+        .selectpicker({
+            liveSearch: true,
+            virtualization: true,
+            showTick: false,
+            showContent: false
+        })
+        .on('loaded.bs.select show.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+            $('.bs-select .dropdown-menu').addClass('p-0 rounded-0');
+            $('.bs-select button').addClass('w3-hover-none rounded-0 w3-transparent w3-border');
+            $('.bootstrap-select').addClass('exclude-hover');
+            $('.bs-select').attr('tabindex', 1);
+        });
+
+    // '/cms-forms/add'
+    $('#change_type').on('change', function (e) {
+        var selected_option = $(this).find(':selected');
+        if (selected_option.val() == 'Other') {
+            $('#other_type').removeClass('invisible')
+        }
+        else {
+            $('#other_type').addClass('invisible')
+        }
+    });
+
+    $('.section').on('shown.bs.collapse', function (e) {
+        $(this).parent().find('.fa').eq(0).removeClass('fa-plus').addClass('fa-minus')
+        resizeTables();
+        return false;
+    })
+        .on('hidden.bs.collapse', function (e) {
+            $(this).parent().find('.fa').eq(0).removeClass('fa-minus').addClass('fa-plus')
+            return false;
+        });
+
+    // '/cms-forms/hod-assesment'
+    $('[name=hod_approval]').on('change', function (e) {
+        if ($(this).val() == 'approved') {
+            $('#ref_num').removeClass('d-none')
+        }
+        else {
+            $('#hod_ref_num').addClass('d-none')
+        }
+    });
+
+    // '/cms-forms/risk-assesment'
+    $('.impact_tbl').DataTable({ searching: false, paging: false, info: false });
+
+    // auto adjust dt columns
+    $(window).resize(function () {
+        setTimeout(function () {
+            // body...
+        resizeTables();
+        }, 1000);
+    });
+
+    // fix column width for tables in collapse
+    $('.hide-child').removeClass('show').trigger('hidden.bs.collapse')
 
     $('.dataTables_length').addClass('d-inline-block mx-3');
     proxyEmail();
@@ -149,4 +209,10 @@ function getDays(moment_start_date, moment_resume_date) {
         'holiday_count' : holiday_count,
         'days_applied_for': days_applied_for
     }
+}
+
+function resizeTables() {
+    $.fn.dataTable
+        .tables({ visible: true, api: true})
+        .columns.adjust();
 }

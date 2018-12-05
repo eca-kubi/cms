@@ -217,25 +217,11 @@ body {
             <div class="notfound-404">
                 <div>
                     <h1 class="d-md-block d-none" style="font-size: 50px">CMS Login</h1>
-                    <h4>Change Management System</h4>
+                    <h4 class="pt-2">Change Management System</h4>
                 </div>
                 <h5 class="font-passion-one d-md-none text-uppercase text-center">CMS Login</h5>
-                <p style="
-    position: fixed;
-    left: 37%;
-    top: 37%;
-">
-                    <small class="font-weight-bold text-purple">
-                        Password is case sensitive.
-                    </small>
-                </p>
-
-                <p>
-                    <small>
-                        <?php flash('flash') ?>
-                    </small>
-                </p>
             </div>
+                        <?php flash('flash') ?>
             <!-- .col-10 -->
             <div class="col-10 mx-auto">
                 <!-- .row -->
@@ -245,9 +231,12 @@ body {
                             <form action="<?php echo URL_ROOT; ?>/users/login" enctype="multipart/form-data" method="post" role="form"
                                 data-toggle="validator">
                                 <fieldset class="py-0 text-left fa font-weight-normal col-sm-12 p-2">
+                                    <small class="font-weight-bold text-purple text-center d-block mb-2">
+                                        Password is case sensitive.
+                                    </small>
                                     <div class="form-group form-row">
                                         <div class="col-sm-12">
-                                            <input type="text" name="staff_id" class="<?php echo !empty($data['post']->staff_id_err)? 'border-danger-4': '' ?>" placeholder="STAFF ID" aria-describedby="helpId"
+                                            <input type="text" name="staff_id" class="<?php //echo !empty($data['post']->staff_id_err)? 'border-danger-4': '' ?>" placeholder="STAFF ID" aria-describedby="helpId"
                                                 value="<?php echo !empty($data['post']->staff_id)? $data['post']->staff_id: '' ?>" required />
                                             <small class="with-errors help-block d-block">
                                                 <?php //echo isset($data['post']->staff_id_err)? $data['post']->staff_id_err: '' ?>
@@ -256,7 +245,7 @@ body {
                                     </div>
                                     <div class="form-group form-row">
                                         <div class="col-sm-12">
-                                            <input type="password" placeholder="PASSWORD" name="password" class="<?php echo !empty($data['post']->password_err)? 'border-danger-4': '' ?>" aria-describedby="helpId"
+                                            <input type="password" placeholder="PASSWORD" name="password" class="<?php //echo !empty($data['post']->password_err)? 'border-danger-4': '' ?>" aria-describedby="helpId"
                                                 required />
                                             <small class="with-errors help-block d-block">
                                                 <?php //echo !empty($data['post']->password_err)? $data['post']->password_err: '' ?>
@@ -265,7 +254,7 @@ body {
                                     </div>
                                     <div class="form-group">
                                         <button type="submit" class="btn bg-dark text-white w3-btn text-uppercase">Submit</button>
-                                        <a class="float-right" id="forgot_password" href="#" data-target="#forgot_password_modal" data-toggle="modal" style="color: #222225;">
+                                        <a class="float-right mt-2" id="forgot_password" href="#" data-target="#forgot_password_modal" data-toggle="modal" style="color: #222225;">
                                             Forgot Password?
                                         </a>
                                     </div>
@@ -278,7 +267,7 @@ body {
             </div>
             <!-- /.col-10 -->
 
-            <div class="text-capitalize mt-5">
+            <div class="text-capitalize mt-5 pb-md-2">
                 <a class="mr-5" href="<?php echo HOST; ?>">
                     <i class="fa fa-windows"></i>  Adamus Apps 
                 </a>
