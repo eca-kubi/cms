@@ -3,11 +3,6 @@ class Pages extends Controller
 {
     public function __construct()
     {
-        if (isLoggedIn())
-        {
-        	
-        }
-        
     }
 
     public function index()
@@ -18,10 +13,8 @@ class Pages extends Controller
 
     public function about()
     {
-        $data = [
-            'title' => 'About Us'
-        ];
-
+        $data = new ArrayObject();
+        $data->title = 'About us';
         $this->view('pages/about', $data);
     }
 }

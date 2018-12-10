@@ -6,7 +6,7 @@ class Helpers extends Controller
         if (!isLoggedIn()) {
             redirect('users/login');
         }
-        $this->userModel = $this->model('user');
+        //$this->userModel = $this->model('user');
         $this->db = Database::getDbh();
     }
 

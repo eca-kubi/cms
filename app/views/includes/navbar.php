@@ -129,17 +129,17 @@
             <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <?php
-                    $data = (array)$data;
-                    $initials = $data['user']->first_name[0] .$data['user']->last_name[0];
-                    if ($data['user']->profile_pic == DEFAULT_PROFILE_PIC) {
-                        $name = $data['user']->first_name .  ' ' .$data['user']->last_name;
-                        $src = PROFILE_PIC_DIR.$data['user']->profile_pic.'?='.rand();
+                    $user = getUserSession();
+                    $initials = $user->first_name[0] .$user->last_name[0];
+                    if ($user->profile_pic == DEFAULT_PROFILE_PIC) {
+                        $name = $user->first_name .  ' ' .$user->last_name;
+                        $src = PROFILE_PIC_DIR.$user->profile_pic.'?='.rand();
                         echo "<img avatar=\"$name\" src=\"$src\" class=\"user-image img-size-32 img-fluid img-circle d-inline-block\" avatar=\"$initials\" >";
                     } else { ?>
-                    <img src="<?php echo PROFILE_PIC_DIR.$data['user']->profile_pic.'?='.rand(); ?>" class="user-image img-size-32 img-fluid img-circle d-inline-block"
+                    <img src="<?php echo PROFILE_PIC_DIR.$user->profile_pic.'?='.rand(); ?>" class="user-image img-size-32 img-fluid img-circle d-inline-block"
                         alt="<?php echo $initials; ?>" /><?php } ?>
                     <span class="hidden-xs text-capitalize">
-                        <?php echo ucwords($data['user']->first_name . ' '. $data['user']->last_name); ?>
+                        <?php echo ucwords($user->first_name . ' '. $user->last_name); ?>
                     </span>
                 </a>
                 <ul class="dropdown-menu m-0 p-1 dropdown-menu-right" style="min-width: 19rem">
@@ -149,18 +149,18 @@
                     <li class="user-body">
                         <div class="col fa p-2">
                             <?php
-                            if ($data['user']->profile_pic == DEFAULT_PROFILE_PIC) {
-                                $initials = $data['user']->first_name[0] .$data['user']->last_name[0];
-                                $name = $data['user']->first_name .  ' ' .$data['user']->last_name;
+                            if ($user->profile_pic == DEFAULT_PROFILE_PIC) {
+                                $initials = $user->first_name[0] .$user->last_name[0];
+                                $name = $user->first_name .  ' ' .$user->last_name;
                                 echo "<img data-name=\"$name\" class=\"user-image img-size-32 img-fluid img-circle d-inline-block \" avatar=\"$name\" >";
                             } else { ?>
-                            <img src="<?php echo PROFILE_PIC_DIR.$data['user']->profile_pic.'?='.rand(); ?>" class="user-image img-size-32 img-fluid img-circle d-inline-block"
+                            <img src="<?php echo PROFILE_PIC_DIR.$user->profile_pic.'?='.rand(); ?>" class="user-image img-size-32 img-fluid img-circle d-inline-block"
                                 alt="<?php echo $initials; ?>" /><?php } ?>
                             <p class="text-bold mb-1">
-                                <?php echo ucwords($data['user']->first_name . ' '. $data['user']->last_name, ' -'); ?>
+                                <?php echo ucwords($user->first_name . ' '. $user->last_name, ' -'); ?>
                             </p>
                             <p class="text-bold mb-1">
-                                <?php echo ucwords($data['user']->job_title, '- '); ?>
+                                <?php echo ucwords($user->job_title, '- '); ?>
                             </p>
                             <p class="text-nowrap text-muted d-none">
                                 Member since ...
@@ -205,14 +205,20 @@
                         CMS Forms
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId" style="position:absolute">
-                        <li class="dropdown-item">
-                            <a href="<?php echo URL_ROOT; ?>/CMS-Forms/Active">
+                        <li>
+                            <a class="dropdown-item" href="<?php echo URL_ROOT; ?>/CMS-Forms/Add">
+                                New
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="<?php echo URL_ROOT; ?>/CMS-Forms/Active">
                                 Active
                             </a>
                         </li>
                         <li class="dropdown-divider"></li>
-                        <li class="dropdown-item">
-                            <a href="<?php echo URL_ROOT; ?>/CMS-Forms/Closed">
+                        <li>
+                            <a class="dropdown-item"  href="<?php echo URL_ROOT; ?>/CMS-Forms/Closed">
                                 Closed
                             </a>
                         </li>

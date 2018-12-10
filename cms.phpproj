@@ -16,9 +16,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app\bootstrap.php" />
+    <Compile Include="app\classes\CMSForm.php" />
+    <Compile Include="app\classes\Department.php" />
+    <Compile Include="app\classes\Email.php" />
+    <Compile Include="app\classes\User.php" />
     <Compile Include="app\config\host.php" />
     <Compile Include="app\config\config.php" />
     <Compile Include="app\controllers\CMSForms.php" />
+    <Compile Include="app\controllers\Emails.php" />
     <Compile Include="app\controllers\Helpers.php" />
     <Compile Include="app\controllers\Users.php" />
     <Compile Include="app\controllers\Errors.php" />
@@ -33,8 +38,11 @@
     <Compile Include="app\helpers\sms.php" />
     <Compile Include="app\helpers\url_helper.php" />
     <Compile Include="app\helpers\validation_helper.php" />
-    <Compile Include="app\models\CMSForm.php" />
-    <Compile Include="app\models\User.php" />
+    <Compile Include="app\models\CMSFormModel.php" />
+    <Compile Include="app\models\DepartmentModel.php" />
+    <Compile Include="app\models\EmailModel.php" />
+    <Compile Include="app\models\UserModel.php" />
+    <Compile Include="app\views\cms_forms\view_change_process.php" />
     <Compile Include="app\views\cms_forms\process_closed.php" />
     <Compile Include="app\views\cms_forms\orig_closure.php" />
     <Compile Include="app\views\cms_forms\hod_closure.php" />
@@ -1182,6 +1190,7 @@
     <Folder Include="app\libraries\Kendo\Html\" />
     <Folder Include="app\libraries\Kendo\UI\" />
     <Folder Include="app\models\" />
+    <Folder Include="app\classes\" />
     <Folder Include="app\views\" />
     <Folder Include="app\views\errors\" />
     <Folder Include="app\views\includes\" />

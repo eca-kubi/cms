@@ -187,3 +187,31 @@ function requireModel(string $model)
     require_once '../app/models/' . ucwords( $model) . '.php';
     return new $model();
 }
+
+function getData($data)
+{
+    return (array)$data;
+}
+
+function today()
+{
+	echo ((new DateTime)->format(DFF));
+}
+
+/**
+ * Summary of removeEmptyVal
+ * @param array|object $value 
+ * @return array
+ */
+function removeEmptyVal($value)
+{
+    $value = (array)$value;
+	foreach ($value as $key => $item)
+    {
+        if (empty($item))
+        {
+        	unset($value[$key]);
+        }
+    }
+    return $value;
+}

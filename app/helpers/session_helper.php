@@ -62,20 +62,20 @@ function getRole()
 
 /**
  * Summary of getUserSession
- * @return stdClass
+ * @return User|bool
  */
 function getUserSession(){
     if (isset($_SESSION['logged_in_user'])) {
         return $_SESSION['logged_in_user'];
     } else {
-       return new stdClass;
+       return false;
     }
 }
 
-function createUserSession($user)
+function createUserSession(User $u)
 {
-    unset($user->password);
-    $_SESSION['logged_in_user'] = $user;
+    unset($u->password);
+    $_SESSION['logged_in_user'] = $u;
 }
 
 function createAdminSession($user)
@@ -96,7 +96,7 @@ function logout()
 {
     unset($_SESSION['logged_in_user']);
     session_destroy();
-    redirect('');
+    redirectToStart();
 }
 
 function destroySession() {

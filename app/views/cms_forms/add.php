@@ -1,6 +1,9 @@
 <?php require_once APP_ROOT .'\views\includes\header.php';?>
 <?php require_once APP_ROOT .'\views\includes\navbar.php';?>
 <?php require_once APP_ROOT .'\views\includes\sidebar.php';?>
+<?php
+$user = getUserSession();
+?>
 <!-- .content-wrapper -->
 <div class="content-wrapper animated fadeInRight" style="margin-top: <?php echo NAVBAR_MT; ?>">
     <!-- .content-header-->
@@ -47,7 +50,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <form action="" method="post">
+                <form action="" method="post" data-toggle="validator" id="add_cms_form">
                     <div class="row p-2">
                         <fieldset class="w-100">
                             <h6 class="text-bold font-italic">
@@ -63,8 +66,8 @@
                                             <label for="" class="col-sm-4 text-sm-right">Name</label>
                                             <div class="col-sm-8">
                                                 <input type="text"
-                                                    class="form-control" name="" aria-describedby="helpId" placeholder="" />
-                                                <small id="helpId" class="form-text with-errors"></small>
+                                                    class="form-control" value="<?php echo ucwords($user->first_name . ' '. $user->last_name, '-. '); ?>" aria-describedby="helpId" placeholder="" />
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -73,8 +76,8 @@
                                             <label for="" class="col-sm-4 text-sm-right">Position</label>
                                             <div class="col-sm-8">
                                                 <input type="text"
-                                                    class="form-control" name="" aria-describedby="helpId" placeholder="" />
-                                                <small id="helpId" class="form-text with-errors"></small>
+                                                    class="form-control text-capitalize" value="<?php echo $user->job_title; ?>" aria-describedby="helpId" placeholder="" />
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -85,8 +88,8 @@
                                             <label for="" class="col-sm-4 text-sm-right">Department</label>
                                             <div class="col-sm-8">
                                                 <input type="text"
-                                                    class="form-control" name="" aria-describedby="helpId" placeholder="" />
-                                                <small id="helpId" class="form-text with-errors"></small>
+                                                    class="form-control" value="<?php echo $user->department->department; ?>" aria-describedby="helpId" placeholder="" />
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -95,8 +98,8 @@
                                             <label for="" class="col-sm-4 text-sm-right">Date</label>
                                             <div class="col-sm-8">
                                                 <input type="text"
-                                                    class="form-control" name="" aria-describedby="helpId" placeholder="" />
-                                                <small id="helpId" class="form-text with-errors"></small>
+                                                    class="form-control" value="<?php echo (new DateTime())->format(DFF); ?>" aria-describedby="helpId" placeholder="" readonly />
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -109,8 +112,8 @@
                                             </label>
                                             <div class="col-sm-8">
                                                 <textarea type="text"
-                                                    class="form-control" name="" aria-describedby="helpId" placeholder=""></textarea>
-                                                <small id="helpId" class="form-text with-errors"></small>
+                                                    class="form-control" name="desc" aria-describedby="helpId" placeholder=""></textarea>
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -121,8 +124,8 @@
                                             </label>
                                             <div class="col-sm-8">
                                                 <textarea type="text"
-                                                    class="form-control" name="" aria-describedby="helpId" placeholder=""></textarea>
-                                                <small id="helpId" class="form-text with-errors"></small>
+                                                    class="form-control" name="advantages" aria-describedby="helpId" placeholder=""></textarea>
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -135,8 +138,8 @@
                                             </label>
                                             <div class="col-sm-8">
                                                 <textarea type="text"
-                                                    class="form-control" name="" aria-describedby="helpId" placeholder=""></textarea>
-                                                <small id="helpId" class="form-text with-errors"></small>
+                                                    class="form-control" name="alternatives" aria-describedby="helpId" placeholder=""></textarea>
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -147,8 +150,8 @@
                                             </label>
                                             <div class="col-sm-8">
                                                 <textarea type="text"
-                                                    class="form-control" name="" aria-describedby="helpId" placeholder=""></textarea>
-                                                <small id="helpId" class="form-text with-errors"></small>
+                                                    class="form-control" name="area_affected" aria-describedby="helpId" placeholder=""></textarea>
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -161,7 +164,7 @@
                                             </label>
                                             <div class="col-sm-8">
                                                 <select type="text"
-                                                    class="form-control bs-select" data-none-selected-text="Select Change Type" name="" id="change_type" aria-describedby="helpId" placeholder="" multiple="multiple">
+                                                    class="form-control bs-select" data-none-selected-text="Select Change Type" name="change_type[]" id="change_type" aria-describedby="helpId" placeholder="" multiple="multiple">
                                                     <option value="Staff/Labour">Staff/Labour</option>
                                                     <option value="Procedural">Procedural</option>
                                                     <option value="Equipment/Machinery">Equipment/Machinery</option>
@@ -172,7 +175,8 @@
                                                     <option value="Cyanide">Cyanide</option>
                                                     <option value="Other">Other</option>
                                                 </select>
-                                                <small id="helpId" class="form-text with-errors"></small>
+                                                <small id="helpId" class="form-text text-muted with-errors help-block">Hint: Multiple Selection Possible</small>
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -183,29 +187,45 @@
                                             </label>
                                             <div class="col-sm-8">
                                                 <input type="file"
-                                                    class="form-control" name="" aria-describedby="helpId" placeholder="" />
-                                                <small id="helpId" class="form-text with-errors"></small>
+                                                    class="form-control" name="additional_info" aria-describedby="helpId" placeholder="" accept="<?php echo DOC_FILE_TYPES; ?>"  />
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row d-none">
                                    <div class="col-sm-6">
-                                        <div class="form-group form-row d-none" id="other_type">
+                                        <div class="form-group form-row" id="other_type">
                                             <label for="" class="col-sm-4 text-sm-right">
                                                 Other Change Type <br/><small>(Insert other change type here)</small>
                                             </label>
                                             <div class="col-sm-8">
                                                 <input type="text"
-                                                    class="form-control" name="" aria-describedby="helpId" placeholder="" />
-                                                <small id="helpId" class="form-text with-errors"></small>
+                                                    class="form-control" name="other_type" aria-describedby="helpId" placeholder="" />
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
-                                   <div class="col-sm-6 text-right">
-                                        <button type="submit" class="btn bg-success w3-btn">Submit</button>
-                                   </div>
                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 pl-lg-5 pl-md-5">
+                                        <div class="form-group form-row">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" name="certify_details" required> <small class="text-bold">I hereby certify that the information I have provided above is true, complete and accurate.</small>  
+                                                </label>
+                                                <small id="helpId" class="with-errors help-block"></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 text-right">
+                                       <div>
+                                        <a href="javascript: window.history.back();" class="btn bg-danger w3-btn">Cancel</a>
+
+                                        <button type="submit" class="btn bg-success w3-btn" form="add_cms_form">Submit</button>
+                                       </div>
+                                   </div>
+                                </div>
                             </div>
                         </fieldset>
                     </div>

@@ -21,10 +21,10 @@ class Errors extends Controller
 
         $title = $codes[$status][0];
         $message = $codes[$status][1];
-        $data = [
-            'title' => $title,
-            'message' => $message,
-        ];
+        $data = [];
+        $data[
+            'title']=  $title;
+          $data['message'] = $message;
         ob_start();
         header("HTTP/1.1 $title");
         $this->view('errors/index', $data);

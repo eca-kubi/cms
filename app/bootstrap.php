@@ -1,4 +1,20 @@
 <?php
+// Autoload Core Libraries
+
+spl_autoload_register(function($class_name){
+    $dirs = array(
+            'models/',
+            'libraries/',
+            'classes/'
+        );
+    foreach( $dirs as $dir ) {
+        if (!file_exists('../app/'. $dir.$class_name.'.php')) {
+            continue;
+        } else {
+            require_once('../app/'.$dir.$class_name.'.php');
+        }
+    }
+});
   // Load Config
   require_once 'config/host.php';
   require_once 'config/config.php';
@@ -9,10 +25,9 @@
   require_once 'helpers/file_helper.php';
   require_once 'helpers/validation_helper.php';
   require_once 'helpers/sms.php';
-  // Autoload Core Libraries
-  spl_autoload_register(function($className){
+  /*spl_autoload_register(function($className){
     require_once 'libraries/'. $className . '.php';
-  });
+  });*/
   //Load composer
   require_once APP_ROOT.'/../vendor/autoload.php';
   require_once 'helpers/phpmailer.php';

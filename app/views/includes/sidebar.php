@@ -1,5 +1,5 @@
 <!-- Main Sidebar Container -->
-<aside class="fa main-sidebar sidebar-dark-primary elevation-4">
+<aside class="fa main-sidebar sidebar-dark-primary elevation-4" style="left:-1px">
     <!-- Brand Logo -->
     <a href="<?php echo URL_ROOT;?>" class="brand-link">
         <img src="<?php echo URL_ROOT;?>/public/assets/images/adamus.jpg" alt="logo" class="brand-image  ml-0  elevation-3" style="opacity: .8" />
@@ -11,19 +11,19 @@
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 <?php
-                $data = (array)$data;
-                if ($data['user']->profile_pic == DEFAULT_PROFILE_PIC) {
-                    $src = PROFILE_PIC_DIR.$data['user']->profile_pic.'?='.rand();
-                    $name = $data['user']->first_name . ' ' .$data['user']->last_name;
+                $user = getUserSession();
+                if ($user->profile_pic == DEFAULT_PROFILE_PIC) {
+                    $src = PROFILE_PIC_DIR.$user->profile_pic.'?='.rand();
+                    $name = $user->first_name . ' ' .$user->last_name;
                     echo "<img data-name=\"$name\" src=\"$src\" class=\"elevation-2 img-circle p-1 img-size-32\" avatar=\"$name\" >";
                 } else { ?>
-                <img src="<?php echo PROFILE_PIC_DIR.$data['user']->profile_pic; ?>" class="elevation-2 img-circle  img-size-32" alt="avatar" />
+                <img src="<?php echo PROFILE_PIC_DIR.$user->profile_pic; ?>" class="elevation-2 img-circle  img-size-32" alt="avatar" />
                 <?php } ?>
 
             </div>
             <div class="info">
                 <a href="<?php echo URL_ROOT;?>/users/profile" class="d-block">
-                    <?php echo ucwords($data['user']->first_name . ' ' . $data['user']->last_name, ' -'); ?>
+                    <?php echo ucwords($user->first_name . ' ' . $user->last_name, ' -'); ?>
                 </a>
             </div>
         </div>
@@ -42,6 +42,12 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo URL_ROOT;?>/CMS-Forms/Add" class="nav-link">
+                                <i class="nav-icon fa fa-circle-notch animated rotateIn"></i>
+                                <p>New</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="<?php echo URL_ROOT;?>/CMS-Forms/Active" class="nav-link">
                                 <i class="nav-icon fa fa-circle-notch animated rotateIn"></i>

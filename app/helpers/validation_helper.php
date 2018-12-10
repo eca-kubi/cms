@@ -3,7 +3,6 @@ use Respect\Validation\Validator as v;
 function validatePost($form, $id_user = -1)
 {
     // Init data
-    $userModel =  requireModel('user');
     $post = initData();
     if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         // Sanitize POST data
@@ -28,7 +27,7 @@ function validatePost($form, $id_user = -1)
                 $post->department_id = trim($_POST['department_id']);
 
                 // Check email
-                if ($userModel->has($post->email)) {
+                if (UserModel::has('email', $post->email)) {
                     $post->email_err = 'Email is already taken';
                     $post->error_count++;
                 }
@@ -38,7 +37,7 @@ function validatePost($form, $id_user = -1)
                     $post->error_count++;
                 } else {
                     // Check staff_id
-                    if ($userModel->has($post->staff_id)) {
+                    if (UserModel::has('staff_id', $post->staff_id)) {
                         $post->staff_id_err = 'Staff Id is already taken';
                         $post->error_count++;
                     }
@@ -124,13 +123,12 @@ function validatePost($form, $id_user = -1)
                 }
 
                 // Verify staff id
-                $userModel = new User;
-                if (!$userModel->has($post->staff_id)) {
+                if (!UserModel::has('staff_id', $post->staff_id)) {
                     $post->staff_id_err = 'No staff found with this id';
                     return $post;
                 }
 
-                $loggedInUser = $userModel->login($post->staff_id, $post->password);
+                $loggedInUser = UserModel::login($post->staff_id, $post->password);
                 if(!$loggedInUser) {
                     $post->password_err = 'Password Incorrect!';
                     return $post;
@@ -152,7 +150,7 @@ function validatePost($form, $id_user = -1)
                 $post->department = trim($_POST['department']);
 
                 // Validate Email
-                if ($post->email !== '' && $userModel->has($post->email)) {
+                if ($post->email !== '' && UserModel::has('email', $post->email)) {
                     $post->email_err = 'Email is already taken';
                     $post->error_count++;
                 }
@@ -161,12 +159,6 @@ function validatePost($form, $id_user = -1)
                 if (empty($post->staff_id)) {
                     $post->staff_id_err = 'Please enter staff Id';
                     $post->error_count++;
-                } else {
-                    // Check staff_id
-                    /* if (!$userModel->hasWithIdUser($post->staff_id, $id_user)) {
-                        $post->staff_id_err = 'Staff Id is already taken';
-                        $post->error_count++;
-                    } */
                 }
 
                 // Validate First Name
@@ -215,7 +207,7 @@ function validatePost($form, $id_user = -1)
                 $post->disable_leave_notif = isset($_POST['disable_leave_notif']) ? $_POST['disable_leave_notif'] : '';
                 // Process form
                 // Validate Email
-                if ($post->email !== '' && $userModel->has($post->email)) {
+                if ($post->email !== '' && UserModel::has('email', $post->email)) {
                     $post->email_err = 'Email is already taken';
                     $post->error_count++;
                 }

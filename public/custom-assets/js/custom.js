@@ -1,6 +1,6 @@
 /// <reference path='../../assets/ts/kendo.all.d.ts' />
 var datepicker_shown = 0;
-var moment_format = 'ddd, MMM D, YYYY';
+var moment_format = 'DD/MM/YYYY';
 var URL_ROOT = '';
 //=============================================================
 // Daterangepicker Plugin
@@ -18,19 +18,22 @@ var date_rangepicker_options = {
     //startDate: '1900-01-01'
 };
 
-$(function () {
-    $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
-    URL_ROOT = $('#url_root').val();
-    moment.modifyHolidays.add('Ghana');
+$( function ()
+{
+    $( '.content-wrapper' ).css( 'margin-top', $( '.navbar-fixed' ).height() + 'px' );
+    URL_ROOT = $( '#url_root' ).val();
+    moment.modifyHolidays.add( 'Ghana' );
 
-    $(window).resize(function () {
-        $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
-    });
+    $( window ).resize( function ()
+    {
+        $( '.content-wrapper' ).css( 'margin-top', $( '.navbar-fixed' ).height() + 'px' );
+    } );
 
     //=============================================================
     // Datatables Plugin
-    if (typeof $.fn.dataTable !== 'undefined') {
-        $.extend(true, $.fn.dataTable.defaults, {
+    if ( typeof $.fn.dataTable !== 'undefined' )
+    {
+        $.extend( true, $.fn.dataTable.defaults, {
             responsive: true,
             processing: true,
             scrollY: 100,
@@ -58,72 +61,93 @@ $(function () {
                 'excel',
                 'print'
             ],
-            "initComplete": function (settings, json) {
+            "initComplete": function ( settings, json )
+            {
             },
-            "drawCallback": function (settings) {
+            "drawCallback": function ( settings )
+            {
             }
-        });
+        } );
     }
 
-    $('.bs-select')
-        .selectpicker({
+    $( '.bs-select' )
+        .selectpicker( {
             liveSearch: true,
             virtualization: true,
             showTick: false,
             showContent: false
-        })
-        .on('loaded.bs.select show.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-            $('.bs-select .dropdown-menu').addClass('p-0 rounded-0');
-            $('.bs-select button').addClass('w3-hover-none rounded-0 w3-transparent w3-border');
-            $('.bootstrap-select').addClass('exclude-hover');
-            $('.bs-select').attr('tabindex', 1);
-        });
+        } )
+        .on( 'loaded.bs.select show.bs.select', function ( e, clickedIndex, isSelected, previousValue )
+        {
+            $( '.bs-select .dropdown-menu' ).addClass( 'p-0 rounded-0' );
+            $( '.bs-select button' ).addClass( 'w3-hover-none rounded-0 w3-transparent w3-border' );
+            $( '.bootstrap-select' ).addClass( 'exclude-hover' );
+            $( '.bs-select' ).attr( 'tabindex', 1 );
+        } );
 
     // '/cms-forms/add'
-    $('#change_type').on('change', function (e) {
-        var selected_option = $(this).find(':selected');
-        if (selected_option.val() == 'Other') {
-            $('#other_type').removeClass('invisible')
+    $( '#change_type' ).on( 'changed.bs.select', function ( e, clickedIndex, isSelected, previousValue )
+    {
+        var selected_option = $( this ).find( ':selected' );
+        var found = previousValue.find( function ( element )
+        {
+            return element == 'Other';
+        } );
+        if ( isSelected && clickedIndex == 8 || ( isSelected && found ) )
+        {
+            $( '#other_type' ).parents( '.row:eq(0)' ).removeClass( 'd-none' )
+            $( '[name=other_type]' ).attr( 'required', true );
+            $( '#add_cms_form' ).validator( 'update' );
         }
-        else {
-            $('#other_type').addClass('invisible')
+        else
+        {
+            $( '#other_type' ).parents( '.row:eq(0)' ).addClass( 'd-none' )
+            $( '[name=other_type]' ).removeAttr( 'required');
+            $( '#add_cms_form' ).validator( 'update' );
         }
-    });
+    } );
 
-    $('.section').on('shown.bs.collapse', function (e) {
-        $(this).parent().find('.fa').eq(0).removeClass('fa-plus').addClass('fa-minus')
+    $( '.section' ).on( 'shown.bs.collapse', function ( e )
+    {
+        $( this ).parent().find( '.fa' ).eq( 0 ).removeClass( 'fa-plus' ).addClass( 'fa-minus' )
         resizeTables();
         return false;
-    })
-        .on('hidden.bs.collapse', function (e) {
-            $(this).parent().find('.fa').eq(0).removeClass('fa-minus').addClass('fa-plus')
+    } )
+        .on( 'hidden.bs.collapse', function ( e )
+        {
+            $( this ).parent().find( '.fa' ).eq( 0 ).removeClass( 'fa-minus' ).addClass( 'fa-plus' )
             return false;
-        });
+        } );
 
     // '/cms-forms/hod-assesment'
-    $('[name=hod_approval]').on('change', function (e) {
-        if ($(this).val() == 'approved') {
-            $('#ref_num').removeClass('d-none')
+    $( '[name=hod_approval]' ).on( 'change', function ( e )
+    {
+        if ( $( this ).val() == 'approved' )
+        {
+            $( '#ref_num' ).removeClass( 'd-none' )
         }
-        else {
-            $('#hod_ref_num').addClass('d-none')
+        else
+        {
+            $( '#hod_ref_num' ).addClass( 'd-none' )
         }
-    });
+    } );
 
     // '/cms-forms/risk-assesment'
-    $('.impact_tbl').DataTable({ searching: false, paging: false, info: false });
+    $( '.impact_tbl' ).DataTable( { searching: false, paging: false, info: false } );
 
     // auto adjust dt columns
-    $(window).resize(function () {
-        setTimeout(function () {
+    $( window ).resize( function ()
+    {
+        setTimeout( function ()
+        {
             // body...
-        resizeTables();
+            resizeTables();
         }, 1000 );
-        kendo.resize( $( "#action_list" ).parent());
-    });
+        kendo.resize( $( "#action_list" ).parent() );
+    } );
 
     // fix column width for tables in collapse
-    $('.hide-child').removeClass('show').trigger('hidden.bs.collapse')
+    $( '.hide-child' ).removeClass( 'show' ).trigger( 'hidden.bs.collapse' )
 
     // '/cms-forms/action-list'
     $( '#action_list' ).kendoGrid( {
@@ -159,9 +183,9 @@ $(function () {
 
     // '/cms-forms/pl-closure'
 
-    $('.dataTables_length').addClass('d-inline-block mx-3');
+    $( '.dataTables_length' ).addClass( 'd-inline-block mx-3' );
     proxyEmail();
-});
+} );
 
 window.addEventListener("load", function (event) {
     setTimeout(() => {

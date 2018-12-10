@@ -2,9 +2,9 @@
 class Model 
 {
   protected $lastInsertId;
-  protected $table;
+  private static $table;
   protected $columns;
-  protected $db;
+  private $db;
   public function __construct()
   {
     $this->db = Database::getDbh(); // MysqliDb
@@ -31,7 +31,7 @@ class Model
   }
 
   
-  public function add($params, $target_cols = null, $use_filter = true)
+  /*public function add($params, $target_cols = null, $use_filter = true)
   {
       if (gettype($params == 'object')) {
           $params = objToArr($params);
@@ -47,7 +47,7 @@ class Model
           return $this->lastInsertId;
       }
       return -1;
-  }
+  }*/
 
   // Update record
   public function update($id, $params, $target_cols = null, $use_filter = true)

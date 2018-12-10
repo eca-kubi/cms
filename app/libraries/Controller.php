@@ -6,9 +6,9 @@
   class Controller {
     public function __construct()
     {
-      
+
     }
-    
+
     // Load model
     public function model($model){
       // Require model file
@@ -19,7 +19,7 @@
     }
 
     // Load view
-    public function view(string $view, array $data = []){
+    public function view(string $view, array $data = null){
       // Check for view file
       if(file_exists('../app/views/' . $view . '.php')){
         require_once '../app/views/' . $view . '.php';

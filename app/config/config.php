@@ -21,7 +21,7 @@ define('PROFILE_PIC_DIR', URL_ROOT . '/public/assets/images/profile_pics/');
 
 define('DATE_FORMATS', [
     'back_end' => 'Y-m-d',
-    'front_end' => 'D, M j, Y',
+    'front_end' => 'd-m-Y',
     'num_sm' => 'Y/m/d',
     'num_xs' => 'Y/n/j',
 ], true);
@@ -39,3 +39,11 @@ const SMS_GATEWAY_DEVICE_NAME = 'blu';
 const SMS_GATEWAY_DEVICE_PHONE_NUM = '+233547468603';
 const SMS_GATEWAY_API_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTUyNjA2OTI2OCwiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjQ1OTU3LCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.9YUK41Yb_ghaErrbBsfU7Pj_J57jrfOum-5AJI-yBOo';
 const INTRANET = 'http://intranet.arlgh.com';
+const DFF = 'd-m-Y'; //date format for front-end
+const DFB = 'Y-m-d'; //date format for back-end
+const MEDIA_FILE_TYPES = 'image/*,  video/*, audio/*';
+const PHOTO_FILE_TYPES = 'image/*';
+const VIDEO_FILE_TYPES = 'video/*';
+const AUDIO_FILE_TYPES = 'audio/*';
+const DOC_FILE_TYPES = '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .pdf, text/plain, text/html';
+const HTML_NEW_LINE = '&nbsp';

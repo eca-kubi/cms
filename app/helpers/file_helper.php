@@ -1,5 +1,5 @@
 <?php
-function uploadAttachment($file, $user_id)
+function uploadAttachment($file, $staff_id)
 {
     $result['success'] =false;
     $result['file'] = '';
@@ -23,7 +23,7 @@ function uploadAttachment($file, $user_id)
                 $result['reason'] = 'An error occured while uploading file';
             } else {
                 //$filename = $_FILES[$file]['name'];
-                $ret = move_uploaded_file($_FILES[$file]['tmp_name'], APP_ROOT . '\..\public\assets\images\profile_pics\\' . $user_id . '.' . $extension);
+                $ret = move_uploaded_file($_FILES[$file]['tmp_name'], APP_ROOT . '\..\public\assets\attachments\\' . $staff_id . '.' . $extension);
                 $result['success'] = $ret;
                 $result['file'] = $staff_id . '.' . $extension;
                 if ($ret) {
