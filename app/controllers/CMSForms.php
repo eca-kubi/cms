@@ -74,7 +74,7 @@ class CMSForms extends Controller
                     $email_model->add([
                         'subject' => $subject,
                         'body' => $body,
-                        'recipient_user_id' => $recipient->recipient_user_id
+                        'recipient_user_id' => $recipient['recipient_user_id']
                     ]);
                 }
             }
