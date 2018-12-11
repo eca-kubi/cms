@@ -42,6 +42,7 @@
     <Compile Include="app\models\DepartmentModel.php" />
     <Compile Include="app\models\EmailModel.php" />
     <Compile Include="app\models\UserModel.php" />
+    <Compile Include="app\views\cms_forms\dashboard.php" />
     <Compile Include="app\views\cms_forms\view_change_process.php" />
     <Compile Include="app\views\cms_forms\process_closed.php" />
     <Compile Include="app\views\cms_forms\orig_closure.php" />
@@ -57,7 +58,6 @@
     <Compile Include="app\views\cms_forms\index.php" />
     <Compile Include="app\views\errors\blank.php" />
     <Compile Include="app\views\errors\index.php" />
-    <Compile Include="app\views\users\dashboard.php" />
     <Compile Include="app\views\includes\header.php" />
     <Compile Include="app\views\includes\footer.php" />
     <Compile Include="app\views\includes\navbar.php" />

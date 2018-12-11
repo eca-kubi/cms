@@ -47,3 +47,14 @@ const VIDEO_FILE_TYPES = 'video/*';
 const AUDIO_FILE_TYPES = 'audio/*';
 const DOC_FILE_TYPES = '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .pdf, text/plain, text/html';
 const HTML_NEW_LINE = '&nbsp';
+
+const NEXT_ACTION_HOD_ASSESSMENT = 'hod-assessment';
+const NEXT_ACTION_RISK_ASSESSMENT = 'risk-assessment';
+const NEXT_ACTION_GM_ASSESSMENT = 'gm-assessment';
+const NEXT_ACTION_HOD_AUTHORISATION = 'hod-authorisation';
+const NEXT_ACTION_PL_ACCEPTANCE = 'pl-acceptance';
+const NEXT_ACTION_ACTION_LIST = 'action-list';
+const NEXT_ACTION_PL_CLOSURE = 'pl-closure';
+const NEXT_ACTION_ORIGINATOR_CLOSURE = 'oiginator-closure';
+const NEXT_ACTION_HOD_CLOSURE = 'hod-closure';
+const NEXT_ACTION_PROCESS_CLOSED = 'process-closed';

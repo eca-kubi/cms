@@ -7,14 +7,19 @@ class Pages extends Controller
 
     public function index()
     {
+        if (isLoggedIn())
+        {
+        	redirect('cms-forms/dashboard');
+        }
+        
         redirect('users/login');
     }
 
 
     public function about()
     {
-        $data = new ArrayObject();
-        $data->title = 'About us';
+        $data = [];
+        $data['title'] = 'About us';
         $this->view('pages/about', $data);
     }
 }

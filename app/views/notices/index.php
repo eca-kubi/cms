@@ -47,7 +47,7 @@ $user = $data['user'];
                         </div>
                     </div>
                     <!-- /.box-header -->
-                    <div class="box-body font-weight-normal"><?php  flash('flash'); ?>
+                    <div class="box-body font-weight-normal"><?php  flash('flash_index'); ?>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">

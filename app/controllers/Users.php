@@ -23,7 +23,7 @@ class Users extends Controller
                 {
                     $u = new \User($loggedInUser['user_id']);
                 	createUserSession($u);
-                    redirect('users/dashboard');
+                    redirect('cms-forms/dashboard');
                 }
             }
         } else {
@@ -31,19 +31,6 @@ class Users extends Controller
             $this->view('users/login', $this->data);
         }
     }
-
-    function dashboard()
-    {
-        if (!isLoggedIn())
-        {
-        	redirect('users/login');
-        }
-        $data['title'] = 'CMS Dashboard';
-        $data['active'] = CMSFormModel::getActive();
-        $data['closed'] = CMSFormModel::getClosed();
-        $this->view('users/dashboard', $data);
-    }
-
 
     public function logout()
     {

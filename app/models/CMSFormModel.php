@@ -3,6 +3,7 @@ class CMSFormModel extends Model
 {
     public $cms_form_id;
     public $originator_id;
+    public $gm_id;
     public $date_raised;
     public $change_type;
     public $change_description;
@@ -22,6 +23,7 @@ class CMSFormModel extends Model
     public $proj_leader_close_change;
     public $department_id;
     public $additional_info;
+    public $next_action;
     public static $table = 'cms_form';
     public $cms_form = null;
     public function __construct()
@@ -44,14 +46,18 @@ class CMSFormModel extends Model
 
     public static function getActive()
     {
-        return (object)Database::getDbh()->where('closed', false)->
+        return Database::getDbh()->where('closed', false)->
                 objectBuilder()->
                 get('cms_form');
     }
 
+    /**
+     * Summary of getClosed
+     * @return array
+     */
     public static function getClosed()
     {
-        return (object)Database::getDbh()->where('closed', true)->
+        return Database::getDbh()->where('closed', true)->
                    objectBuilder()->
                    get('cms_form');
     }

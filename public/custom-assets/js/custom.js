@@ -79,6 +79,8 @@ $( function ()
         } )
         .on( 'loaded.bs.select show.bs.select', function ( e, clickedIndex, isSelected, previousValue )
         {
+            $( '.replace-multiple-select' ).remove();
+            $( '.multiple-hidden.bs-select' ).removeClass( 'd-none' )
             $( '.bs-select .dropdown-menu' ).addClass( 'p-0 rounded-0' );
             $( '.bs-select button' ).addClass( 'w3-hover-none rounded-0 w3-transparent w3-border' );
             $( '.bootstrap-select' ).addClass( 'exclude-hover' );
@@ -102,7 +104,7 @@ $( function ()
         else
         {
             $( '#other_type' ).parents( '.row:eq(0)' ).addClass( 'd-none' )
-            $( '[name=other_type]' ).removeAttr( 'required');
+            $( '[name=other_type]' ).removeAttr( 'required' );
             $( '#add_cms_form' ).validator( 'update' );
         }
     } );
@@ -190,7 +192,8 @@ $( function ()
 window.addEventListener("load", function (event) {
     setTimeout(() => {
         $('.content').removeClass('d-none invisible')
-        $('footer').removeClass('d-none');
+        $( 'footer' ).removeClass( 'd-none' );
+       
         setTimeout(function () {
             $('body').scrollTo('.box', 1000, { offset: -150 });
             $('body').scrollTo('#box', 1000, { offset: -150 });

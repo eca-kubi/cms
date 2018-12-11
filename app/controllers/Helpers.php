@@ -24,27 +24,34 @@ class Helpers extends Controller
         $emails = $this->db
             ->objectBuilder()
             ->where('sender_user_id', getUserSession()->user_id)
-            ->get('emails');
+            ->get('cms_email');
         foreach ($emails as $email)
         {
         	sendMail($email->subject, $email->body, $email->recipient);
         }
         $this->db
         ->where('sender_user_id', getUserSession()->user_id)
-        ->delete('emails');
+        ->delete('cms_email');
         return 'true';
     }
-    
+
 
     public function execInBackground($cmd = 'bash.exe') {
-        if (substr(php_uname(), 0, 7) == "Windows"){
+       if (substr(php_uname(), 0, 7) == "Windows"){
             pclose(popen("start  ". $cmd, "r"));
         }
         else {
             exec($cmd . " > /dev/null &");
         }
+        echo 'exec returned' ;
     }
-    
+
+    function execB()
+    {
+    	$cm = "c:\\xampp\php\php.exe divisibility-by-three.php";
+        pclose(popen("start /B ". $cm, "a"));
+    }
+
 }
 
 ?>

@@ -12,6 +12,7 @@ class CMSForm  implements \JsonSerializable
 {
     public $cms_form_id;
     public $originator_id;
+    public $gm_id;
     public $date_raised;
     public $change_type;
     public $change_description;
@@ -34,6 +35,7 @@ class CMSForm  implements \JsonSerializable
     public $cms_form;
     public $other_type;
     public $certify_details;
+    public $next_action;
 
     public function __construct($cms_form_id = -1)
     {
@@ -60,6 +62,7 @@ class CMSForm  implements \JsonSerializable
             $this->hod_close_change = $cms_form->hod_close_change;
             $this->originator_close_change = $cms_form->originator_close_change;
             $this->proj_leader_close_change = $cms_form->proj_leader_close_change;
+            $this->next_action = $cms_form->next_action;
         }
     }
 

@@ -39,7 +39,7 @@ $user = getUserSession();
                 <h5>
                     <?php flash('flash'); ?>
                 </h5>
-                <h3 class="box-title text-bold">
+                <h3 class="box-title text-bold d-none">
                     <?php echo $data['title']; ?>
                 </h3>
                 <div class="box-tools pull-right">
@@ -112,7 +112,7 @@ $user = getUserSession();
                                             </label>
                                             <div class="col-sm-8">
                                                 <textarea type="text"
-                                                    class="form-control" name="desc" aria-describedby="helpId" placeholder=""></textarea>
+                                                    class="form-control" name="change_description" aria-describedby="helpId" placeholder="" required></textarea>
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -124,7 +124,7 @@ $user = getUserSession();
                                             </label>
                                             <div class="col-sm-8">
                                                 <textarea type="text"
-                                                    class="form-control" name="advantages" aria-describedby="helpId" placeholder=""></textarea>
+                                                    class="form-control" name="advantages" aria-describedby="helpId" placeholder="" required></textarea>
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -150,7 +150,7 @@ $user = getUserSession();
                                             </label>
                                             <div class="col-sm-8">
                                                 <textarea type="text"
-                                                    class="form-control" name="area_affected" aria-describedby="helpId" placeholder=""></textarea>
+                                                    class="form-control" name="area_affected" aria-describedby="helpId" placeholder="" required></textarea>
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -163,8 +163,11 @@ $user = getUserSession();
                                                 Change Type
                                             </label>
                                             <div class="col-sm-8">
-                                                <select type="text"
-                                                    class="form-control bs-select" data-none-selected-text="Select Change Type" name="change_type[]" id="change_type" aria-describedby="helpId" placeholder="" multiple="multiple">
+                                                <select class=" replace-multiple-select form-control">
+                                                    <option class="d-none"></option>
+                                                </select>
+                                                <select
+                                                    class="form-control bs-select multiple-hidden d-none" data-none-selected-text="Select Change Type" name="change_type[]" id="change_type" aria-describedby="helpId" placeholder="" multiple="multiple" required>
                                                     <option value="Staff/Labour">Staff/Labour</option>
                                                     <option value="Procedural">Procedural</option>
                                                     <option value="Equipment/Machinery">Equipment/Machinery</option>
@@ -175,7 +178,7 @@ $user = getUserSession();
                                                     <option value="Cyanide">Cyanide</option>
                                                     <option value="Other">Other</option>
                                                 </select>
-                                                <small id="helpId" class="form-text text-muted with-errors help-block">Hint: Multiple Selection Possible</small>
+                                                <small id="helpId" class="form-text text-muted help-block">Hint: Multiple Selection Possible</small>
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -183,11 +186,12 @@ $user = getUserSession();
                                     <div class="col-sm-6">
                                         <div class="form-group form-row">
                                             <label for="" class="col-sm-4 text-sm-right">
-                                                Additional Information <small>(Attach any additional information)</small>
+                                                Additional Information
                                             </label>
                                             <div class="col-sm-8">
                                                 <input type="file"
                                                     class="form-control" name="additional_info" aria-describedby="helpId" placeholder="" accept="<?php echo DOC_FILE_TYPES; ?>"  />
+                                               <small class="help-block text-muted">Hint: Attach any additional information</small>
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -208,6 +212,44 @@ $user = getUserSession();
                                     </div>
                                </div>
                                 <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox"> 
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group form-row">
+                                            <label for="" class="col-sm-4 text-sm-right">
+                                                Select HOD
+                                            </label>
+                                            <div class="col-sm-8">
+                                                <select class="replace-multiple-select form-control">
+                                                    <option></option>
+                                                </select>
+                                                <select
+                                                    class="form-control bs-select multiple-hidden d-none" data-none-selected-text="Select HOD to Approve" name="hod_id" id="hod_id" aria-describedby="helpId" placeholder="" required>
+                                                    <option class="d-none"></option>
+                                                  <?php
+                                                   foreach ((array)$data['hod'] as $value){
+                                                       $hod = new User($value->user_id);
+                                                   ?>
+                                                       <option value="<?php echo $hod->user_id; ?>"><?php echo ucwords($hod->first_name. ' ' . $hod->last_name, '-. '). ' ('. $hod->job_title . ')'; ?></option>
+                                                 <?php  }
+                                                 ?>
+                                                </select>
+                                                <small id="helpId" class="form-text text-muted help-block d-none">Hint: Select HOD to Approve</small>
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="col-sm-6 pl-lg-5 pl-md-5">
                                         <div class="form-group form-row">
                                             <div class="checkbox">
@@ -218,7 +260,7 @@ $user = getUserSession();
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-6 text-right">
+                                    <div class="col-sm-12 text-right">
                                        <div>
                                         <a href="javascript: window.history.back();" class="btn bg-danger w3-btn">Cancel</a>
 
@@ -239,4 +281,5 @@ $user = getUserSession();
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+
 <?php require_once APP_ROOT.'\views\includes\footer.php';?>
