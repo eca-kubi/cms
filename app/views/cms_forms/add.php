@@ -213,14 +213,38 @@ $user = getUserSession();
                                </div>
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <div class="col-sm-offset-2 col-sm-10">
-                                                <div class="checkbox">
-                                                    <label>
-                                                        <input type="checkbox"> 
-                                                    </label>
+                                        <div class="form-group form-row">
+                                            <label class="col-sm-4 text-sm-right">Risk Measure</label>
+                                            <div class="col-sm-8">
+                                                <div class="form-check form-check-inline">
+                                                  <input class="form-check-input" type="radio" id="inlineCheckbox1" name="risk_measure[]" value="Low">
+                                                  <label class="form-check-label" for="inlineCheckbox1">Low</label>
                                                 </div>
-                                            </div>
+                                                <div class="form-check form-check-inline">
+                                                  <input class="form-check-input" type="radio" id="inlineCheckbox2" name="risk_measure[]" value="Medium">
+                                                  <label class="form-check-label" for="inlineCheckbox2">Medium</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                  <input class="form-check-input" type="radio" id="inlineCheckbox3" name="risk_measure[]" value="High">
+                                                  <label class="form-check-label" for="inlineCheckbox3">High</label>
+                                                </div>
+                                             </div>
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="budget_measure[]" value="Low">
+                                          <label class="form-check-label" for="inlineCheckbox1">Low Budget</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="budget_measure[]" value="Medium">
+                                          <label class="form-check-label" for="inlineCheckbox2">Medium Budget</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox3" name="budget_measure[]" value="High">
+                                          <label class="form-check-label" for="inlineCheckbox3">High Budget</label>
                                         </div>
                                     </div>
                                 </div>
