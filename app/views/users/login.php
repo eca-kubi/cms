@@ -1,6 +1,5 @@
 <?php 
 $user = getUserSession();
-$data = getData($data);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +8,7 @@ $data = getData($data);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>
-        <?php echo $data['title']; ?>
+        <?php echo $payload['title']; ?>
     </title>
     <script src="<?php echo URL_ROOT; ?>/public/assets/js/jquery.min.js"></script>
     <link rel="icon" href="<?php echo URL_ROOT; ?>/public/favicon.ico" type="image/x-icon" />
@@ -237,19 +236,19 @@ body {
                                     </small>
                                     <div class="form-group form-row">
                                         <div class="col-sm-12">
-                                            <input type="text" name="staff_id" class="<?php //echo !empty($data['post']->staff_id_err)? 'border-danger-4': '' ?>" placeholder="STAFF ID" aria-describedby="helpId"
-                                                value="<?php echo !empty($data['post']->staff_id)? $data['post']->staff_id: '' ?>" required />
+                                            <input type="text" name="staff_id" class="<?php //echo !empty($payload['post']->staff_id_err)? 'border-danger-4': '' ?>" placeholder="STAFF ID" aria-describedby="helpId"
+                                                value="<?php echo !empty($payload['post']->staff_id)? $payload['post']->staff_id: '' ?>" required />
                                             <small class="with-errors help-block d-block">
-                                                <?php //echo isset($data['post']->staff_id_err)? $data['post']->staff_id_err: '' ?>
+                                                <?php //echo isset($payload['post']->staff_id_err)? $payload['post']->staff_id_err: '' ?>
                                             </small>
                                         </div>
                                     </div>
                                     <div class="form-group form-row">
                                         <div class="col-sm-12">
-                                            <input type="password" placeholder="PASSWORD" name="password" class="<?php //echo !empty($data['post']->password_err)? 'border-danger-4': '' ?>" aria-describedby="helpId"
+                                            <input type="password" placeholder="PASSWORD" name="password" class="<?php //echo !empty($payload['post']->password_err)? 'border-danger-4': '' ?>" aria-describedby="helpId"
                                                 required />
                                             <small class="with-errors help-block d-block">
-                                                <?php //echo !empty($data['post']->password_err)? $data['post']->password_err: '' ?>
+                                                <?php //echo !empty($payload['post']->password_err)? $payload['post']->password_err: '' ?>
                                             </small>
                                         </div>
                                     </div>

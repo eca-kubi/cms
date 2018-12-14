@@ -1,5 +1,5 @@
 <?php 
-$user = $data['user'];
+$user = $payload['user'];
 ?>
 <?php require_once APP_ROOT . '\views\inc\header.php'; ?>
 

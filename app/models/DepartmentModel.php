@@ -17,10 +17,18 @@ class DepartmentModel extends Model implements \JsonSerializable
      */
     public function getDepartment(int $department_id)
     {
-        return (object) 
+        return (object)
             Database::getDbh()->where('department_id', $department_id)->
                         objectBuilder()->
                         getOne(self::$table);
+    }
+
+    public function getAllDepartments()
+    {
+        return
+            Database::getDbh()->
+                        objectBuilder()->
+                        get(self::$table);
     }
 
     // Verify existence of column value

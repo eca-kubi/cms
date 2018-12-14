@@ -10,29 +10,6 @@ function objToArr($obj)
     return json_decode(json_encode($obj), true);
 }
 
-// redirect to appropriate page based on role
-function redirectByRole($role)
-{
-    switch ($role) {
-        case 'hrsys':
-        case 'hrsup':
-            redirect('hrs');
-            break;
-        case 'meddoc':
-            redirect('doctors');
-            break;
-        case 'sysadmin':
-            redirect('sysadmins');
-            break;
-        case 'mgr':
-            redirect('managers');
-            break;
-        case 'staff':
-            redirect('staffs');
-            break;
-        default:
-    }
-}
 
 // format date
 function formatDate($date, $from, $to)
@@ -67,76 +44,8 @@ function reArrayFiles(&$file_post)
     return $file_ary;
 }
 
-function isOffday($datetime, $workday_scheme = [0, 1, 1, 1, 1, 1, 0])
-{
-    $day_of_week = $datetime->format('w');
-    return $workday_scheme[$day_of_week] == 0;
-}
 
-function computeDaysEarnedOld(&$value)
-{
-    $earning_start = new \DateTime($value->employment_date);
-    $now = new \DateTime;
-    $value->annual_earning = $value->unit_earning;
-    if ($value->accruable == 1) {
-        $unit_earning = $value->annual_earning/12;
-        $accrued = ($earning_start->diff($now)->m) * $unit_earning;
-        $days_remaining = $value->annual_earning - $value->total_days_taken;
-        $value->accrued = $accrued;
-        $value->days_remaining = $days_remaining;
-    } else {
-        if (!empty($value->annual_earning)) {
-            $value->accrued = $value->annual_earning;
-            $value->days_remaining = $value->accrued - $value->total_days_taken;
-        } else {
-            $value->annual_earning = 'N/A';
-            $value->accrued = 'N/A';
-            $value->days_remaining ='N/A';
-        }
-    }
-}
 
-function computeDaysEarned(&$value)
-{
-    $now = new \DateTime;
-    $start_accrual = empty($value->contract_start)? $value->employment_date : $value->contract_start;
-    if ($value->accruable == 1) {
-        $start_accruing_from = new \DateTime($start_accrual);
-        $value->accrued = ($start_accruing_from->diff($now)->m) * 2.5;
-        $value->days_remaining = $value->accrued - $value->days_taken;
-    }
-    elseif (empty($value->annual_earning)) {
-      $value->annual_earning = 'N/A';
-      $value->accrued = 'N/A';
-      $value->days_remaining ='N/A';
-    } else {
-        $value->days_remaining = $value->annual_earning - $value->days_taken;
-        $value->accrued = 'N/A';
-    }
-}
-
-function getLeaveStatus($user_id)
-{
-    $db = Database::getDbh();
-    $leave_status = $db->where('user_id', $user_id)
-        ->ObjectBuilder()
-        ->groupBy('status')
-        ->get('leave_transaction', null, 'status, count("status") total_count');
-    return $leave_status;
-}
-
-/**
- * Summary of getPendingLeave
- * @return object
- */
-function getPendingLeave()
-{
-    $db = Database::getDbh();
-    $leave_status = $db->where('status', STATUS_LEAVE_PENDING)
-        ->ObjectBuilder()
-        ->get('leave_transaction', null, 'status, count("status") total_count');
-    return (object)$leave_status;
-}
 
 function getNameInitials($first_name, $last_name) {
 
@@ -188,9 +97,9 @@ function requireModel(string $model)
     return new $model();
 }
 
-function getData($data)
+function getData($payload)
 {
-    return (array)$data;
+    return (array)$payload;
 }
 
 function today()
@@ -200,7 +109,7 @@ function today()
 
 /**
  * Summary of removeEmptyVal
- * @param array|object $value 
+ * @param array|object $value
  * @return array
  */
 function removeEmptyVal($value)
@@ -214,4 +123,129 @@ function removeEmptyVal($value)
         }
     }
     return $value;
+}
+
+function echoIfEmpty($target, $replacement)
+{
+	echo empty($target)? $replacement: $target;
+}
+
+function isOriginator($cms_form_id, $user_id)
+{
+	return Database::getDbh()->where('cms_form_id', $cms_form_id)
+        ->where('originator_id', $user_id)
+        ->has('cms_form');
+}
+
+function isHOD($cms_form_id, $user_id)
+{
+	return Database::getDbh()->where('cms_form_id', $cms_form_id)
+        ->where('hod_id', $user_id)
+        ->has('cms_form');
+}
+/**
+ *Concats array elements with $symbol and $symbolForlastElem
+ * @param array $array
+ * @return string
+ */
+function concatWith(string $symbol, $symbolForLastElem, array $array)
+{
+	if(count($array) == 1) {
+        return $array[0];
+    }
+
+    if (count($array) < 1)
+    {
+    	return '';
+    }
+
+    $lastElem = end($array);
+    $lastElemKey = key($lastElem);
+
+    unset($array[$lastElemKey]);
+    $result = implode($symbol, $array);
+    return $result . $symbolForLastElem. $lastElem;
+}
+
+function notifyOHSForMonitoring($cms_form_id)
+{
+	$originator = getUserSession()->first_name . ' '. getUserSession()->last_name;
+    $link = URL_ROOT . '/cms-forms/view-change-process/'. $cms_form_id;
+    $subject = 'Change Proposal, Assessment and Implementation';
+    $body = 'Hi, ' . HTML_NEW_LINE . 'A Change Proposal application has been raised by '. $originator. HTML_NEW_LINE.
+                'Use the link below to approve it.' . HTML_NEW_LINE. $link;
+    $ohs_id = Database::getDbh()->where('department', OHS_DEPARTMENT)->
+        getValue(TABLE_DEPARTMENT, 'department_id');
+    $ohs_superintendent = Database::getDbh()->where('department_id', $ohs_id)
+        ->where('role', 'Superintendent')
+        ->getValue('users', 'user_id');
+    $ohs_manager = Database::getDbh()->where('department_id', $ohs_id)
+        ->where('role', 'Manager')
+        ->getValue('users', 'user_id');
+    $email_model = new EmailModel();
+    if ($ohs_superintendent)
+    {
+    	$email_model->add([
+        'subject' => $subject,
+        'body' => $body,
+        'recipient_user_id' => $ohs_superintendent
+    ]);
+    }
+    if ($ohs_manager)
+    {
+    	$email_model->add([
+        'subject' => $subject,
+        'body' => $body,
+        'recipient_user_id' => $ohs_manager
+    ]);
+    }
+}
+
+function isBudgetHigh($cms_form_id) {
+
+}
+
+function alert($message, $class)
+{
+	echo "<p class=$class>". $message . '</p>';
+}
+
+function getAffectedDepartments($cms_form_id)
+{
+    $results = [];
+    $dept_model = new DepartmentModel();
+    $affected_dept = Database::getDbh()->where('cms_form_id', $cms_form_id)
+        ->getValue('cms_form', 'affected_dept');
+    if (!empty($affected_dept))
+    {
+        foreach (explode(',', $affected_dept) as $dept_id)
+        {
+    	    $results[] = $dept_model->getDepartment($dept_id);
+        }
+    }
+    return $results;
+}
+
+if ( ! function_exists( 'array_key_last' ) ) {
+    /**
+     * Polyfill for array_key_last() function added in PHP 7.3.
+     *
+     * Get the last key of the given array without affecting
+     * the internal array pointer.
+     *
+     * @param array $array An array
+     *
+     * @return mixed The last key of array if the array is not empty; NULL otherwise.
+     */
+    function array_key_last( $array ) {
+        $key = NULL;
+
+        if ( is_array( $array ) ) {
+
+            end( $array );
+            $key = key( $array );
+        }
+
+        return $key;
+    }
 }

@@ -13,11 +13,11 @@
       // Get posts
       $posts = $this->postModel->getPosts();
 
-      $data = [
+      $payload = [
         'posts' => $posts
       ];
 
-      $this->view('posts/index', $data);
+      $this->view('posts/index', $payload);
     }
 
     public function add(){
@@ -25,7 +25,7 @@
         // Sanitize POST array
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-        $data = [
+        $payload = [
           'title' => trim($_POST['title']),
           'body' => trim($_POST['body']),
           'user_id' => $_SESSION['user_id'],
@@ -34,17 +34,17 @@
         ];
 
         // Validate data
-        if(empty($data['title'])){
-          $data['title_err'] = 'Please enter title';
+        if(empty($payload['title'])){
+          $payload['title_err'] = 'Please enter title';
         }
-        if(empty($data['body'])){
-          $data['body_err'] = 'Please enter body text';
+        if(empty($payload['body'])){
+          $payload['body_err'] = 'Please enter body text';
         }
 
         // Make sure no errors
-        if(empty($data['title_err']) && empty($data['body_err'])){
+        if(empty($payload['title_err']) && empty($payload['body_err'])){
           // Validated
-          if($this->postModel->addPost($data)){
+          if($this->postModel->addPost($payload)){
             flash('post_message', 'Post Added');
             redirect('posts');
           } else {
@@ -52,16 +52,16 @@
           }
         } else {
           // Load view with errors
-          $this->view('posts/add', $data);
+          $this->view('posts/add', $payload);
         }
 
       } else {
-        $data = [
+        $payload = [
           'title' => '',
           'body' => ''
         ];
   
-        $this->view('posts/add', $data);
+        $this->view('posts/add', $payload);
       }
     }
 
@@ -70,7 +70,7 @@
         // Sanitize POST array
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-        $data = [
+        $payload = [
           'id' => $id,
           'title' => trim($_POST['title']),
           'body' => trim($_POST['body']),
@@ -80,17 +80,17 @@
         ];
 
         // Validate data
-        if(empty($data['title'])){
-          $data['title_err'] = 'Please enter title';
+        if(empty($payload['title'])){
+          $payload['title_err'] = 'Please enter title';
         }
-        if(empty($data['body'])){
-          $data['body_err'] = 'Please enter body text';
+        if(empty($payload['body'])){
+          $payload['body_err'] = 'Please enter body text';
         }
 
         // Make sure no errors
-        if(empty($data['title_err']) && empty($data['body_err'])){
+        if(empty($payload['title_err']) && empty($payload['body_err'])){
           // Validated
-          if($this->postModel->updatePost($data)){
+          if($this->postModel->updatePost($payload)){
             flash('post_message', 'Post Updated');
             redirect('posts');
           } else {
@@ -98,7 +98,7 @@
           }
         } else {
           // Load view with errors
-          $this->view('posts/edit', $data);
+          $this->view('posts/edit', $payload);
         }
 
       } else {
@@ -110,13 +110,13 @@
           redirect('posts');
         }
 
-        $data = [
+        $payload = [
           'id' => $id,
           'title' => $post->title,
           'body' => $post->body
         ];
   
-        $this->view('posts/edit', $data);
+        $this->view('posts/edit', $payload);
       }
     }
 
@@ -124,12 +124,12 @@
       $post = $this->postModel->getPostById($id);
       $user = $this->userModel->getUserById($post->user_id);
 
-      $data = [
+      $payload = [
         'post' => $post,
         'user' => $user
       ];
 
-      $this->view('posts/show', $data);
+      $this->view('posts/show', $payload);
     }
 
     public function delete($id){

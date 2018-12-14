@@ -63,8 +63,8 @@ class SmsGateway {
         return $this->makeRequest('/api/v4/messages/send','POST', $query);
     }
 
-    function sendManyMessages ($data) {
-        $query['data'] = $data;
+    function sendManyMessages ($payload) {
+        $query['data'] = $payload;
         return $this->makeRequest('/api/v4/messages/send','POST', $query);
     }
 
@@ -118,7 +118,7 @@ class SmsGateway {
 
         $ch = curl_init( $url );
         # Setup request to send json via POST.
-        $payload = json_encode( array( "customer"=> $data ) );
+        $payload = json_encode( array( "customer"=> $payload ) );
         curl_setopt( $ch, CURLOPT_POSTFIELDS, $payload );
         curl_setopt( $ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
         # Return response instead of printing.

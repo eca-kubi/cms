@@ -195,7 +195,7 @@
                     </a>
                 </li>
                 <li class="nav-item ml-0 ml-sm-4 text-left pr-1 border-right fa">
-                    <a href="<?php echo URL_ROOT.'/users/dashboard' ?>" data-controller="<?php echo URL_ROOT.'/users/dashboard'; ?>"
+                    <a href="<?php echo URL_ROOT.'/cms-forms/dashboard' ?>"
                         class="ajax-link nav-link btn border-0 text-bold flat text-left font-raleway">
                         <i class="fa fa-home ml-4"></i> DASHBOARD
                     </a>
@@ -206,7 +206,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId" style="position:absolute">
                         <li>
-                            <a class="dropdown-item" href="<?php echo URL_ROOT; ?>/CMS-Forms/Add">
+                            <a class="dropdown-item" href="<?php echo URL_ROOT; ?>/CMS-Forms/Start-Change-Process">
                                 New
                             </a>
                         </li>

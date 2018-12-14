@@ -12,6 +12,7 @@ class CMSFormModel extends Model
     public $area_affected;
     public $hod_id;
     public $hod_approval;
+    public $hod_reasons;
     public $hod_ref_num;
     public $gm_approval;
     public $gm_reasons;
@@ -24,6 +25,7 @@ class CMSFormModel extends Model
     public $department_id;
     public $additional_info;
     public $next_action;
+    public $affected_dept;
     public static $table = 'cms_form';
     public $cms_form = null;
     public function __construct()
@@ -31,9 +33,14 @@ class CMSFormModel extends Model
         parent::__construct();
     }
 
-    public function add($insertData)
+    public function add(array $insertData)
     {
     	return Database::getDbh()->insert(self::$table, $insertData);
+    }
+
+    public function updateForm($cms_form_id, array $insertData) {
+       return Database::getDbh()->where('cms_form_id', $cms_form_id)->
+        update(self::$table, $insertData);
     }
 
     public function getCMSForm(int $cms_form_id)

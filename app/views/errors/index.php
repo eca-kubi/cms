@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title><?php echo $data['title']; ?></title>
+  <title><?php echo $payload['title']; ?></title>
   <link rel="icon" href="<?php echo URL_ROOT; ?>/public/favicon.ico" type="image/x-icon" />
 <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/bootstrap.css">
 <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/fonts.css">
@@ -194,8 +194,8 @@ body {
   <section class="content">
     <div class="jumbotron jumbotron-fluid">
       <div class="container">
-        <h1 class="display-3">Error <?php echo $data['title']; ?></h1>
-        <p class="lead"><?php echo $data['message']; ?></p>
+        <h1 class="display-3">Error <?php echo $payload['title']; ?></h1>
+        <p class="lead"><?php echo $payload['message']; ?></p>
         <hr class="my-2">
         <p></p>
         <p class="lead">
@@ -210,9 +210,9 @@ body {
 		<div class="notfound-bg"></div>
 		<div class="notfound">
 			<div class="notfound-404">
-				<h1><?php echo $data['title']; ?></h1>
+				<h1><?php echo $payload['title']; ?></h1>
 			</div>
-			<h2>Oops! <?php echo $data['message']; ?></h2>
+			<h2>Oops! <?php echo $payload['message']; ?></h2>
 			<form class="notfound-search">
 				<input type="text" placeholder="Search...">
 				<button type="button">Search</button>

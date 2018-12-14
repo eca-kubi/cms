@@ -19,7 +19,7 @@
     }
 
     // Load view
-    public function view(string $view, array $data = null){
+    public function view(string $view, array $payload = null){
       // Check for view file
       if(file_exists('../app/views/' . $view . '.php')){
         require_once '../app/views/' . $view . '.php';

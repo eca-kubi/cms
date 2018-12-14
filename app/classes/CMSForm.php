@@ -22,6 +22,7 @@ class CMSForm  implements \JsonSerializable
     public $hod_id;
     public $hod_approval;
     public $hod_ref_num;
+    public $hod_reasons;
     public $gm_approval;
     public $gm_reasons;
     public $hod_auth_change_implem;
@@ -36,6 +37,11 @@ class CMSForm  implements \JsonSerializable
     public $other_type;
     public $certify_details;
     public $next_action;
+    public $budget_level;
+    public $risk_level;
+    public $additional_info;
+    public $affected_dept;
+    public $hod_approval_date;
 
     public function __construct($cms_form_id = -1)
     {
@@ -63,6 +69,11 @@ class CMSForm  implements \JsonSerializable
             $this->originator_close_change = $cms_form->originator_close_change;
             $this->proj_leader_close_change = $cms_form->proj_leader_close_change;
             $this->next_action = $cms_form->next_action;
+            $this->risk_level = $cms_form->risk_level;
+            $this->budget_level = $cms_form->budget_level;
+            $this->additional_info = $cms_form->additional_info;
+            $this->affected_dept = $cms_form->affected_dept;
+            $this->hod_approval_date = $cms_form->hod_approval_date;
         }
     }
 
@@ -87,6 +98,13 @@ class CMSForm  implements \JsonSerializable
             'hod_close_change' => $this->hod_close_change,
             'originator_close_change' => $this->originator_close_change,
             'proj_leader_close_change' => $this->proj_leader_close_change,
+            'next_action' => $this->next_action,
+            'budget_level' => $this->budget_level,
+            'risk_level' => $this->risk_level,
+            'additional_info' => $this->additional_info,
+            'hod_reasons' =>$this->hod_reasons,
+            'affected_dept' => $this->affected_dept,
+            'hod_approval_date' => $this->hod_approval_date
         ];
     }
 }

@@ -40,7 +40,7 @@ $user = getUserSession();
                     <?php flash('flash'); ?>
                 </h5>
                 <h3 class="box-title text-bold d-none">
-                    <?php echo $data['title']; ?>
+                    <?php echo $payload['title']; ?>
                 </h3>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse">
@@ -49,7 +49,7 @@ $user = getUserSession();
                 </div>
             </div>
             <!-- /.box-header -->
-            <div class="box-body">
+            <div class="box-body pt-0">
                 <form action="" method="post" data-toggle="validator" id="add_cms_form">
                     <div class="row p-2">
                         <fieldset class="w-100">
@@ -66,7 +66,7 @@ $user = getUserSession();
                                             <label for="" class="col-sm-4 text-sm-right">Name</label>
                                             <div class="col-sm-8">
                                                 <input type="text"
-                                                    class="form-control" value="<?php echo ucwords($user->first_name . ' '. $user->last_name, '-. '); ?>" aria-describedby="helpId" placeholder="" />
+                                                       class="form-control" value="<?php echo ucwords($user->first_name . ' '. $user->last_name, '-. '); ?>" aria-describedby="helpId" placeholder="" readonly />
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -76,7 +76,7 @@ $user = getUserSession();
                                             <label for="" class="col-sm-4 text-sm-right">Position</label>
                                             <div class="col-sm-8">
                                                 <input type="text"
-                                                    class="form-control text-capitalize" value="<?php echo $user->job_title; ?>" aria-describedby="helpId" placeholder="" />
+                                                       class="form-control text-capitalize" value="<?php echo $user->job_title; ?>" aria-describedby="helpId" placeholder="" readonly />
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -88,7 +88,7 @@ $user = getUserSession();
                                             <label for="" class="col-sm-4 text-sm-right">Department</label>
                                             <div class="col-sm-8">
                                                 <input type="text"
-                                                    class="form-control" value="<?php echo $user->department->department; ?>" aria-describedby="helpId" placeholder="" />
+                                                       class="form-control" value="<?php echo $user->department->department; ?>" aria-describedby="helpId" placeholder="" readonly />
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -98,7 +98,7 @@ $user = getUserSession();
                                             <label for="" class="col-sm-4 text-sm-right">Date</label>
                                             <div class="col-sm-8">
                                                 <input type="text"
-                                                    class="form-control" value="<?php echo (new DateTime())->format(DFF); ?>" aria-describedby="helpId" placeholder="" readonly />
+                                                       class="form-control" value="<?php echo (new DateTime())->format(DFF); ?>" aria-describedby="helpId" placeholder="" readonly />
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -112,7 +112,7 @@ $user = getUserSession();
                                             </label>
                                             <div class="col-sm-8">
                                                 <textarea type="text"
-                                                    class="form-control" name="change_description" aria-describedby="helpId" placeholder="" required></textarea>
+                                                          class="form-control" name="change_description" aria-describedby="helpId" placeholder="" required></textarea>
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -120,11 +120,11 @@ $user = getUserSession();
                                     <div class="col-sm-6">
                                         <div class="form-group form-row">
                                             <label for="" class="col-sm-4 text-sm-right">
-                                                Advantages 
+                                                Advantages
                                             </label>
                                             <div class="col-sm-8">
                                                 <textarea type="text"
-                                                    class="form-control" name="advantages" aria-describedby="helpId" placeholder="" required></textarea>
+                                                          class="form-control" name="advantages" aria-describedby="helpId" placeholder="" required></textarea>
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -138,7 +138,7 @@ $user = getUserSession();
                                             </label>
                                             <div class="col-sm-8">
                                                 <textarea type="text"
-                                                    class="form-control" name="alternatives" aria-describedby="helpId" placeholder=""></textarea>
+                                                          class="form-control" name="alternatives" aria-describedby="helpId" placeholder=""></textarea>
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -150,7 +150,7 @@ $user = getUserSession();
                                             </label>
                                             <div class="col-sm-8">
                                                 <textarea type="text"
-                                                    class="form-control" name="area_affected" aria-describedby="helpId" placeholder="" required></textarea>
+                                                          class="form-control" name="area_affected" aria-describedby="helpId" placeholder="" required></textarea>
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
@@ -158,7 +158,7 @@ $user = getUserSession();
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <div class="form-group form-row">
+                                        <div class="form-row">
                                             <label for="" class="col-sm-4 text-sm-right">
                                                 Change Type
                                             </label>
@@ -166,8 +166,7 @@ $user = getUserSession();
                                                 <select class=" replace-multiple-select form-control">
                                                     <option class="d-none"></option>
                                                 </select>
-                                                <select
-                                                    class="form-control bs-select multiple-hidden d-none" data-none-selected-text="Select Change Type" name="change_type[]" id="change_type" aria-describedby="helpId" placeholder="" multiple="multiple" required>
+                                                <select class="form-control bs-select multiple-hidden d-none" data-none-selected-text="Select Change Type" name="change_type[]" id="change_type" aria-describedby="helpId" placeholder="" multiple="multiple" required>
                                                     <option value="Staff/Labour">Staff/Labour</option>
                                                     <option value="Procedural">Procedural</option>
                                                     <option value="Equipment/Machinery">Equipment/Machinery</option>
@@ -184,69 +183,75 @@ $user = getUserSession();
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
-                                        <div class="form-group form-row">
+                                        <div class="form-row">
                                             <label for="" class="col-sm-4 text-sm-right">
                                                 Additional Information
                                             </label>
                                             <div class="col-sm-8">
                                                 <input type="file"
-                                                    class="form-control" name="additional_info" aria-describedby="helpId" placeholder="" accept="<?php echo DOC_FILE_TYPES; ?>"  />
-                                               <small class="help-block text-muted">Hint: Attach any additional information</small>
+                                                       class="form-control" name="additional_info" aria-describedby="helpId" placeholder="" accept="<?php echo DOC_FILE_TYPES; ?>" />
+                                                <small class="help-block text-muted">Hint: Attach any additional information</small>
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row d-none">
-                                   <div class="col-sm-6">
+                                    <div class="col-sm-6">
                                         <div class="form-group form-row" id="other_type">
                                             <label for="" class="col-sm-4 text-sm-right">
-                                                Other Change Type <br/><small>(Insert other change type here)</small>
+                                                Other Change Type <br /><small>(Insert other change type here)</small>
                                             </label>
                                             <div class="col-sm-8">
                                                 <input type="text"
-                                                    class="form-control" name="other_type" aria-describedby="helpId" placeholder="" />
+                                                       class="form-control" name="other_type" aria-describedby="helpId" placeholder="" />
                                                 <small id="helpId" class="form-text with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
-                               </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group form-row">
                                             <label class="col-sm-4 text-sm-right">Risk Measure</label>
-                                            <div class="col-sm-8">
+                                            <div class="col-sm-8 radio">
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="radio" id="inlineCheckbox1" name="risk_measure[]" value="Low">
-                                                  <label class="form-check-label" for="inlineCheckbox1">Low</label>
+                                                    <input class="form-check-input" type="radio" id="inlineCheckbox1" name="risk_level" value="Low" required>
+                                                    <label class="form-check-label" for="inlineCheckbox1">Low</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="radio" id="inlineCheckbox2" name="risk_measure[]" value="Medium">
-                                                  <label class="form-check-label" for="inlineCheckbox2">Medium</label>
+                                                    <input class="form-check-input" type="radio" id="inlineCheckbox2" name="risk_level" value="Medium" required>
+                                                    <label class="form-check-label" for="inlineCheckbox2">Medium</label>
                                                 </div>
-                                                <div class="form-check form-check-inline">
-                                                  <input class="form-check-input" type="radio" id="inlineCheckbox3" name="risk_measure[]" value="High">
-                                                  <label class="form-check-label" for="inlineCheckbox3">High</label>
+                                                <div class="form-check form-check-inline radio">
+                                                    <input class="form-check-input" type="radio" id="inlineCheckbox3" name="risk_level" value="High" required>
+                                                    <label class="form-check-label" for="inlineCheckbox3">  High</label>
                                                 </div>
-                                             </div>
+                                                <small class="help-block with-errors"></small>
+                                            </div>
                                         </div>
-                                        
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group form-row">
+                                            <label class="col-sm-4 text-sm-right">Budget Measure</label>
+                                            <div class="col-sm-8 radio">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="inlineCheckbox11" name="budget_level" value="Low" required>
+                                                    <label class="form-check-label" for="inlineCheckbox11">Low</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="inlineCheckbox22" name="budget_level" value="Medium" required>
+                                                    <label class="form-check-label" for="inlineCheckbox22">Medium</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" id="inlineCheckbox33" name="budget_level" value="High" required>
+                                                    <label class="form-check-label" for="inlineCheckbox33">High</label>
+                                                </div>
+                                                <small class="help-block with-errors"></small>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="col-sm-6">
-                                        <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="budget_measure[]" value="Low">
-                                          <label class="form-check-label" for="inlineCheckbox1">Low Budget</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="budget_measure[]" value="Medium">
-                                          <label class="form-check-label" for="inlineCheckbox2">Medium Budget</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="inlineCheckbox3" name="budget_measure[]" value="High">
-                                          <label class="form-check-label" for="inlineCheckbox3">High Budget</label>
-                                        </div>
-                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
@@ -258,15 +263,12 @@ $user = getUserSession();
                                                 <select class="replace-multiple-select form-control">
                                                     <option></option>
                                                 </select>
-                                                <select
-                                                    class="form-control bs-select multiple-hidden d-none" data-none-selected-text="Select HOD to Approve" name="hod_id" id="hod_id" aria-describedby="helpId" placeholder="" required>
-                                                    <option class="d-none"></option>
-                                                  <?php
-                                                   foreach ((array)$data['hod'] as $value){
+                                                <select class="form-control bs-select multiple-hidden d-none" data-none-selected-text="Select HOD to Approve" name="hod_id" id="hod_id" aria-describedby="helpId" placeholder="" required>
+                                                    <option class="d-none"></option><?php
+                                                   foreach ((array)$payload['hod'] as $value){
                                                        $hod = new User($value->user_id);
                                                    ?>
-                                                       <option value="<?php echo $hod->user_id; ?>"><?php echo ucwords($hod->first_name. ' ' . $hod->last_name, '-. '). ' ('. $hod->job_title . ')'; ?></option>
-                                                 <?php  }
+                                                    <option value="<?php echo $hod->user_id; ?>"><?php echo ucwords($hod->first_name. ' ' . $hod->last_name, '-. '). ' ('. $hod->job_title . ')'; ?></option><?php  }
                                                  ?>
                                                 </select>
                                                 <small id="helpId" class="form-text text-muted help-block d-none">Hint: Select HOD to Approve</small>
@@ -278,19 +280,19 @@ $user = getUserSession();
                                         <div class="form-group form-row">
                                             <div class="checkbox">
                                                 <label>
-                                                    <input type="checkbox" name="certify_details" required> <small class="text-bold">I hereby certify that the information I have provided above is true, complete and accurate.</small>  
+                                                    <input type="checkbox" name="certify_details" required> <small class="text-bold">I hereby certify that the information I have provided above is true, complete and accurate.</small>
                                                 </label>
                                                 <small id="helpId" class="with-errors help-block"></small>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-sm-12 text-right">
-                                       <div>
-                                        <a href="javascript: window.history.back();" class="btn bg-danger w3-btn">Cancel</a>
+                                        <div>
+                                            <a href="javascript: window.history.back();" class="btn bg-danger w3-btn">Cancel</a>
 
-                                        <button type="submit" class="btn bg-success w3-btn" form="add_cms_form">Submit</button>
-                                       </div>
-                                   </div>
+                                            <button type="submit" class="btn bg-success w3-btn" form="add_cms_form">Submit</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>

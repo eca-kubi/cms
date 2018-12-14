@@ -126,11 +126,15 @@ $( function ()
     {
         if ( $( this ).val() == 'approved' )
         {
-            $( '#ref_num' ).removeClass( 'd-none' )
+            $('#hod_ref_num').removeClass('d-none')
+            $('[name=hod_ref_num]').attr('required', true);
+            $('#hod_assessment_form').validator('update');
         }
         else
         {
-            $( '#hod_ref_num' ).addClass( 'd-none' )
+            $('#hod_ref_num').addClass('d-none')
+            $('[name=hod_ref_num]').attr('required', false);
+            $('#hod_assessment_form').validator('update');
         }
     } );
 

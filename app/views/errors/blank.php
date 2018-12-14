@@ -34,8 +34,8 @@
                 <li class="breadcrumb-item">
                   <a href="/sms">Services</a>
                 </li>
-                <li class="breadcrumb-item"><a href="<?php echo URLS['dashboard'][$data['user']->role]; ?>">
-                    <?php echo ucwords($data['user']->job_title); ?></a></li>
+                <li class="breadcrumb-item"><a href="<?php echo URLS['dashboard'][$payload['user']->role]; ?>">
+                    <?php echo ucwords($payload['user']->job_title); ?></a></li>
                 <li class="breadcrumb-item active">Staff</li>
               </ol>
             </div>

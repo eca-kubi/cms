@@ -43,7 +43,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="<?php echo URL_ROOT;?>/CMS-Forms/Add" class="nav-link">
+                            <a href="<?php echo URL_ROOT;?>/CMS-Forms/Start-Change-Process" class="nav-link">
                                 <i class="nav-icon fa fa-circle-notch animated rotateIn"></i>
                                 <p>New</p>
                             </a>

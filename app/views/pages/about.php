@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>
-        <?php echo $data['title']; ?>
+        <?php echo $payload['title']; ?>
     </title>
     <link rel="icon" href="<?php echo URL_ROOT; ?>/public/favicon.ico" type="image/x-icon" />
     <?php require_once APP_ROOT. '\includes\styles.php'; ?>
@@ -38,7 +38,7 @@
                             <!-- <hr class="my-2"> -->
                             <p class="lead">
                                 Description:
-                                <?php echo $data['description']; ?>
+                                <?php echo $payload['description']; ?>
                             </p>
                             <p>
 

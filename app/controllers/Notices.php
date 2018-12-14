@@ -7,23 +7,23 @@ class Notices extends Controller
 
     public function index()
     {
-        $data['title'] = 'Notice';
-        $data['user'] = getUserSession();
-        $this->view('notices/index', $data);
+        $payload['title'] = 'Notice';
+        $payload['user'] = getUserSession();
+        $this->view('notices/index', $payload);
     }
 
     public function success()
     {
-      $data['title'] = 'Success Notice';
-      $data['user'] = getUserSession();
-      $this->view('notices/index', $data);
+      $payload['title'] = 'Success Notice';
+      $payload['user'] = getUserSession();
+      $this->view('notices/index', $payload);
     }
 
     public function failure()
     {
-      $data['title'] = 'Failure Notice';
-      $data['user'] = getUserSession();
-      $this->view('notices/index', $data);
+      $payload['title'] = 'Failure Notice';
+      $payload['user'] = getUserSession();
+      $this->view('notices/index', $payload);
     }
 
     public function warning()

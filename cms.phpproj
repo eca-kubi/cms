@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -43,12 +44,16 @@
     <Compile Include="app\models\EmailModel.php" />
     <Compile Include="app\models\UserModel.php" />
     <Compile Include="app\views\cms_forms\dashboard.php" />
+    <Compile Include="app\views\cms_forms\sections\section_hod_assessment.php" />
+    <Compile Include="app\views\cms_forms\sections\section_risk_assessment.php" />
+    <Compile Include="app\views\cms_forms\sections\section_possible_impact.php" />
+    <Compile Include="app\views\cms_forms\sections\section_start_change_process.php" />
     <Compile Include="app\views\cms_forms\view_change_process.php" />
     <Compile Include="app\views\cms_forms\process_closed.php" />
     <Compile Include="app\views\cms_forms\orig_closure.php" />
     <Compile Include="app\views\cms_forms\hod_closure.php" />
     <Compile Include="app\views\cms_forms\pl_closure.php" />
-    <Compile Include="app\views\cms_forms\add.php" />
+    <Compile Include="app\views\cms_forms\start_change_process.php" />
     <Compile Include="app\views\cms_forms\action_list.php" />
     <Compile Include="app\views\cms_forms\pl_acceptance.php" />
     <Compile Include="app\views\cms_forms\hod_authorisation.php" />
@@ -1192,6 +1197,7 @@
     <Folder Include="app\models\" />
     <Folder Include="app\classes\" />
     <Folder Include="app\views\" />
+    <Folder Include="app\views\cms_forms\sections\" />
     <Folder Include="app\views\errors\" />
     <Folder Include="app\views\includes\" />
     <Folder Include="app\views\cms_forms\" />
@@ -1218,7 +1224,10 @@
     <Folder Include="public\assets\images\profile_pics\" />
     <Folder Include="public\assets\js\" />
     <Folder Include="public\assets\js\kendo\" />
+    <Folder Include="public\assets\uploads\" />
     <Folder Include="public\assets\ts\" />
+    <Folder Include="public\assets\uploads\additional-infos\" />
+    <Folder Include="public\assets\uploads\risk-attachments\" />
     <Folder Include="public\assets\webfonts\" />
     <Folder Include="public\custom-assets\" />
     <Folder Include="public\custom-assets\css\" />

@@ -26,31 +26,22 @@ class CMSForms extends Controller
         {
         	redirect('users/login');
         }
-        $data['title'] = 'CMS Dashboard';
-        $data['active'] = CMSFormModel::getActive();
-        $data['closed'] = CMSFormModel::getClosed();
-        $this->view('cms_forms/dashboard', $data);
-    }
-    public function Active()
-    {
-
+        $payload['title'] = 'CMS Dashboard';
+        $payload['active'] = CMSFormModel::getActive();
+        $payload['closed'] = CMSFormModel::getClosed();
+        $this->view('cms_forms/dashboard', $payload);
     }
 
 
-    public function Closed()
-    {
-
-    }
-
-    public function Add()
+    public function StartChangeProcess()
     {
         if (!isLoggedIn())
         {
             redirect('users/login');
         }
-        $data = array();
-        $data['title'] = 'New Change Proposal Form';
-        $data['hod'] = Database::getDbh()->
+        $payload = array();
+        $payload['title'] = 'New Change Proposal Form';
+        $payload['hod'] = Database::getDbh()->
             objectBuilder()->
             where('role', 'Manager')->
             orWhere('role', 'Superintendent')->
@@ -63,7 +54,7 @@ class CMSForms extends Controller
             $form->advantages = $_POST['advantages'];
             $form->alternatives = $_POST['alternatives'];
             $form->area_affected = $_POST['area_affected'];
-            $form->change_type = implode(',', $_POST['change_type']);
+            $form->change_type = concatWith(', ', ' & ', $_POST['change_type']);
             $form->originator_id = getUserSession()->user_id;
             if (isset($_POST['other_type']))
             {
@@ -74,14 +65,14 @@ class CMSForms extends Controller
             	$form->certify_details = $_POST['certify_details'];
             }
             $form->hod_id = $_POST['hod_id'];
-            $form->next_action = NEXT_ACTION_HOD_ASSESSMENT;
+            $form->next_action = ACTION_HOD_ASSESSMENT;
             $form = removeEmptyVal($form->jsonSerialize());
             $form_model = new CMSFormModel();
             if ($cms_form_id = $form_model->add($form))
             {
             	flash('flash_dashboard', 'Your change process application has been submitted successfully.
-                            Your manager has been notified. Your manager\s approval is required for the change process to proceed.',
-                            'text-success text-sm text-center');
+                            Your manager has been notified for approval.',
+                            'text-success text-sm text-center alert');
                 $originator = getUserSession()->first_name . ' '. getUserSession()->last_name;
                 $link = URL_ROOT . '/cms/cms-forms/hod-assessment/'. $cms_form_id;
                 $subject = 'Change Proposal, Assessment and Implementation';
@@ -94,10 +85,10 @@ class CMSForms extends Controller
                     'body' => $body,
                     'recipient_user_id' => $_POST['hod_id']
                 ]);
-                redirect('cms-forms/dashboard/'.$cms_form_id);
+                redirect('cms-forms/dashboard/');
             }
         }
-        $this->view('cms_forms/add', $data);
+        $this->view('cms_forms/start_change_process', $payload);
     }
 
     public function HODAssessment(int $cms_form_id = -1)
@@ -106,108 +97,148 @@ class CMSForms extends Controller
         {
             redirect('users/login');
         }
-        $data = array();
-        $data['title'] = 'Further Assessment by HOD';
-        $data['form'] = new CMSForm($cms_form_id);
-        if (getUserSession()->user_id !== $data['form']->hod_id)
+        $payload = array();
+        $payload['title'] = 'Further Assessment by HOD';
+        $payload['form'] = new CMSForm($cms_form_id);
+        $payload['originator'] = new User($payload['form']->originator_id);
+        $payload['hod'] = new User($payload['form']->hod_id);
+        if (getUserSession()->user_id !== $payload['form']->hod_id)
         {
         	flash('flash_index','You are not the HOD assigned to approve this form.', 'text-danger text-center alert', '');
             $this->view('notices/index');
             exit();
         }
-        $this->view('cms_forms/hod_assessment', $data);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST')
+        {
+        	$_POST = filterPost();
+            $form = new CMSForm($cms_form_id);
+            $form->hod_approval = $_POST['hod_approval'];
+            $form->hod_reasons = $_POST['hod_reasons'];
+            $form->hod_ref_num = $_POST['hod_ref_num'];
+            if ($form->hod_approval == 'approved')
+            {
+            	notifyOHSForMonitoring($cms_form_id);
+            }
+            $form->next_action = ACTION_RISK_ASSESSMENT;
+            $form = $form->jsonSerialize();
+            if ((new CMSFormModel())->updateForm($cms_form_id, $form)) {
+                flash('flash_dashboard', 'Change Process updated successfully!', 'alert text-successs text-center');
+                redirect('cms-forms/dashboard');
+            }
+        }
+        $this->view('cms_forms/hod_assessment', $payload);
     }
 
     public function RiskAssessment(int $cms_form_id = -1)
     {
-        $data = array();
-        $data['user'] = getUserSession();
-        $data['title'] = 'Risk Assessment';
-        $this->view('cms_forms/risk_assessment', $data);
+        $payload = array();
+        $payload['user'] = getUserSession();
+        $payload['title'] = 'Risk Assessment';
+        $payload['form'] = new CMSForm($cms_form_id);
+        $payload['originator'] = new User($payload['form']->originator_id);
+        $payload['hod'] = new User($payload['form']->hod_id);
+        $payload['departments'] = (new DepartmentModel())->getAllDepartments();
+        $payload['affected_departments'] = getAffectedDepartments($cms_form_id);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST')
+        {
+            $_POST = filterPost($_POST);
+            $payload['form']->affected_dept = implode(',', $_POST['affected_dept']);
+            if ((new CMSFormModel())->updateForm($cms_form_id, ['affected_dept' => payload['form']->affected_dept]))
+            {
+                if (isset($_POST['risk_attachment']))
+                {
+            	    $ret = uploadRiskAttachment('risk_attachment', $cms_form_id);
+                    if (!$ret['success'])
+                    {
+                        flash('flash_risk_assessment', $ret['reason'], 'text-danger text-center alert');
+                    }
+                }
+            }
+            else {
+                flash('flash_risk_assessment', 'An error occured!', 'text-danger text-center alert');
+            }
+            redirect('cms-forms/risk-assessment/'.$cms_form_id);
+        }
+        $this->view('cms_forms/risk_assessment', $payload);
     }
 
     public function GMAssessment(int $cms_form_id = -1)
     {
-        $data = array();
-        $data['user'] = getUserSession();
-        $data['title'] = 'GM Assessment';
-        $this->view('cms_forms/gm_assessment', $data);
+        $payload = array();
+        $payload['user'] = getUserSession();
+        $payload['title'] = 'GM Assessment';
+        $this->view('cms_forms/gm_assessment', $payload);
     }
 
     public function HODAuthorisation(int $cms_form_id = -1)
     {
-        $data = array();
-        $data['user'] = getUserSession();
-        $data['title'] = 'Authorisation by HOD to Implement Change';
-        $this->view('cms_forms/hod_authorisation', $data);
+        $payload = array();
+        $payload['user'] = getUserSession();
+        $payload['title'] = 'Authorisation by HOD to Implement Change';
+        $this->view('cms_forms/hod_authorisation', $payload);
     }
 
     public function PLAcceptance(int $cms_form_id = -1)
     {
-        $data = array();
-        $data['user'] = getUserSession();
-        $data['title'] = 'Project Leader Acceptance';
-        $this->view('cms_forms/pl_acceptance', $data);
+        $payload = array();
+        $payload['user'] = getUserSession();
+        $payload['title'] = 'Project Leader Acceptance';
+        $this->view('cms_forms/pl_acceptance', $payload);
     }
 
     public function ActionList(int $cms_form_id = -1)
     {
-        $data = array();
-        $data['user'] = getUserSession();
-        $data['title'] = 'Action List';
-        $this->view('cms_forms/action_list', $data);
+        $payload = array();
+        $payload['user'] = getUserSession();
+        $payload['title'] = 'Action List';
+        $this->view('cms_forms/action_list', $payload);
     }
 
     public function PLClosure(int $cms_form_id = -1)
     {
-        $data = array();
-        $data['user'] = getUserSession();
-        $data['title'] = 'Process Closure by Project Leader';
-        $this->view('cms_forms/pl_closure', $data);
+        $payload = array();
+        $payload['user'] = getUserSession();
+        $payload['title'] = 'Process Closure by Project Leader';
+        $this->view('cms_forms/pl_closure', $payload);
     }
 
     public function OriginatorClosure(int $cms_form_id = -1)
     {
-        $data = array();
-        $data['user'] = getUserSession();
-        $data['title'] = 'Process Closure by Originator';
-        $this->view('cms_forms/orig_closure', $data);
+        $payload = array();
+        $payload['user'] = getUserSession();
+        $payload['title'] = 'Process Closure by Originator';
+        $this->view('cms_forms/orig_closure', $payload);
     }
 
     public function HODClosure(int $cms_form_id = -1)
     {
-        $data = array();
-        $data['user'] = getUserSession();
-        $data['title'] = 'Process Closure by HOD';
-        $this->view('cms_forms/hod_closure', $data);
+        $payload = array();
+        $payload['user'] = getUserSession();
+        $payload['title'] = 'Process Closure by HOD';
+        $this->view('cms_forms/hod_closure', $payload);
     }
 
     public function ProcessClosed(int $cms_form_id = -1)
     {
-        $data = array();
-        $data['user'] = getUserSession();
-        $data['title'] = 'Process Closed';
+        $payload = array();
+        $payload['user'] = getUserSession();
+        $payload['title'] = 'Process Closed';
         flash('process_closed','This Change Process is complete and has been closed!', 'text-danger text-center',
                             '&nbsp');
-        $this->view('cms_forms/process_closed', $data);
+        $this->view('cms_forms/process_closed', $payload);
     }
 
     public function ViewChangeProcess(int $cms_form_id = -1)
     {
-        $data = array();
-        $data['title'] = 'Change Proposal, Assessment & Implementation';
-        $data['form'] = new CMSForm($cms_form_id);
-        $this->view('cms_forms/view_change_process', $data);
-    }
-
-    public function NextAction(int $cms_form_id = -1)
-    {
-        $data = array();
-
+        $payload = array();
+        $payload['title'] = 'Change Proposal, Assessment & Implementation';
+        $payload['form'] = new CMSForm($cms_form_id);
+        $payload['originator'] = new User($payload['form']->originator_id);
+        redirect('cms-forms/'.$payload['form']->next_action . '/'. $cms_form_id);
     }
 
     public function StopChangeProcess(int $cms_form_id = -1)
     {
-        $data = array();
+        $payload = array();
     }
 }

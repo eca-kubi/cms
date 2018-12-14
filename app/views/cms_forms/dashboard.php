@@ -32,7 +32,7 @@
         <div class="box collapsed">
             <div class="box-header">
                 <h5>
-                    <?php flash('flash'); ?>
+                    <?php flash('flash_dashboard'); ?>
                 </h5>
                 <h3 class="box-title text-bold d-none"></h3>
                 <div class="box-tools pull-right d-none">
@@ -61,29 +61,30 @@
                             <!-- /.box-header -->
                             <div class="box-body">
                                 <?php
-                                if (!empty( $data['active']))
+                                if (!empty( $payload['active']))
                                 { ?>
-                                    <ul class="products-list product-list-in-box">
+                                    <ul class="products-list product-list-in-box row">
                                         <?php 
-                                    foreach ((array)$data['active'] as $val)
-                                    $cms_form = new CMSForm($val->cms_form_id);
-                                    $originator = new User($cms_form->originator_id);
-                                    { ?>
-                                        <li class="item cms-list-item" data-target="" style="cursor:pointer">
-                                            <dl class="row callout col-sm-6">
-                                                <dt class="col-sm-2 text-sm-right">Originator</dt>
-                                                <dd class="col-sm-10 product-description"><?php echo ucwords($originator->first_name. ' ' . $originator->last_name); ?>
+                                    foreach ($payload['active'] as $val) {  
+                                        $cms_form = new CMSForm($val->cms_form_id);
+                                        $originator = new User($cms_form->originator_id); ?>
+                                        <li class="item cms-list-item col-sm-6" data-target="" style="cursor:pointer">
+                                            <dl class="row callout">
+                                                <dt class="col-sm-4 text-sm-right">Originator</dt>
+                                                <dd class="col-sm-8 product-description"><?php echo ucwords($originator->first_name. ' ' . $originator->last_name); ?>
                                                 (<?php echo $originator->job_title; ?>) @ <?php echo $originator->department->department; ?></dd>
-                                                <dt class="col-sm-2 text-sm-right d-none">Ref</dt>
-                                                <dd class="col-sm-10 product-description d-none">NGM/MW/2.01F1</dd>
-                                                <dt class="col-sm-2 text-sm-right">Date</dt>
-                                                <dd class="col-sm-10 product-description">
+                                                <dt class="col-sm-4 text-sm-right d-none">Ref</dt>
+                                                <dd class="col-sm-8 product-description d-none">NGM/MW/2.01F1</dd>
+                                                <dt class="col-sm-4 text-sm-right">Date</dt>
+                                                <dd class="col-sm-8 product-description">
                                                     <?php echo formatDate($cms_form->date_raised, DFB, DFF); ?>
                                                 </dd>
-                                                <dt class="col-sm-2 text-sm-right">Description</dt>
-                                                <dd class="col-sm-10 product-description"> <?php echo $cms_form->change_description; ?></dd>
-                                                <dt class="col-sm-2 invisible d-sm-block d-none">..</dt>
-                                                <dd class="col-sm-10">
+                                                <dt class="col-sm-4 text-sm-right">Description</dt>
+                                                <dd class="col-sm-8 product-description">
+                                                    <?php echo $cms_form->change_description; ?>
+                                                </dd>
+                                                <dt class="col-sm-4 invisible d-sm-block d-none">..</dt>
+                                                <dd class="col-sm-8">
                                                     <a href="<?php echo URL_ROOT;?>/cms-forms/view-change-process/<?php echo $cms_form->cms_form_id;?>" title="View Change Process" class="btn w3-btn badge badge-success">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
@@ -132,14 +133,13 @@
                             <!-- /.box-header -->
                             <div class="box-body" style="">
                                 <?php
-                                if (!empty( $data['closed']))
+                                if (!empty( $payload['closed']))
                                 { ?>
                                 <ul class="products-list product-list-in-box">
                                     <?php
-                                    foreach ((array)$data['active'] as $val)
+                                    foreach ((array)$payload['active'] as $val) { 
                                         $cms_form = new CMSForm($val->cms_form_id);
-                                        $originator = new User($cms_form->originator_id);
-                                    { ?>
+                                        $originator = new User($cms_form->originator_id);?>
                                     <li class="item cms-list-item" data-target="" style="cursor:pointer">
                                         <dl class="row callout col-sm-6">
                                             <dt class="col-sm-2 text-sm-right">Originator</dt>

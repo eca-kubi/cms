@@ -18,8 +18,8 @@ class Pages extends Controller
 
     public function about()
     {
-        $data = [];
-        $data['title'] = 'About us';
-        $this->view('pages/about', $data);
+        $payload = [];
+        $payload['title'] = 'About us';
+        $this->view('pages/about', $payload);
     }
 }
