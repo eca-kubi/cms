@@ -6,9 +6,10 @@
  * CMSForm description.
  *
  * @version 1.0
+ *
  * @author UNCLE CHARLES
  */
-class CMSForm  implements \JsonSerializable
+class CMSForm implements \JsonSerializable
 {
     public $cms_form_id;
     public $originator_id;
@@ -48,9 +49,8 @@ class CMSForm  implements \JsonSerializable
     {
         $this->cms_form_model = new CMSFormModel();
         $cms_form = $this->cms_form_model->getCMSForm($cms_form_id);
-        if (!empty((array)$cms_form))
-        {
-        	$this->cms_form_id = $cms_form->cms_form_id;
+        if (!empty((array) $cms_form)) {
+            $this->cms_form_id = $cms_form->cms_form_id;
             $this->originator_id = $cms_form->originator_id;
             $this->date_raised = $cms_form->date_raised;
             $this->change_type = $cms_form->change_type;
@@ -60,6 +60,7 @@ class CMSForm  implements \JsonSerializable
             $this->area_affected = $cms_form->area_affected;
             $this->hod_id = $cms_form->hod_id;
             $this->hod_approval = $cms_form->hod_approval;
+            $this->hod_approval_date;
             $this->hod_ref_num = $cms_form->hod_ref_num;
             $this->gm_approval = $cms_form->gm_approval;
             $this->gm_reasons = $cms_form->gm_reasons;
@@ -80,7 +81,8 @@ class CMSForm  implements \JsonSerializable
         }
     }
 
-    public function jsonSerialize(){
+    public function jsonSerialize()
+    {
         return [
             'cms_form_id' => $this->cms_form_id,
             'originator_id' => $this->originator_id,
@@ -105,10 +107,10 @@ class CMSForm  implements \JsonSerializable
             'budget_level' => $this->budget_level,
             'risk_level' => $this->risk_level,
             'additional_info' => $this->additional_info,
-            'hod_reasons' =>$this->hod_reasons,
+            'hod_reasons' => $this->hod_reasons,
             'affected_dept' => $this->affected_dept,
             'hod_approval_date' => $this->hod_approval_date,
-            'section_completed' => $this->section_completed
+            'section_completed' => $this->section_completed,
         ];
     }
 }

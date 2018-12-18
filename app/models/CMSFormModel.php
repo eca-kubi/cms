@@ -1,4 +1,5 @@
 <?php
+
 class CMSFormModel extends Model
 {
     public $cms_form_id;
@@ -12,6 +13,7 @@ class CMSFormModel extends Model
     public $area_affected;
     public $hod_id;
     public $hod_approval;
+    public $hod_approval_date;
     public $hod_reasons;
     public $hod_ref_num;
     public $gm_approval;
@@ -29,6 +31,7 @@ class CMSFormModel extends Model
     public $section_completed;
     public static $table = 'cms_form';
     public $cms_form = null;
+
     public function __construct()
     {
         parent::__construct();
@@ -36,18 +39,20 @@ class CMSFormModel extends Model
 
     public function add(array $insertData)
     {
-    	return Database::getDbh()->insert(self::$table, $insertData);
+        return Database::getDbh()->insert(self::$table, $insertData);
     }
 
-    public function updateForm($cms_form_id, array $insertData) {
-       return Database::getDbh()->where('cms_form_id', $cms_form_id)->
+    public function updateForm($cms_form_id, array $insertData)
+    {
+        return Database::getDbh()->where('cms_form_id', $cms_form_id)->
         update(self::$table, $insertData);
     }
 
     public function getCMSForm(int $cms_form_id)
     {
         $db = Database::getDbh();
-        return  (object)$db->where('cms_form_id', $cms_form_id)->
+
+        return  (object) $db->where('cms_form_id', $cms_form_id)->
                       objectBuilder()->
                       getOne('cms_form');
     }
@@ -60,7 +65,8 @@ class CMSFormModel extends Model
     }
 
     /**
-     * Summary of getClosed
+     * Summary of getClosed.
+     *
      * @return array
      */
     public static function getClosed()
@@ -70,14 +76,14 @@ class CMSFormModel extends Model
                    get('cms_form');
     }
 
-    public static function has($column, $value )
+    public static function has($column, $value)
     {
         $db = Database::getDbh();
         $db->where($column, $value);
         if ($db->has(self::$table)) {
             return 'true';
         }
+
         return false;
     }
-
 }

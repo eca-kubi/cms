@@ -1,5 +1,5 @@
-<?php if ($payload['form']->next_action == ACTION_RISK_ASSESSMENT && isOriginator($payload['form']->cms_form_id, getUserSession()->user_id))
-      { ?>
+<?php if ($payload['form']->next_action == ACTION_RISK_ASSESSMENT && isOriginator($payload['form']->cms_form_id, getUserSession()->user_id)) {
+    ?>
 <div class="row p-2">
     <fieldset class="w-100">
         <span class="row w-100 border ml-0 p-1">
@@ -18,12 +18,13 @@
                 </a>
             </h6>
             <span class="text-right float-right invisible">
-                <?php if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id))
-                      { ?>
+                <?php if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id)) {
+        ?>
                 <a href="#" title="Edit this section">
                     <i class="fa fa-edit"></i>
                 </a>
-                <?php  } ?>
+                <?php
+    } ?>
             </span>
         </span>
         <div id="section_3" class="collapse show section p-3">
@@ -51,12 +52,11 @@
                               <option class="d-none"></option>
                                 <?php
 
-          foreach ($payload['departments'] as $dept)
-          { 
-                                ?>
-            <option value="<?php echo $dept->department_id;?>"><?php echo $dept->department;?></option>
-        <?php  }
-        ?>
+          foreach ($departments = $payload['departments'] as $dept) {
+              ?>
+            <option value="<?php echo $dept->department_id; ?>"><?php echo $dept->department; ?></option>
+        <?php
+          } ?>
                             </select>
                             <small id="helpId" class="form-text with-errors"></small>
                         </div>
@@ -70,10 +70,10 @@
         </div>
     </fieldset>
 </div>
-<?php      }
-      else {
-          if (!empty($payload['form']->affected_departments))
-          { ?>
+<?php
+} else {
+              if (!empty($payload['form']->affected_departments)) {
+                  ?>
               <div class="row p-2">
     <fieldset class="w-100">
         <span class="row w-100 border ml-0 p-1">
@@ -92,12 +92,13 @@
                 </a>
             </h6>
             <span class="text-right float-right invisible">
-                <?php if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id))
-                      { ?>
+                <?php if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id)) {
+                      ?>
                 <a href="#" title="Edit this section">
                     <i class="fa fa-edit"></i>
                 </a>
-                <?php  } ?>
+                <?php
+                  } ?>
             </span>
         </span>
         <div id="section_3" class="w-100 collapse show section">
@@ -118,15 +119,12 @@
                                 <span class="col-sm-8">
                                     <?php 
           $dept = [];
-          foreach (getAffectedDepartments($payload['form']->cms_form_id) as $value)
-          {
-              $dept[] = $value->department;
-          }
-          if (count($dept) > 0)
-          {
-          concatWith(', ','& ', $dept);
-          }
-                                    ?>
+                  foreach (getAffectedDepartments($payload['form']->cms_form_id) as $value) {
+                      $dept[] = $value->department;
+                  }
+                  if (count($dept) > 0) {
+                      concatWith(', ', '& ', $dept);
+                  } ?>
                                 </span>
                             </span>
                         </td>
@@ -147,12 +145,14 @@
             </table>
         </div>
     </fieldset>
-                    <?php require_once(APP_ROOT. '/views/cms_forms/sections/'. SECTION_3B. '.php'); ?>
+                    <?php require_once APP_ROOT.'/views/cms_forms/sections/'.SECTION_3B.'.php'; ?>
     
 </div>
-       <?php   }
-          
-?>
+       <?php
+              } else {
+                  alert('Risk Assessment Pending...', 'alert text-primary text-bold');
+              } ?>
 
-   <?php   }
+   <?php
+          }
    ?>

@@ -1,11 +1,11 @@
 <?php
+
 class CMSForms extends Controller
 {
     public function __construct()
     {
-        if (!isLoggedIn())
-        {
-        	redirect('users/login');
+        if (!isLoggedIn()) {
+            redirect('users/login');
         }
         $this->db = Database::getDbh();
         $this->userModel = new UserModel(getUserSession()->user_id);
@@ -13,18 +13,16 @@ class CMSForms extends Controller
 
     public function index()
     {
-        if (!isLoggedIn())
-        {
-        	redirect('users/login');
+        if (!isLoggedIn()) {
+            redirect('users/login');
         }
         redirect('cms-forms/dashboard');
     }
 
-    function dashboard()
+    public function dashboard()
     {
-        if (!isLoggedIn())
-        {
-        	redirect('users/login');
+        if (!isLoggedIn()) {
+            redirect('users/login');
         }
         $payload['title'] = 'CMS Dashboard';
         $payload['active'] = CMSFormModel::getActive();
@@ -32,11 +30,9 @@ class CMSForms extends Controller
         $this->view('cms_forms/dashboard', $payload);
     }
 
-
     public function StartChangeProcess()
     {
-        if (!isLoggedIn())
-        {
+        if (!isLoggedIn()) {
             redirect('users/login');
         }
         $payload = array();
@@ -46,45 +42,41 @@ class CMSForms extends Controller
             where('role', 'Manager')->
             orWhere('role', 'Superintendent')->
             get('users', null, '*');
-        if ($_SERVER['REQUEST_METHOD'] == 'POST')
-        {
-        	$_POST = filterPost();
-            $form  = new CMSForm();
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filterPost();
+            $form = new CMSForm();
             $form->change_description = $_POST['change_description'];
             $form->advantages = $_POST['advantages'];
             $form->alternatives = $_POST['alternatives'];
             $form->area_affected = $_POST['area_affected'];
             $form->change_type = concatWith(', ', ' & ', $_POST['change_type']);
             $form->originator_id = getUserSession()->user_id;
-            if (isset($_POST['other_type']))
-            {
-            	$form->other_type = $_POST['other_type'];
+            if (isset($_POST['other_type'])) {
+                $form->other_type = $_POST['other_type'];
             }
-            if (isset($_POST['certify_details']))
-            {
-            	$form->certify_details = $_POST['certify_details'];
+            if (isset($_POST['certify_details'])) {
+                $form->certify_details = $_POST['certify_details'];
             }
             $form->hod_id = $_POST['hod_id'];
             $form->next_action = ACTION_HOD_ASSESSMENT;
             $form->section_completed = ACTION_START_CHANGE_PROCESS;
             $form = removeEmptyVal($form->jsonSerialize());
             $form_model = new CMSFormModel();
-            if ($cms_form_id = $form_model->add($form))
-            {
-            	flash('flash_dashboard', 'Your change process application has been submitted successfully.
+            if ($cms_form_id = $form_model->add($form)) {
+                flash('flash_dashboard', 'Your change process application has been submitted successfully.
                             Your manager has been notified for approval.',
                             'text-success text-sm text-center alert');
-                $originator = getUserSession()->first_name . ' '. getUserSession()->last_name;
-                $link = URL_ROOT . '/cms/cms-forms/hod-assessment/'. $cms_form_id;
+                $originator = getUserSession()->first_name.' '.getUserSession()->last_name;
+                $link = URL_ROOT.'/cms/cms-forms/hod-assessment/'.$cms_form_id;
                 $subject = 'Change Proposal, Assessment and Implementation';
-                $body = 'Hi, ' . HTML_NEW_LINE . 'A Change Proposal application has been raised by '. $originator. HTML_NEW_LINE.
-                            'Use the link below to approve it.' . $link;
+                $body = 'Hi, '.HTML_NEW_LINE.'A Change Proposal application has been raised by '.$originator.HTML_NEW_LINE.
+                            'Use the link below to approve it.'.$link;
 
                 $email_model = new EmailModel();
                 $email_model->add([
                     'subject' => $subject,
                     'body' => $body,
-                    'recipient_user_id' => $_POST['hod_id']
+                    'recipient_user_id' => $_POST['hod_id'],
                 ]);
                 redirect('cms-forms/dashboard/');
             }
@@ -94,8 +86,7 @@ class CMSForms extends Controller
 
     public function HODAssessment(int $cms_form_id = -1)
     {
-        if (!isLoggedIn())
-        {
+        if (!isLoggedIn()) {
             redirect('users/login');
         }
         $payload = array();
@@ -104,30 +95,27 @@ class CMSForms extends Controller
         $payload['originator'] = new User($payload['form']->originator_id);
         $payload['hod'] = new User($payload['form']->hod_id);
         $payload['gms'] = getGms();
-        if (getUserSession()->user_id !== $payload['form']->hod_id)
-        {
-        	flash('flash_index','You are not the HOD assigned to approve this form.', 'text-danger text-center alert', '');
-            $this->view('notices/index');
-            exit();
-        }
-        if ($_SERVER['REQUEST_METHOD'] == 'POST')
-        {
-        	$_POST = filterPost();
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (getUserSession()->user_id !== $payload['form']->hod_id) {
+                flash('flash_index', 'You are not the HOD assigned to approve this form.', 'text-danger text-center alert', '');
+                rediret('notices/index');
+                exit();
+            }
+            $_POST = filterPost();
             $form = new CMSForm($cms_form_id);
             $form->hod_approval = $_POST['hod_approval'];
             $form->hod_reasons = $_POST['hod_reasons'];
             $form->hod_ref_num = $_POST['hod_ref_num'];
-            $form->hod_approval_date = (new DateTime)->format(DFB);
-            if (isset($_POST['gm_id']))
-            {
-            	$form->gm_id = $_POST['gm_id'];
+            $form->hod_approval_date = (new DateTime())->format(DFB);
+            if (isset($_POST['gm_id'])) {
+                $form->gm_id = $_POST['gm_id'];
             }
 
             $form->section_completed = ACTION_HOD_ASSESSMENT;
 
-            if ($form->hod_approval == 'approved')
-            {
-            	notifyOHSForMonitoring($cms_form_id);
+            if ($form->hod_approval == 'approved') {
+                notifyOHSForMonitoring($cms_form_id);
             }
             $form->next_action = ACTION_RISK_ASSESSMENT;
             $form = $form->jsonSerialize();
@@ -150,26 +138,21 @@ class CMSForms extends Controller
         $payload['departments'] = (new DepartmentModel())->getAllDepartments();
         $payload['affected_departments'] = getAffectedDepartments($cms_form_id);
         $payload['cms_questions'] = getImpactQuestions();
-        if ($_SERVER['REQUEST_METHOD'] == 'POST')
-        {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost($_POST);
             $payload['form']->affected_dept = implode(',', $_POST['affected_dept']);
             if ((new CMSFormModel())->updateForm($cms_form_id, [
                 'affected_dept' => payload['form']->affected_dept,
                 'section_completed' => ACTION_RISK_ASSESSMENT,
-                'next_action' => ACTION_IMPACT_ASSESSMENT
-                ]))
-            {
-                if (isset($_POST['risk_attachment']))
-                {
-            	    $ret = uploadRiskAttachment('risk_attachment', $cms_form_id);
-                    if (!$ret['success'])
-                    {
+                'next_action' => ACTION_IMPACT_ASSESSMENT,
+                ])) {
+                if (isset($_POST['risk_attachment'])) {
+                    $ret = uploadRiskAttachment('risk_attachment', $cms_form_id);
+                    if (!$ret['success']) {
                         flash('flash_risk_assessment', $ret['reason'], 'text-danger text-center alert');
                     }
                 }
-            }
-            else {
+            } else {
                 flash('flash_risk_assessment', 'An error occured!', 'text-danger text-center alert');
             }
             redirect('cms-forms/risk-assessment/'.$cms_form_id);
@@ -179,9 +162,8 @@ class CMSForms extends Controller
 
     public function ImpactAssessment($cms_form_id)
     {
-        
     }
-    
+
     public function GMAssessment(int $cms_form_id = -1)
     {
         $payload = array();
@@ -254,7 +236,7 @@ class CMSForms extends Controller
         $payload['title'] = 'Change Proposal, Assessment & Implementation';
         $payload['form'] = new CMSForm($cms_form_id);
         $payload['originator'] = new User($payload['form']->originator_id);
-        redirect('cms-forms/'.$payload['form']->next_action . '/'. $cms_form_id);
+        redirect('cms-forms/'.$payload['form']->next_action.'/'.$cms_form_id);
     }
 
     public function StopChangeProcess(int $cms_form_id = -1)

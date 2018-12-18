@@ -10,7 +10,6 @@ function objToArr($obj)
     return json_decode(json_encode($obj), true);
 }
 
-
 // format date
 function formatDate($date, $from, $to)
 {
@@ -24,6 +23,7 @@ function formatDate($date, $from, $to)
             return $ret;
         }
     }
+
     return '';
 }
 
@@ -35,7 +35,7 @@ function reArrayFiles(&$file_post)
     $file_count = $multiple ? count($file_post['name']) : 1;
     $file_keys = array_keys($file_post);
 
-    for ($i = 0; $i < $file_count; $i++) {
+    for ($i = 0; $i < $file_count; ++$i) {
         foreach ($file_keys as $key) {
             $file_ary[$i][$key] = $multiple ? $file_post[$key][$i] : $file_post[$key];
         }
@@ -44,37 +44,35 @@ function reArrayFiles(&$file_post)
     return $file_ary;
 }
 
-
-
-
-function getNameInitials($first_name, $last_name) {
-
+function getNameInitials($first_name, $last_name)
+{
 }
 
 function userExists($user_id)
 {
-	 $db = Database::getDbh();
- return   $db->where('user_id', $user_id)
+    $db = Database::getDbh();
+
+    return   $db->where('user_id', $user_id)
             ->has('users');
 }
 
 function valueExistsInTable($table, $value, $column)
 {
     $db = Database::getDbh();
+
     return $db->where($column, $value)
             ->has($table);
 }
 
 function getRandomString()
 {
-	return substr(md5(rand()), 0, 5);
+    return substr(md5(rand()), 0, 5);
 }
 
 function getCurrentSession()
 {
-	$current_session = 'user';
-    if (!empty($_REQUEST['current_session']))
-    {
+    $current_session = 'user';
+    if (!empty($_REQUEST['current_session'])) {
         $current_session = $_REQUEST['current_session'];
     }
 
@@ -83,7 +81,8 @@ function getCurrentSession()
 
 /**
  * Summary of filterPost
- * It returns filtered POST array
+ * It returns filtered POST array.
+ *
  * @return array
  */
 function filterPost()
@@ -93,87 +92,91 @@ function filterPost()
 
 function requireModel(string $model)
 {
-    require_once '../app/models/' . ucwords( $model) . '.php';
+    require_once '../app/models/'.ucwords($model).'.php';
+
     return new $model();
 }
 
 function getData($payload)
 {
-    return (array)$payload;
+    return (array) $payload;
 }
 
 function today()
 {
-	echo ((new DateTime)->format(DFF));
+    echo (new DateTime())->format(DFF);
 }
 
 /**
- * Summary of removeEmptyVal
+ * Summary of removeEmptyVal.
+ *
  * @param array|object $value
+ *
  * @return array
  */
 function removeEmptyVal($value)
 {
-    $value = (array)$value;
-	foreach ($value as $key => $item)
-    {
-        if (empty($item))
-        {
-        	unset($value[$key]);
+    $value = (array) $value;
+    foreach ($value as $key => $item) {
+        if (empty($item)) {
+            unset($value[$key]);
         }
     }
+
     return $value;
 }
 
 function echoIfEmpty($target, $replacement)
 {
-	echo empty($target)? $replacement: $target;
+    echo empty($target) ? $replacement : $target;
 }
 
 function isOriginator($cms_form_id, $user_id)
 {
-	return Database::getDbh()->where('cms_form_id', $cms_form_id)
+    return Database::getDbh()->where('cms_form_id', $cms_form_id)
         ->where('originator_id', $user_id)
         ->has('cms_form');
 }
 
 function isHOD($cms_form_id, $user_id)
 {
-	return Database::getDbh()->where('cms_form_id', $cms_form_id)
+    return Database::getDbh()->where('cms_form_id', $cms_form_id)
         ->where('hod_id', $user_id)
         ->has('cms_form');
 }
 /**
- *Concats array elements with $symbol and $symbolForlastElem
+ *Concats array elements with $symbol and $symbolForlastElem.
+ *
  * @param array $array
+ *
  * @return string
  */
 function concatWith(string $symbol, $symbolForLastElem, array $array)
 {
-	if(count($array) == 1) {
+    if (count($array) == 1) {
         return $array[0];
     }
 
-    if (count($array) < 1)
-    {
-    	return '';
+    if (count($array) < 1) {
+        return '';
     }
 
     $lastElem = end($array);
-    $lastElemKey = key($lastElem);
+    $lastElemKey = key($array);
 
     unset($array[$lastElemKey]);
     $result = implode($symbol, $array);
-    return $result . $symbolForLastElem. $lastElem;
+
+    return $result.$symbolForLastElem.$lastElem;
 }
 
 function notifyOHSForMonitoring($cms_form_id)
 {
-	$originator = getUserSession()->first_name . ' '. getUserSession()->last_name;
-    $link = URL_ROOT . '/cms-forms/view-change-process/'. $cms_form_id;
+    $originator = getUserSession()->first_name.' '.getUserSession()->last_name;
+    $link = URL_ROOT.'/cms-forms/view-change-process/'.$cms_form_id;
     $subject = 'Change Proposal, Assessment and Implementation';
-    $body = 'Hi, ' . HTML_NEW_LINE . 'A Change Proposal application has been raised by '. $originator. HTML_NEW_LINE.
-                'Use the link below to approve it.' . HTML_NEW_LINE. $link;
+    $body = 'Hi, '.HTML_NEW_LINE.'A Change Proposal application has been raised by '.$originator.HTML_NEW_LINE.
+                'Use the link below to approve it.'.HTML_NEW_LINE.$link;
     $ohs_id = Database::getDbh()->where('department', OHS_DEPARTMENT)->
         getValue(TABLE_DEPARTMENT, 'department_id');
     $ohs_superintendent = Database::getDbh()->where('department_id', $ohs_id)
@@ -183,37 +186,37 @@ function notifyOHSForMonitoring($cms_form_id)
         ->where('role', 'Manager')
         ->getValue('users', 'user_id');
     $email_model = new EmailModel();
-    if ($ohs_superintendent)
-    {
-    	$email_model->add([
+    if ($ohs_superintendent) {
+        $email_model->add([
         'subject' => $subject,
         'body' => $body,
-        'recipient_user_id' => $ohs_superintendent
+        'recipient_user_id' => $ohs_superintendent,
     ]);
     }
-    if ($ohs_manager)
-    {
-    	$email_model->add([
+    if ($ohs_manager) {
+        $email_model->add([
         'subject' => $subject,
         'body' => $body,
-        'recipient_user_id' => $ohs_manager
+        'recipient_user_id' => $ohs_manager,
     ]);
     }
 }
 
-function isBudgetHigh($cms_form_id) {
+function isBudgetHigh($cms_form_id)
+{
     return Database::getDbh()->where('cms_form_id', $cms_form_id)->
     getValue('cms_form', 'budget_level');
 }
 
-function isRiskHigh($cms_form_id) {
+function isRiskHigh($cms_form_id)
+{
     return Database::getDbh()->where('cms_form_id', $cms_form_id)->
    getValue('cms_form', 'risk_level');
 }
 
 function alert($message, $class)
 {
-	echo "<p class=$class>". $message . '</p>';
+    echo "<p class='$class'>".$message.'</p>';
 }
 
 function getAffectedDepartments($cms_form_id)
@@ -222,17 +225,16 @@ function getAffectedDepartments($cms_form_id)
     $dept_model = new DepartmentModel();
     $affected_dept = Database::getDbh()->where('cms_form_id', $cms_form_id)
         ->getValue('cms_form', 'affected_dept');
-    if (!empty($affected_dept))
-    {
-        foreach (explode(',', $affected_dept) as $dept_id)
-        {
-    	    $results[] = $dept_model->getDepartment($dept_id);
+    if (!empty($affected_dept)) {
+        foreach (explode(',', $affected_dept) as $dept_id) {
+            $results[] = $dept_model->getDepartment($dept_id);
         }
     }
+
     return $results;
 }
 
-if ( ! function_exists( 'array_key_last' ) ) {
+if (!function_exists('array_key_last')) {
     /**
      * Polyfill for array_key_last() function added in PHP 7.3.
      *
@@ -241,15 +243,15 @@ if ( ! function_exists( 'array_key_last' ) ) {
      *
      * @param array $array An array
      *
-     * @return mixed The last key of array if the array is not empty; NULL otherwise.
+     * @return mixed the last key of array if the array is not empty; NULL otherwise
      */
-    function array_key_last( $array ) {
-        $key = NULL;
+    function array_key_last($array)
+    {
+        $key = null;
 
-        if ( is_array( $array ) ) {
-
-            end( $array );
-            $key = key( $array );
+        if (is_array($array)) {
+            end($array);
+            $key = key($array);
         }
 
         return $key;
@@ -258,29 +260,27 @@ if ( ! function_exists( 'array_key_last' ) ) {
 
 function getImpactQuestions($department_id = null)
 {
-    if (empty($department_id))
-    {
+    if (empty($department_id)) {
         return Database::getDbh()->objectbuilder()->
         get('cms_impact_question');
     }
 
-	return Database::getDbh()->where('department_id', $department_id)->
+    return Database::getDbh()->where('department_id', $department_id)->
     objectBuilder()->
     get('cms_impact_question');
 }
 
-
 function getGms()
 {
     $result = [];
-	$gms =  Database::getDbh()->where('staff_category', 'Management')->
+    $gms = Database::getDbh()->where('staff_category', 'Management')->
     objectBuilder()->
     get('users');
-    foreach ($gms as $gm)
-    {
-       if(in_array( $gm->job_title, GMs )) {
-           $result[] = $gm;
-       }
+    foreach ($gms as $gm) {
+        if (in_array($gm->job_title, GMs)) {
+            $result[] = $gm;
+        }
     }
+
     return $result;
 }
