@@ -202,7 +202,13 @@ function notifyOHSForMonitoring($cms_form_id)
 }
 
 function isBudgetHigh($cms_form_id) {
+    return Database::getDbh()->where('cms_form_id', $cms_form_id)->
+    getValue('cms_form', 'budget_level');
+}
 
+function isRiskHigh($cms_form_id) {
+    return Database::getDbh()->where('cms_form_id', $cms_form_id)->
+   getValue('cms_form', 'risk_level');
 }
 
 function alert($message, $class)
@@ -248,4 +254,33 @@ if ( ! function_exists( 'array_key_last' ) ) {
 
         return $key;
     }
+}
+
+function getImpactQuestions($department_id = null)
+{
+    if (empty($department_id))
+    {
+        return Database::getDbh()->objectbuilder()->
+        get('cms_impact_question');
+    }
+
+	return Database::getDbh()->where('department_id', $department_id)->
+    objectBuilder()->
+    get('cms_impact_question');
+}
+
+
+function getGms()
+{
+    $result = [];
+	$gms =  Database::getDbh()->where('staff_category', 'Management')->
+    objectBuilder()->
+    get('users');
+    foreach ($gms as $gm)
+    {
+       if(in_array( $gm->job_title, GMs )) {
+           $result[] = $gm;
+       }
+    }
+    return $result;
 }

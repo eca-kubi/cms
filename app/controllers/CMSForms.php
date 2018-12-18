@@ -66,6 +66,7 @@ class CMSForms extends Controller
             }
             $form->hod_id = $_POST['hod_id'];
             $form->next_action = ACTION_HOD_ASSESSMENT;
+            $form->section_completed = ACTION_START_CHANGE_PROCESS;
             $form = removeEmptyVal($form->jsonSerialize());
             $form_model = new CMSFormModel();
             if ($cms_form_id = $form_model->add($form))
@@ -102,6 +103,7 @@ class CMSForms extends Controller
         $payload['form'] = new CMSForm($cms_form_id);
         $payload['originator'] = new User($payload['form']->originator_id);
         $payload['hod'] = new User($payload['form']->hod_id);
+        $payload['gms'] = getGms();
         if (getUserSession()->user_id !== $payload['form']->hod_id)
         {
         	flash('flash_index','You are not the HOD assigned to approve this form.', 'text-danger text-center alert', '');
@@ -115,6 +117,14 @@ class CMSForms extends Controller
             $form->hod_approval = $_POST['hod_approval'];
             $form->hod_reasons = $_POST['hod_reasons'];
             $form->hod_ref_num = $_POST['hod_ref_num'];
+            $form->hod_approval_date = (new DateTime)->format(DFB);
+            if (isset($_POST['gm_id']))
+            {
+            	$form->gm_id = $_POST['gm_id'];
+            }
+
+            $form->section_completed = ACTION_HOD_ASSESSMENT;
+
             if ($form->hod_approval == 'approved')
             {
             	notifyOHSForMonitoring($cms_form_id);
@@ -122,7 +132,7 @@ class CMSForms extends Controller
             $form->next_action = ACTION_RISK_ASSESSMENT;
             $form = $form->jsonSerialize();
             if ((new CMSFormModel())->updateForm($cms_form_id, $form)) {
-                flash('flash_dashboard', 'Change Process updated successfully!', 'alert text-successs text-center');
+                flash('flash_dashboard', 'Change Process updated successfully!', 'alert text-success text-center');
                 redirect('cms-forms/dashboard');
             }
         }
@@ -139,11 +149,16 @@ class CMSForms extends Controller
         $payload['hod'] = new User($payload['form']->hod_id);
         $payload['departments'] = (new DepartmentModel())->getAllDepartments();
         $payload['affected_departments'] = getAffectedDepartments($cms_form_id);
+        $payload['cms_questions'] = getImpactQuestions();
         if ($_SERVER['REQUEST_METHOD'] == 'POST')
         {
             $_POST = filterPost($_POST);
             $payload['form']->affected_dept = implode(',', $_POST['affected_dept']);
-            if ((new CMSFormModel())->updateForm($cms_form_id, ['affected_dept' => payload['form']->affected_dept]))
+            if ((new CMSFormModel())->updateForm($cms_form_id, [
+                'affected_dept' => payload['form']->affected_dept,
+                'section_completed' => ACTION_RISK_ASSESSMENT,
+                'next_action' => ACTION_IMPACT_ASSESSMENT
+                ]))
             {
                 if (isset($_POST['risk_attachment']))
                 {
@@ -162,6 +177,11 @@ class CMSForms extends Controller
         $this->view('cms_forms/risk_assessment', $payload);
     }
 
+    public function ImpactAssessment($cms_form_id)
+    {
+        
+    }
+    
     public function GMAssessment(int $cms_form_id = -1)
     {
         $payload = array();

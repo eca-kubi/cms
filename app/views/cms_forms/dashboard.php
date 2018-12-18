@@ -85,7 +85,7 @@
                                                 </dd>
                                                 <dt class="col-sm-4 invisible d-sm-block d-none">..</dt>
                                                 <dd class="col-sm-8">
-                                                    <a href="<?php echo URL_ROOT;?>/cms-forms/view-change-process/<?php echo $cms_form->cms_form_id;?>" title="View Change Process" class="btn w3-btn badge badge-success">
+                                                    <a href="<?php echo URL_ROOT;?>/cms-forms/<?php echo $cms_form->next_action; ?>/<?php echo $cms_form->cms_form_id;?>" title="View Change Process" class="btn w3-btn badge badge-success">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
                                                     <a href="<?php echo URL_ROOT;?>/cms-forms/stop-change-process/<?php echo $cms_form->cms_form_id;?>" title="Stop Change Process" class="btn w3-btn badge badge-danger">
@@ -159,7 +159,7 @@
                                             </dd>
                                             <dt class="col-sm-2 invisible d-sm-block d-none">..</dt>
                                             <dd class="col-sm-10">
-                                                <a href="<?php echo URL_ROOT;?>/cms-forms/view-change-process/<?php echo $cms_form->cms_form_id;?>" title="View Change Process" class="btn w3-btn badge badge-success">
+                                                <a href="<?php echo URL_ROOT;?>/cms-forms/<?php ech?>/<?php echo $cms_form->cms_form_id;?>" title="View Change Process" class="btn w3-btn badge badge-success">
                                                     <i class="fa fa-eye"></i>
                                                 </a>
                                                 <a href="<?php echo URL_ROOT;?>/cms-forms/download-change-process/<?php echo $cms_form->cms_form_id;?>" title="Download Change Process" class="btn w3-btn badge badge-primary">

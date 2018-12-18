@@ -1,0 +1,208 @@
+department,question
+ohs,1.     Require development of an inspection routine?
+ohs,2.     Affect Health and/ or Safety regulatory commitments?
+ohs,3.     Require an increase in or the introduction of a dangerous or hazardous substances?
+ohs,4.     Affect current emergency response/ contingency plans?
+ohs,5.     Affect current training modules?
+ohs,6.     Affect current induction module?
+ohs,7.     Affect industrial hygiene management?
+ohs,8.     Affect chemical management?
+ohs,9.     Affect cyanide management?
+ohs,10.   Require an update or reinforcement of contractor safety?
+ohs,11.   Affect fire prevention and control management?
+ohs,12.   Require alteration or impairment to any fire detection or suppression system?
+ohs,"13.   Require alteration or need for additional safety showers, emergency alarms?"
+ohs,14.   Affect energy isolation management?
+ohs,15.   Affect electrical safety management?
+ohs,16.   Affect work permit systems?
+ohs,17.   Affect machine guarding management?
+ohs,18.   Affect explosives storage or transportation management?
+ohs,19.   Affect road safety management?
+ohs,20.   Affect working at heights?
+ohs,21.   Affect boiler/ pressure vessel/ compressed gas systems management?
+ohs,22.   Affect noise and vibration management?
+ohs,23.   Affect dust management?
+ohs,24.   Affect working alone management?
+ohs,25.   Affect any other safety and/ or health management issues on site?
+environmental,1.     Require development of an inspection routine?
+environmental,2.     Affect Environmental regulatory commitments?
+environmental,3.     Require an increase in or the introduction of a dangerous or hazardous substances?
+environmental,4.     Affect current emergency response/ contingency plans?
+environmental,5.     Affect current training modules?
+environmental,6.     Affect current induction module?
+environmental,7.     Require waste minimization to be considered and implemented where appropriate?
+environmental,8.     Involve any potential hazardous waste?
+environmental,9.     Affect hydrocarbon management?
+environmental,10.   Affect chemical management?
+environmental,11.   Affect cyanide management?
+environmental,12.   Affect waste rock management?
+environmental,13.   Affect tailings management?
+environmental,14.   Affect process waste management?
+environmental,15.   Affect closure planning and provisioning?
+environmental,16.   Affect water management?
+environmental,17.   Affect noise and vibration external to site management?
+environmental,18.   Affect dust management?
+environmental,19.   Affect air emission management?
+environmental,"20.   Require new or amendments to existing permits, licenses, or other regulatory approvals?"
+supply,1.     Require removal item in current stock requirements?
+supply,2.     Affect current catalog of MSDS sheets?
+supply,3.     Affect any current contractual agreements?
+supply,4.     Require requisitions for this change to occur?
+supply,5.     Require major equipment purchase?
+supply,6.     Has a cost analysis been completed?
+supply,7.     Require any new stock to be included in the store inventory?
+srd,1.     Influence future Social Impact Assessments?
+srd,2.     Affect Human Rights awareness?
+srd,3.     Affect local community investment?
+srd,4.     Affect local employment and business support?
+srd,5.     Affect indigenous employment and business support?
+srd,6.     Affect management of culturally significant and religious sites?
+srd,7.     Affect external permitting and permissions?
+srd,8.     Affect Government relations?
+srd,9.     Be a concern to the community?
+srd,10.   Impact negatively on the community?
+srd,11.   Affect media relations?
+srd,12.   Create potential opportunity for activist critics?
+srd,13.   Affect investor relations (non-media)?
+mining,"1.     Affect digger availability, productivity and/ or performance?"
+mining,"2.     Affect truck availability, productivity and/ or performance?"
+mining,"3.     Affect drill availability, productivity and/ or performance?"
+mining,4.     Affect personnel availability and/ or productivity?
+mining,5.     Affect equipment/ vehicle interaction?
+mining,6.     Affect part or equipment longevity?
+mining,7.     Cause an increase in consumable use and/ or costs?
+mining,"8.     Affect overall daily production in terms of tonnes, mine grade and/ or development?"
+mining,9.     Affect shifts and/ or shift time management?
+mining,10.   Affect use of major equipment?
+mining,11.   Affect drill and blast?
+mining,12.   Affect pit wall control and/ or pit wall control management?
+mining,13.   Affect void control and/ or void control management?
+mining,"14.   Affect short, mid and/ or long term planning?"
+mining,15.   Affect cycle time and/ or cycle time management?
+mining,16.   Affect or require update of any measurement or tracking systems?
+engineering,1.     Affect any engineering specifications?
+engineering,2.     Affect other maintenance objectives?
+engineering,3.     Affect current strategic maintenance plans including KPIs?
+engineering,4.     Affect processes in place to monitor the maintenance plan and associated KPIs?
+engineering,5.     Affect individual responsibilities within the maintenance plan?
+engineering,6.     Affect recording and tracking of total direct and indirect cost of maintenance?
+engineering,7.     Affect scheduling/ implementation/ recording/ tracking of maintenance activities?
+engineering,8.     Affect equipment performance or reliability?
+engineering,9.     Affect formal periodic equipment inspection system currently in place?
+engineering,10.   Affect routine lubrication program in place?
+engineering,11.   Require the establishment of alert and danger limits for equipment operating parameters (e.g bearing vibration alerts?
+engineering,12.   Affect equipment specifications or service manuals?
+engineering,13.   Affect parts and resource needs?
+engineering,14.   Affect code requirements and standards?
+engineering,15.   Affect agreements with the parts or equipment supplier or dealer?
+engineering,16.   Require spare parts to be regularly maintained?
+engineering,17.   Require a rebuilding program to be scheduled?
+engineering,18.   Require additional supervision when carrying out tasks associated with change?
+engineering,19.   Affect a current documented job analyses or similar administrative procedure?
+engineering,20.   Require the organization of training of personnel who will be carrying out associated tasks?
+engineering,21.   Require any training conducted be recorded and tracked?
+engineering,"22.   Affect current audit systems to monitor safety, quality, productivity or reliability?"
+engineering,23.   Affect the computerized maintenance management system?
+engineering,24.   Require maintenance plan to be updated?
+engineering,25.   Require isolation permit requirements or any other workplace interruptions?
+engineering,26.   Affect or require updates to any drawings and/ or plans or other controlled documents?
+engineering,27.   Affect contracted personnel currently employed?
+engineering,28.   Affect our energy and greenhouse gas emission targets or commitments?
+engineering,29.   Require an energy assessment to identify opportunities for associated energy savings?
+engineering,30.   Create or deny opportunities for energy savings?
+engineering,31.   Affect our energy assessment (budget)?
+engineering,32.   Require power factors to be known?
+engineering,33.   Include considerations of peak load times?
+processing,1.     Include consideration of optimization of cost and availability of spare parts?
+processing,"2.     Influence metallurgical tracking, balancing and/ or accounting, including reconciliation?"
+processing,3.     Affect processing KPIs?
+processing,"4.     Decrease the maintainability of existing plant, equipment and/ or infrastructure?"
+processing,"5.     Decrease the operability of existing plant, equipment and/ or infrastructure?"
+processing,6.     Influence and/ or need to be considered in production planning?
+processing,7.     Include a post commissioning review planned after implementation?
+processing,8.     Require setting of associated operational boundaries and/ or limits and can they be easily adhered to?
+processing,9.     Affect tailing storage facility management?
+processing,"10.   Affect cyanide management, including transport, storage and/ or use?"
+processing,11.   Affect the availability of overhead crane and/ or other specialty equipment?
+processing,12.   Affect mill circuit power and/ throughput?
+processing,13.   Affect mill circuit configuration including optimizations of mine to mill processes?
+processing,"14.   Affect mineralogy control including grind, recovery and feed relationships?"
+processing,15.   Affect process control including equipment/ plant failure minimizations?
+processing,16.   Affect isolation permit requirements or any other workplace interruptions?
+hr,1.     Affect employee moral and morale?
+hr,2.     Affect employee welfare?
+hr,3.     Require employee consultation and cooperation?
+hr,4.     Affect the implementation of the labour and/ or other laws/ regulations?
+hr,5.     Affect current documented policies and procedures?
+hr,6.     Affect current budget/ resources available for managing the human resource?
+security,1.     Affects compliance with the Nzema Gold Operations Gold Security Standards?
+security,2.     Affects compliance with the Nzema Gold Operations Fuel Security Standards?
+security,3.     Affects compliance with the Nzema Gold Operations Explosives Security Standards?
+security,4.     Affects compliance with the Nzema Gold Operations Security Policies?
+security,5.     Affects compliance with the voluntary principles of security and human rights?
+security,6.     Create opportunities for illegal mining?
+security,7.     Create opportunities for trespassing?
+security,8.     Facilitate theft?
+security,9.     Create opportunities for fraud?
+security,10.   Require exemption from any Nzema Gold Operations Security Standard?
+security,11.   Require changes to any existing security process?
+security,12.   Require changes to any existing security procedure?
+security,13.   Require changes to any existing security plan?
+security,14.   Require additional security staff?
+security,15.   Require additional security equipment?
+security,16.   Require changes to security perimeter fencing?
+security,17.   Require new fencing?
+security,18.   Require changes to or a new access gates?
+security,19.   Require additional CCTV monitoring equipment?
+security,20.   Require additional Access Control equipment?
+security,21.   Require additional Intrusion Alarm equipment?
+security,22.   Require additional lighting?
+finance,1.     Affect any general ledger accounts?
+finance,"2.     Affect IT financial systems i.e. SUN, PRONTO etc?"
+finance,3.     Be driven by an external financial regulation?
+finance,4.     Affects compliance with Persol requirements?
+finance,5.     Affects internal controls over financial reporting?
+finance,6.     Affects finance business process standards?
+finance,"7.     Affects budgets, forecasts or life of mine plan?"
+finance,8.     Require additional financial/ accounting resources or relocation of existing financial/ accounting resources?
+finance,"9.     Affects financial KPIs such as cash cost, profit-before- tax, etc?"
+finance,10.   Affect key external/ internal financial reporting dates and milestones?
+finance,"11.   Lead to risk of fraud or error in financial statements, amounts and assumptions?"
+finance,12.   Require additional/ new training on financial/ accounting concepts?
+finance,13.   Be driven by a recent financial audit (internal/ external)
+finance,"14.   Affect finance/ accounting roles and responsibilities, job descriptions, etc.?"
+finance,15.   Lead to changes in chart of accounts mapping?
+finance,16.   Require reporting change to insurer?
+finance,17.   Affect property insurance coverage?
+finance,18.   Affect policy limits/ sub-limits?
+finance,19.   Affect deductibles/ retentions?
+finance,20.   Affect insurance premiums?
+finance,21.   Affect regional insurance cost?
+finance,22.   Affect global insurance cost?
+finance,23.   Require follow-up with mine site?
+finance,24.   Affect fire protection equipment/ overall system?
+finance,25.   Affect corporate/ regional/ mine site liability?
+finance,"26.   Affect any global insurance policy (crime, liability, marine cargo, etc)"
+it,1.     Require additional IT software?
+it,2.     Require additional IT hardware?
+it,3.     Affect network transmission?
+it,4.     Require additional backup system?
+it,5.     Affect the server capacity?
+it,6.     Affect any external licensing?
+it,7.     Require training of personnel?
+it,8.     Affect the transmitting bandwidth?
+geology,"1.     Affect vehicle availability, productivity and/ or performance?"
+geology,"2.     Affect drill availability, productivity and/ or performance?"
+geology,3.     Affect personnel availability and/ or productivity?
+geology,4.     Affect equipment/ vehicle interaction?
+geology,5.     Affect part of equipment longevity?
+geology,6.     Cause an increase in consumable use and/ or costs?
+geology,7.     Affect current emergency response/ contingency plan?
+geology,8.     Affect drill pad construction or design?
+geology,9.     Affect use of major equipment?
+geology,10.   Affect core logging activities?
+geology,11.   Affect mapping activities?
+geology,12.   Affect or require updates to any drawings and/ or plans or other controlled documents?
+geology,13.   Require added training of affected personnel?
+geology,14.   Require isolation permit requirements or any other workplace interruptions?
+geology,15.   Affect contracted personnel currently employed?

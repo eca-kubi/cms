@@ -44,10 +44,16 @@
                     <div class="form-group form-row">
                         <label for="" class="col-sm-12">Affected Departments</label>
                         <div class="col-sm-8">
-                            <select class="form-control bs-select" name="affected_dept" aria-describedby="helpId" placeholder="" data-none-selected-text="Select Affected Departments" multiple="multiple">
+                             <select class="replace-multiple-select form-control">
+                                                    <option></option>
+                             </select>
+                            <select class="form-control bs-select multiple-hidden d-none" name="affected_dept" aria-describedby="helpId" placeholder="" data-size="6" data-none-selected-text="Select Affected Departments" multiple="multiple">
+                              <option class="d-none"></option>
                                 <?php
-          foreach ($departments = (new DepartmentModel())->getAllDepartments() as $dept)
-          { ?>
+
+          foreach ($payload['departments'] as $dept)
+          { 
+                                ?>
             <option value="<?php echo $dept->department_id;?>"><?php echo $dept->department;?></option>
         <?php  }
         ?>
@@ -63,11 +69,12 @@
             </div>
         </div>
     </fieldset>
-    
 </div>
 <?php      }
-      else { ?>
-<div class="row p-2">
+      else {
+          if (!empty($payload['form']->affected_departments))
+          { ?>
+              <div class="row p-2">
     <fieldset class="w-100">
         <span class="row w-100 border ml-0 p-1">
             <h6 class="text-bold font-italic col m-1">
@@ -140,6 +147,12 @@
             </table>
         </div>
     </fieldset>
+                    <?php require_once(APP_ROOT. '/views/cms_forms/sections/'. SECTION_3B. '.php'); ?>
+    
 </div>
+       <?php   }
+          
+?>
+
    <?php   }
    ?>

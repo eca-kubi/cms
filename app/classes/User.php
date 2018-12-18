@@ -28,17 +28,17 @@ class User
     {
         $this->user_id = $user_id;
         $this->user_model = new UserModel();
-        $user = $this->user_model->getUser($user_id);
-        $this->first_name = $user->first_name;
-        $this->last_name = $user->last_name;
-        $this->staff_id = $user->staff_id;
-        $this->user_id = $user->user_id;
-        $this->password = $user->password;
-        $this->role = $user->role;
-        $this->email = $user->email;
-        $this->profile_pic = $user->profile_pic;
-        $this->job_title = $user->job_title;
-        $this->department_id = $user->department_id;
+        $userObj = $this->user_model->getUser($user_id);
+        $this->first_name = $userObj->first_name;
+        $this->last_name = $userObj->last_name;
+        $this->staff_id = $userObj->staff_id;
+        $this->user_id = $userObj->user_id;
+        $this->password = $userObj->password;
+        $this->role = $userObj->role;
+        $this->email = $userObj->email;
+        $this->profile_pic = $userObj->profile_pic;
+        $this->job_title = $userObj->job_title;
+        $this->department_id = $userObj->department_id;
         $this->department = new Department($this->department_id);
     }
 

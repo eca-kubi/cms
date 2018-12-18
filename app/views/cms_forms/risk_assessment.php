@@ -63,11 +63,12 @@
             <!-- /.box-header -->
             <div class="box-body">
                 <form action="" method="post">
-                    <?php require_once(APP_ROOT. '/views/cms_forms/sections/'. SECTION_1. '.php'); ?>
+                    <?php require_once(APP_ROOT. '/views/cms_forms/sections/'. SECTION_1 . '.php'); ?>
                     <div class="dropdown-divider"></div>
                     <?php require_once(APP_ROOT. '/views/cms_forms/sections/'. SECTION_2. '.php'); ?>
                     <div class="dropdown-divider"></div>
                     <?php require_once(APP_ROOT. '/views/cms_forms/sections/'. SECTION_3. '.php'); ?>
+                    <div class="dropdown-divider"></div>                    
                 </form>
             </div>
             <!-- /.box-body -->

@@ -22,4 +22,8 @@ class Pages extends Controller
         $payload['title'] = 'About us';
         $this->view('pages/about', $payload);
     }
+	
+	public function test(){
+		echo phpinfo();
+	}
 }

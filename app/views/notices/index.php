@@ -1,11 +1,11 @@
 <?php 
 $user = $payload['user'];
 ?>
-<?php require_once APP_ROOT . '\views\inc\header.php'; ?>
+<?php require_once APP_ROOT . '\views\includes\header.php'; ?>
 
-<?php require_once APP_ROOT . '\views\inc\navbar.php';?>
+<?php require_once APP_ROOT . '\views\includes\navbar.php';?>
 
-<?php require_once APP_ROOT . '\views\inc\aside.php'; ?>
+<?php require_once APP_ROOT . '\views\includes\sidebar.php'; ?>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
@@ -61,4 +61,4 @@ $user = $payload['user'];
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <?php require APP_ROOT . '\views\inc\footer.php';?>
+    <?php require_once APP_ROOT . '\views\includes\footer.php';?>

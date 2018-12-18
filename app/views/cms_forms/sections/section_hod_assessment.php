@@ -48,7 +48,7 @@
                         <div class="col-sm-8">
                             <textarea
                                 class="form-control" name="hod_reasons" aria-describedby="helpId" placeholder="" required></textarea>
-                            <small id="helpId" class="form-text with-errors"></small>
+                            <small id="helpId" class="form-text with-errors help-block"></small>
                         </div>
                     </div>
                 </div>
@@ -61,10 +61,39 @@
                         <div class="col-sm-8">
                             <input type="text"
                                 class="form-control" name="hod_ref_num" aria-describedby="helpId" placeholder="" required/ />
-                            <small id="helpId" class="form-text with-errors"></small>
+                            <small id="helpId" class="form-text with-errors help-block"></small>
                         </div>
                     </div>
                 </div>
+                <?php 
+          if (isBudgetHigh( $payload['form']->cms_form_id) || isRiskHigh($payload['form']->cms_form_id))
+          { ?>
+              <div class="col-sm-12">
+                     <div class="form-group form-row">
+                                            <label for="" class="col-sm-12">
+                                                Select GM
+                                            </label>
+                                            <div class="col-sm-8">
+                                                <select class="replace-multiple-select form-control">
+                                                    <option></option>
+                                                </select>
+                                                <select class="form-control bs-select multiple-hidden d-none" data-none-selected-text="Select GM to Approve" name="gm_id" data-size="5" id="gm_id" aria-describedby="helpId" placeholder="" required>
+                                                    <option class="d-none"></option><?php
+                                      foreach ((array)$payload['gms'] as $value){
+                                          $hod = new User($value->user_id);
+                                                                                    ?>
+                                                    <option value="<?php echo $hod->user_id; ?>"><?php echo ucwords($hod->first_name. ' ' . $hod->last_name, '-. '). ' ('. $hod->job_title . ')'; ?></option><?php  }
+                                                                                                                                                                                                             ?>
+                                                </select>
+                                                <small id="helpId" class="form-text text-muted help-block d-none">Hint: Select GM to Approve</small>
+                                                <small id="helpId" class="form-text with-errors help-block"></small>
+                                            </div>
+                                        </div>
+                </div>
+      <?php    }
+          
+                ?>
+                
                 <div class="col-sm-8 text-right">
                     <button type="submit" form="hod_assessment_form" class="btn bg-success w3-btn">Submit</button>
                 </div>
@@ -126,7 +155,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td scope="row" >
+                    <td scope="row">
                         <span class="row">
                             <span class="col-sm-4 text-sm-right" text-sm-right">
                                 <b>Reasons: </b>
@@ -146,9 +175,6 @@
                             </span>
                         </span>
                     </td>
-                </tr>
-                <tr class="">
-                    
                 </tr>
         </table>
     </div>
