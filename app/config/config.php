@@ -47,7 +47,7 @@ const PHOTO_FILE_TYPES = 'image/*';
 const VIDEO_FILE_TYPES = 'video/*';
 const AUDIO_FILE_TYPES = 'audio/*';
 const DOC_FILE_TYPES = '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .pdf, text/plain, text/html';
-const HTML_NEW_LINE = '&nbsp';
+const HTML_NEW_LINE = '<br/>';
 
 const ACTION_START_CHANGE_PROCESS = 'start_change_process';
 const ACTION_HOD_ASSESSMENT = 'hod_assessment';
@@ -68,3 +68,4 @@ const SECTION_2 = 'section_hod_assessment';
 const SECTION_3 = 'section_risk_assessment';
 const SECTION_3B = 'section_possible_impact';
 const GMs = ['General Manager', 'Mining Manager', 'Process Manager'];
+

@@ -67,16 +67,19 @@ class CMSForms extends Controller
                             Your manager has been notified for approval.',
                             'text-success text-sm text-center alert');
                 $originator = getUserSession()->first_name.' '.getUserSession()->last_name;
-                $link = URL_ROOT.'/cms/cms-forms/hod-assessment/'.$cms_form_id;
-                $subject = 'Change Proposal, Assessment and Implementation';
-                $body = 'Hi, '.HTML_NEW_LINE.'A Change Proposal application has been raised by '.$originator.HTML_NEW_LINE.
-                            'Use the link below to approve it.'.$link;
+                $recipient = new User($_POST['hod_id']);
+                $link = URL_ROOT.'/cms-forms/hod-assessment/'.$cms_form_id;
+                //$subject = 'Change Proposal, Assessment and Implementation';
+                $body = 'Hi '. ucwords($recipient->first_name . ' '. $recipient->last_name, '-. '). ', '.HTML_NEW_LINE.'A Change Proposal application has been raised by '.$originator. '.'.
+                            'Kindly use the link below to approve it.'. HTML_NEW_LINE .$link;
 
                 $email_model = new EmailModel();
                 $email_model->add([
-                    'subject' => $subject,
+                    'subject' => 'Change Proposal, Assessment and Implementation',
                     'body' => $body,
-                    'recipient_user_id' => $_POST['hod_id'],
+                    'recipient_address' => $recipient->email,
+                    'recipient_name' => $recipient->first_name . ' '. $recipient->last_name,
+                    'sender_user_id' => getUserSession()->user_id
                 ]);
                 redirect('cms-forms/dashboard/');
             }
@@ -99,7 +102,7 @@ class CMSForms extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (getUserSession()->user_id !== $payload['form']->hod_id) {
                 flash('flash_index', 'You are not the HOD assigned to approve this form.', 'text-danger text-center alert', '');
-                rediret('notices/index');
+                redirect('notices/index');
                 exit();
             }
             $_POST = filterPost();
@@ -107,7 +110,7 @@ class CMSForms extends Controller
             $form->hod_approval = $_POST['hod_approval'];
             $form->hod_reasons = $_POST['hod_reasons'];
             $form->hod_ref_num = $_POST['hod_ref_num'];
-            $form->hod_approval_date = (new DateTime())->format(DFB);
+            $form->hod_approval_date = (new DateTime())->format(DFB_DT);
             if (isset($_POST['gm_id'])) {
                 $form->gm_id = $_POST['gm_id'];
             }
@@ -120,7 +123,7 @@ class CMSForms extends Controller
             $form->next_action = ACTION_RISK_ASSESSMENT;
             $form = $form->jsonSerialize();
             if ((new CMSFormModel())->updateForm($cms_form_id, $form)) {
-                flash('flash_dashboard', 'Change Process updated successfully!', 'alert text-success text-center');
+                flash('flash_dashboard', 'Change Process updated successfully!', 'alert text-sm text-success text-center');
                 redirect('cms-forms/dashboard');
             }
         }
@@ -242,5 +245,10 @@ class CMSForms extends Controller
     public function StopChangeProcess(int $cms_form_id = -1)
     {
         $payload = array();
+    }
+
+    public function test()
+    {
+        echo (new DateTime())->format(DFB);
     }
 }

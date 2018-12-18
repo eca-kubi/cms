@@ -5,7 +5,7 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 $mail = new PHPMailer(true); // Passing `true` enables exceptions
-function sendMail($subject, $body, $recipient, $recipient_name='')
+function sendMail($subject='', $body='', $recipient='', $recipient_name='')
 {
     try {
         global $mail;
@@ -19,8 +19,29 @@ function sendMail($subject, $body, $recipient, $recipient_name='')
         $mail->SMTPSecure = 'tls'; // Enable TLS encryption, `ssl` also accepted
         $mail->Port = 587; // TCP port to connect to
         $mail->setFrom('webservices@adamusgh.com', 'Webservices@Adamusgh');
-        //Recipients
-        $mail->addAddress($recipient);     // Add a recipient
+        $emails = Database::getDbh()
+            ->objectBuilder()
+            ->where('sender_user_id', getUserSession()->user_id)
+            ->get('cms_email');
+        foreach ($emails as $email)
+        {
+            $mail->addAddress($email->recipient_address, $email->recipient_name);     // Add a recipient
+            $mail->isHTML(true); // Set email format to HTML
+            $mail->Subject = $email->subject;
+            $mail->Body    = $email->body;
+            //msgHTML also sets AltBody, but if you want a custom one, set it afterwards
+            $mail->AltBody = 'To view the message, please use an HTML compatible email viewer!';
+            //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+            if (!$mail->send())
+            {
+                //"Mailer Error (" . str_replace("@", "&#64;", $mail->body) . ') ' . $mail->ErrorInfo . '<br />';
+                //$mail->ErrorInfo . '<br />';
+                return false;
+                //break; //Abandon sending
+            }
+            $mail->clearAddresses();
+        }
+
         /* $mail->setFrom('webservices@adamusgh.com', 'Mailer');
         $mail->addAddress('webservices@adamusgh.com');               // Name is optional
         $mail->addReplyTo('info@example.com', 'Information');
@@ -32,11 +53,6 @@ function sendMail($subject, $body, $recipient, $recipient_name='')
         $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
          */
         //Content
-        $mail->isHTML(true); // Set email format to HTML
-        $mail->Subject = $subject;
-        $mail->Body    = $body;
-        //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-        $mail->send();
         return true;
         //echo 'Message has been sent';
     }
