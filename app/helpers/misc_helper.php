@@ -172,35 +172,63 @@ function concatWith(string $symbol, $symbolForLastElem, array $array)
 
 function notifyOHSForMonitoring($cms_form_id)
 {
-    $originator = getUserSession()->first_name.' '.getUserSession()->last_name;
+    $cms_form = new CMSForm($cms_form_id);
     $link = URL_ROOT.'/cms-forms/view-change-process/'.$cms_form_id;
     $subject = 'Change Proposal, Assessment and Implementation';
-    $body = 'Hi, '.HTML_NEW_LINE.'A Change Proposal application has been raised by '.$originator.HTML_NEW_LINE.
-                'Use the link below to approve it.'.HTML_NEW_LINE.$link;
+    $hod = new User($cms_form->hod_id);
     $ohs_id = Database::getDbh()->where('department', OHS_DEPARTMENT)->
         getValue(TABLE_DEPARTMENT, 'department_id');
     $ohs_superintendent = Database::getDbh()->where('department_id', $ohs_id)
         ->where('role', 'Superintendent')
-        ->getValue('users', 'user_id');
+        ->getOne('users');
     $ohs_manager = Database::getDbh()->where('department_id', $ohs_id)
         ->where('role', 'Manager')
-        ->getValue('users', 'user_id');
+        ->getOne('users');
     $email_model = new EmailModel();
     if ($ohs_superintendent) {
         $email_model->add([
         'subject' => $subject,
-        'body' => $body,
-        'recipient_user_id' => $ohs_superintendent,
+        'body' => 'Hi '. ucwords($ohs_superintendent['first_name']. ' '. $ohs_superintendent['last_name'], '-. '). ', '.HTML_NEW_LINE.'A Change Proposal application with reference number' . strtoupper($cms_form->hod_ref_num). ' has been
+        reviewed by '. ucwords($hod->first_name. '.'. $hod->last_name, '-. '). ($hod->job_title).'.' . HTML_NEW_LINE. 'You may use the link below to access the Change Process for monitoring.'
+        .HTML_NEW_LINE. $link,
+        'recipient_email' => OHS_EMAIL,
+        'recipient_name' =>ucwords($ohs_superintendent['first_name']. ' '. $ohs_superintendent['last_name'], '-. '),
+        'sender_user_id' => getUserSession()->user_id
     ]);
     }
     if ($ohs_manager) {
         $email_model->add([
         'subject' => $subject,
-        'body' => $body,
-        'recipient_user_id' => $ohs_manager,
+        'body' => 'Hi '. ucwords($ohs_manager['first_name']. ' '. $ohs_manager['last_name'], '-. '). ', '.HTML_NEW_LINE.'A Change Proposal application has been
+        reviewed by '. ucwords($hod->first_name. '.'. $hod->last_name, '-. '). ($hod->job_title).'.' . HTML_NEW_LINE. 'You may use the link below to access the Change Process for monitoring.'
+        .HTML_NEW_LINE. $link,
+        'recipient_email' => OHS_EMAIL,
+        'recipient_name' =>ucwords($ohs_superintendent['first_name']. ' '. $ohs_superintendent['last_name'], '-. '),
+        'sender_user_id' => getUserSession()->user_id
     ]);
     }
 }
+
+function notifyGm($cms_form_id)
+{
+	$cms_form = new CMSForm($cms_form_id);
+    $link = URL_ROOT.'/cms-forms/view-change-process/'.$cms_form_id;
+    $subject = 'Change Proposal, Assessment and Implementation';
+    $gm = (new User($cms_form->gm_id))->jsonSerialize();
+    $hod = new User($cms_form->hod_id)->jsonSerialize();
+    $email_model = new EmailModel();
+    $email_model->add([
+        'subject' => $subject,
+        'body' => 'Hi '. ucwords($gm['first_name']. ' '. $gm['last_name'], '-. '). ', '.HTML_NEW_LINE.'A Change Proposal application has been
+        reviewed by '. ucwords($hod['first_name']. '.'. $hod['last_name'], '-. '). ($hod['job_title']).'.' . HTML_NEW_LINE. 'You may use the link below to access the Change Process for monitoring.'
+        .HTML_NEW_LINE. $link,
+        'recipient_email' => $gm['email'],
+        'recipient_name' =>ucwords($gm['first_name']. ' '. $gm['last_name'], '-. '),
+        'sender_user_id' => getUserSession()->user_id
+    ]);
+}
+
+
 
 function isBudgetHigh($cms_form_id)
 {
@@ -234,30 +262,6 @@ function getAffectedDepartments($cms_form_id)
     return $results;
 }
 
-if (!function_exists('array_key_last')) {
-    /**
-     * Polyfill for array_key_last() function added in PHP 7.3.
-     *
-     * Get the last key of the given array without affecting
-     * the internal array pointer.
-     *
-     * @param array $array An array
-     *
-     * @return mixed the last key of array if the array is not empty; NULL otherwise
-     */
-    function array_key_last($array)
-    {
-        $key = null;
-
-        if (is_array($array)) {
-            end($array);
-            $key = key($array);
-        }
-
-        return $key;
-    }
-}
-
 function getImpactQuestions($department_id = null)
 {
     if (empty($department_id)) {
@@ -283,4 +287,48 @@ function getGms()
     }
 
     return $result;
+}
+
+function getOriginatorId($cms_form_id)
+{
+    return Database::getDbh()->where('cms_form_id', $cms_form_id)->getValue('cms_form', 'originator_id');
+}
+
+function getHodId($cms_form_id)
+{
+    return Database::getDbh()->where('cms_form_id', $cms_form_id)->getValue('cms_form', 'hod_id');
+}
+
+function getGmId($cms_form_id)
+{
+    return Database::getDbh()->where('cms_form_id', $cms_form_id)->getValue('cms_form', 'gm_id');
+}
+
+function genEmailSubject($cms_form_id)
+{
+    return EMAIL_SUBJECT . ' [Form #]'. $cms_form_id;
+}
+
+if (!function_exists('array_key_last')) {
+    /**
+     * Polyfill for array_key_last() function added in PHP 7.3.
+     *
+     * Get the last key of the given array without affecting
+     * the internal array pointer.
+     *
+     * @param array $array An array
+     *
+     * @return mixed the last key of array if the array is not empty; NULL otherwise
+     */
+    function array_key_last($array)
+    {
+        $key = null;
+
+        if (is_array($array)) {
+            end($array);
+            $key = key($array);
+        }
+
+        return $key;
+    }
 }

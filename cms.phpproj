@@ -17,6 +17,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app\bootstrap.php" />
+    <Compile Include="app\classes\AffectedDept.php" />
     <Compile Include="app\classes\CMSForm.php" />
     <Compile Include="app\classes\Department.php" />
     <Compile Include="app\classes\Email.php" />
@@ -45,6 +46,7 @@
     <Compile Include="app\models\UserModel.php" />
     <Compile Include="app\views\cms_forms\dashboard.php" />
     <Compile Include="app\views\cms_forms\sections\section_hod_assessment.php" />
+    <Compile Include="app\views\cms_forms\sections\section_hod_authorization.php" />
     <Compile Include="app\views\cms_forms\sections\section_risk_assessment.php" />
     <Compile Include="app\views\cms_forms\sections\section_possible_impact.php" />
     <Compile Include="app\views\cms_forms\sections\section_start_change_process.php" />

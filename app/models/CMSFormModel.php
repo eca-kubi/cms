@@ -29,6 +29,7 @@ class CMSFormModel extends Model
     public $next_action;
     public $affected_dept;
     public $section_completed;
+    public $email_subject;
     public static $table = 'cms_form';
     public $cms_form = null;
 

@@ -71,11 +71,11 @@ class CMSForms extends Controller
                 $link = URL_ROOT.'/cms-forms/hod-assessment/'.$cms_form_id;
                 //$subject = 'Change Proposal, Assessment and Implementation';
                 $body = 'Hi '. ucwords($recipient->first_name . ' '. $recipient->last_name, '-. '). ', '.HTML_NEW_LINE.'A Change Proposal application has been raised by '.$originator. '.'.
-                            'Kindly use the link below to approve it.'. HTML_NEW_LINE .$link;
+                            ' Kindly use the link below to approve it.'. HTML_NEW_LINE .$link;
 
                 $email_model = new EmailModel();
                 $email_model->add([
-                    'subject' => 'Change Proposal, Assessment and Implementation',
+                    'subject' => genEmailSubject($cms_form_id),
                     'body' => $body,
                     'recipient_address' => $recipient->email,
                     'recipient_name' => $recipient->first_name . ' '. $recipient->last_name,
@@ -116,13 +116,17 @@ class CMSForms extends Controller
             }
 
             $form->section_completed = ACTION_HOD_ASSESSMENT;
-
-            if ($form->hod_approval == 'approved') {
-                notifyOHSForMonitoring($cms_form_id);
-            }
             $form->next_action = ACTION_RISK_ASSESSMENT;
             $form = $form->jsonSerialize();
             if ((new CMSFormModel())->updateForm($cms_form_id, $form)) {
+                if ($form['hod_approval'] == 'approved') {
+                    notifyOHSForMonitoring($cms_form_id);
+                }
+                if (isset($_POST['gm_id']))
+                {
+                    notifyGm($cms_form_id);
+                }
+                $subject = genEmailSubject();
                 flash('flash_dashboard', 'Change Process updated successfully!', 'alert text-sm text-success text-center');
                 redirect('cms-forms/dashboard');
             }
