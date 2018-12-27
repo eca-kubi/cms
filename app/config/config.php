@@ -69,4 +69,4 @@ const SECTION_3 = 'section_risk_assessment';
 const SECTION_3B = 'section_possible_impact';
 const GMs = ['General Manager', 'Mining Manager', 'Process Manager'];
 const OHS_EMAIL = 'ecakubi@adamusgh.com';
-const EMAIL_SUBJECT = '';
+const EMAIL_SUBJECT = 'Change Proposal, Assessment and Implementation';

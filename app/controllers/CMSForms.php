@@ -126,7 +126,22 @@ class CMSForms extends Controller
                 {
                     notifyGm($cms_form_id);
                 }
-                $subject = genEmailSubject();
+                $originator = $payload['originator'];
+                $hod = $payload['hod'];
+                $link = URL_ROOT. "/cms-forms/risk-assessment/$cms_form_id";
+                $subject = genEmailSubject($cms_form_id);
+                $body = "Hi, ". ucwords($originator->first_name. ' '. $originator->last_name, '-. '). HTML_NEW_LINE.
+                        "The Change Process application has been reviewed by " .ucwords( $hod->first_name . ' '. $hod->last_name). HTML_NEW_LINE.
+                        "Use this link below to perform risk assessment." . HTML_NEW_LINE.
+                        $link;
+                $email_model = new EmailModel();
+                $email_model->add([
+                     'subject' => genEmailSubject($cms_form_id),
+                     'body' =>$body,
+                     'recipient_email' => $originator->email
+                     'recipient_name' => ucwords($originator->first_name. ' '. $originator->last_name, '-. '),
+                     'sender_user_id' =>getUserSession()->user_id;
+                ])
                 flash('flash_dashboard', 'Change Process updated successfully!', 'alert text-sm text-success text-center');
                 redirect('cms-forms/dashboard');
             }

@@ -1,5 +1,4 @@
 <?php
-
 function arrToObj($arr)
 {
     return json_decode(json_encode($arr));
@@ -215,7 +214,7 @@ function notifyGm($cms_form_id)
     $link = URL_ROOT.'/cms-forms/view-change-process/'.$cms_form_id;
     $subject = 'Change Proposal, Assessment and Implementation';
     $gm = (new User($cms_form->gm_id))->jsonSerialize();
-    $hod = new User($cms_form->hod_id)->jsonSerialize();
+    $hod = (new User($cms_form->hod_id))->jsonSerialize();
     $email_model = new EmailModel();
     $email_model->add([
         'subject' => $subject,
