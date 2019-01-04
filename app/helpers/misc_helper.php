@@ -103,7 +103,10 @@ function getData($payload)
 
 function today()
 {
-    echo (new DateTime())->format(DFF);
+    try {
+        echo (new DateTime())->format(DFF);
+    } catch (Exception $e) {
+    }
 }
 
 /**
@@ -166,7 +169,7 @@ function concatWith(string $symbol, $symbolForLastElem, array $array)
     unset($array[$lastElemKey]);
     $result = implode($symbol, $array);
 
-    return $result.$symbolForLastElem.$lastElem;
+    return $result . ', ' . $symbolForLastElem . $lastElem;
 }
 
 function notifyOHSForMonitoring($cms_form_id)
@@ -305,7 +308,19 @@ function getGmId($cms_form_id)
 
 function genEmailSubject($cms_form_id)
 {
-    return EMAIL_SUBJECT . ' [Form #]'. $cms_form_id;
+    return EMAIL_SUBJECT . ' Form #' . $cms_form_id;
+}
+
+function genLink($cms_form_id, $controller)
+{
+    $link = URL_ROOT . "/cms-forms/$controller/$cms_form_id";
+    return '<a href="' .
+        $link . '" >' . $link . '</a>';
+}
+
+function genThreadId($cms_form_id)
+{
+    return '<' . EMAIL_SUBJECT . ' Form #' . $cms_form_id . '@cms>';
 }
 
 if (!function_exists('array_key_last')) {
@@ -330,4 +345,80 @@ if (!function_exists('array_key_last')) {
 
         return $key;
     }
+}
+
+function notifyImpactAccessReps($cms_form_id)
+{
+// Department reps responsible for impact assessment
+    $cms_form = new CMSForm($cms_form_id);
+    $rep = new User($cms_form->originator_id);
+    $subject = genEmailSubject($cms_form_id);
+    $link = URL_ROOT . "/cms-forms/impact-assessment/$cms_form_id";
+    $subject = genEmailSubject($cms_form_id);
+    $body = "Hi, " . ucwords($rep->first_name . ' ' . $rep->last_name, '-. ') . HTML_NEW_LINE .
+        "Use the link below to answer questions on impact assessment for the Change Process Application number " . $cms_form->cms_form_id . HTML_NEW_LINE . '<a href="' .
+        $link . '" />' . $link . '</a>';
+    $email_model = new EmailModel();
+    $email_model->add([
+        'subject' => $subject,
+        'body' => $body,
+        'recipient_address' => $rep->email,
+        'recipient_name' => ucwords($rep->first_name . ' ' . $rep->last_name, '-. '),
+        'sender_user_id' => getUserSession()->user_id,
+        'in_reply_to' => $subject
+    ]);
+}
+
+function canAssessImpactForDept($department_id)
+{
+    $u = getUserSession();
+    return $u->department_id == $department_id;
+}
+
+function populateImpactResponse(array $affected_depts, $cms_form_id)
+{
+    foreach ($affected_depts as $dept_id) {
+        $questions = getImpactQuestions($dept_id);
+        $response_model = new CmsImpactResponseModel();
+        foreach ($questions as $ques) {
+            $insert_data = [
+                'cms_form_id' => $cms_form_id,
+                'cms_impact_question_id' => $ques->cms_impact_question_id,
+            ];
+            $response_model->add($insert_data);
+        }
+    }
+}
+
+function isAssessmentComplete($cms_form_id)
+{
+    $db = Database::getDbh();
+    return $db->where('cms_form_id', $cms_form_id)->
+    where('response', null, 'IS')->
+    has('cms_impact_response');
+}
+
+function getImpactResponsesForDepartment($cms_form_id, $department_id)
+{
+    $db = Database::getDbh();
+    return $db->where('cms_form_id', $cms_form_id)->
+    objectBuilder()->
+    where('department_id', $department_id)->
+    join('cms_impact_question ciq', 'ciq.cms_impact_question_id=cir.cms_impact_question_id', 'left')->
+    join('departments d', 'd.department_id=ciq.department_id', 'left')->
+    get('cms_impact_response');
+}
+
+/**
+ * Summary of getResponseForQuestion
+ * @param mixed $question_id
+ * @param $cms_form_id
+ * @return object
+ */
+function getResponseForQuestion($question_id, $cms_form_id)
+{
+    return (object)Database::getDbh()->where('cms_impact_question_id', $question_id)->
+    where('cms_form_id', $cms_form_id)->
+    objectBuilder()->
+    getOne('cms_impact_response');
 }

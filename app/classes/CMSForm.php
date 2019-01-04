@@ -44,7 +44,7 @@ class CMSForm implements \JsonSerializable
     public $affected_dept;
     public $hod_approval_date;
     public $section_completed;
-    public $email_suject;
+    public $email_subject;
 
     public function __construct($cms_form_id = -1)
     {

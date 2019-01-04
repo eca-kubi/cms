@@ -4,7 +4,7 @@
   #RewriteBase /public
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_URI} !\.(?:css|js|jpe?g|gif|png|map)$ [NC]
+  RewriteCond %{REQUEST_URI} !\.(?:css|js|jpe?g|gif|png|map|pdf|txt|docx|doc|ppt|pptx)$ [NC]
   RewriteRule ^(.+)$ index.php?url=$1 [L,QSA]
 </IfModule>
 <IfModule mime_module>

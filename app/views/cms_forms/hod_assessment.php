@@ -12,7 +12,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item active">
-                            <a href="javascript: window.history.back();" class="btn w3-btn bg-gray">
+                            <a class="btn w3-btn bg-gray" href="javascript: window.history.back();">
                                 <i class="fa fa-backward"></i> Go Back
                             </a>
                         </li>
@@ -37,7 +37,8 @@
                     <?php flash('flash_hod_assessment'); ?>
                 </h5>
                 <h3 class="box-title text-bold">
-                    <?php echo $payload['title']; ?>
+                    <?php /** @var array $payload */
+                    echo $payload['title']; ?>
                 </h3>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse">
@@ -47,11 +48,9 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <form action="<?php echo URL_ROOT?>/cms-forms/hod-assessment/<?php echo $payload['form']->cms_form_id?>" id="hod_assessment_form" method="post" data-toggle="validator" role="form">
-                   <?php require_once(APP_ROOT. '/views/cms_forms/sections/'. SECTION_1. '.php'); ?>
-                    <div class="dropdown-divider"></div>
-                    <?php require_once(APP_ROOT. '/views/cms_forms/sections/'. SECTION_2. '.php'); ?>
-                </form>
+                <?php require_once APP_ROOT . '/views\cms_forms\sections/' . SECTION_1 . '.php'; ?>
+                <div class="dropdown-divider"></div>
+                <?php require_once(APP_ROOT . '\views/cms_forms/sections/' . SECTION_2 . '.php'); ?>
             </div>
             <!-- /.box-body -->
             <div class="box-footer"></div>

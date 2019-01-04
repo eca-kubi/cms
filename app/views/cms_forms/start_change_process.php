@@ -50,7 +50,7 @@ $user = getUserSession();
             </div>
             <!-- /.box-header -->
             <div class="box-body pt-0">
-                <form action="" method="post" data-toggle="validator" id="add_cms_form">
+                <form action="" method="post" data-toggle="validator" id="add_cms_form" enctype="multipart/form-data">
                     <div class="row p-2">
                         <fieldset class="w-100">
                             <h6 class="text-bold font-italic">
