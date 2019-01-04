@@ -120,7 +120,7 @@ if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id) && em
                     <tr>
                         <td scope="row" colspan="2">
                             <span class="row">
-                                <span class="col-sm-4 text-sm-right" text-sm-right">
+                                <span class="col-sm-4 text-sm-right">
                                     <b>Risk Assessment</b>
                                 </span>
                             <span class="col-sm-8 mb-2">
