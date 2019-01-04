@@ -1,4 +1,5 @@
-<?php if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id) && empty($payload['form']->affected_dept)) {
+<?php /** @var array $payload */
+if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id) && empty($payload['form']->affected_dept)) {
     ?>
 <div class="row p-2">
     <form action="" method="post" data-toggle="validator" role="form" enctype="multipart/form-data">
