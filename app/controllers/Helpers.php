@@ -15,26 +15,10 @@ class Helpers extends Controller
         redirect('errors/index/400');
     }
 
-    public function sendEmail($subject, $body, $recipient, $recipient_name='')
-    {
-        return sendMail($subject, $body, $recipient, $recipient_name);
-    }
     public function proxyMail()
     {
-        $emails = $this->db
-            ->objectBuilder()
-            ->where('sender_user_id', getUserSession()->user_id)
-            ->get('cms_email');
-        foreach ($emails as $email)
-        {
-        	sendMail($email->subject, $email->body, $email->recipient);
-        }
-        $this->db
-        ->where('sender_user_id', getUserSession()->user_id)
-        ->delete('cms_email');
-        return 'true';
+        return sendMail();
     }
-
 
     public function execInBackground($cmd = 'bash.exe') {
        if (substr(php_uname(), 0, 7) == "Windows"){

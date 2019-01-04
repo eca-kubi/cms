@@ -17,6 +17,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app\bootstrap.php" />
+    <Compile Include="app\classes\AffectedDept.php" />
     <Compile Include="app\classes\CMSForm.php" />
     <Compile Include="app\classes\Department.php" />
     <Compile Include="app\classes\Email.php" />
@@ -24,14 +25,13 @@
     <Compile Include="app\config\host.php" />
     <Compile Include="app\config\config.php" />
     <Compile Include="app\controllers\CMSForms.php" />
-    <Compile Include="app\controllers\Emails.php" />
     <Compile Include="app\controllers\Helpers.php" />
     <Compile Include="app\controllers\Users.php" />
     <Compile Include="app\controllers\Errors.php" />
     <Compile Include="app\controllers\Notices.php" />
     <Compile Include="app\controllers\Pages.php" />
     <Compile Include="app\controllers\Posts.php" />
-    <Compile Include="app\controllers\send-mail.php" />
+    <Compile Include="app\helpers\send_mail.php" />
     <Compile Include="app\helpers\file_helper.php" />
     <Compile Include="app\helpers\misc_helper.php" />
     <Compile Include="app\helpers\phpmailer.php" />
@@ -40,11 +40,14 @@
     <Compile Include="app\helpers\url_helper.php" />
     <Compile Include="app\helpers\validation_helper.php" />
     <Compile Include="app\models\CMSFormModel.php" />
+    <Compile Include="app\models\CmsImpactQuestionModel.php" />
+    <Compile Include="app\models\CmsImpactResponseModel.php" />
     <Compile Include="app\models\DepartmentModel.php" />
     <Compile Include="app\models\EmailModel.php" />
     <Compile Include="app\models\UserModel.php" />
     <Compile Include="app\views\cms_forms\dashboard.php" />
     <Compile Include="app\views\cms_forms\sections\section_hod_assessment.php" />
+    <Compile Include="app\views\cms_forms\sections\section_hod_authorization.php" />
     <Compile Include="app\views\cms_forms\sections\section_risk_assessment.php" />
     <Compile Include="app\views\cms_forms\sections\section_possible_impact.php" />
     <Compile Include="app\views\cms_forms\sections\section_start_change_process.php" />

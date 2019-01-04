@@ -52,7 +52,8 @@
                     <?php flash('flash_risk_assessment'); ?>
                 </h5>
                 <h3 class="box-title text-bold">
-                    <?php echo $payload['title']; ?>
+                    <?php /** @var  $payload */
+                    echo $payload['title']; ?>
                 </h3>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse">
@@ -62,14 +63,12 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <form action="" method="post">
-                    <?php require_once(APP_ROOT. '/views/cms_forms/sections/'. SECTION_1 . '.php'); ?>
-                    <div class="dropdown-divider"></div>
-                    <?php require_once(APP_ROOT. '/views/cms_forms/sections/'. SECTION_2. '.php'); ?>
-                    <div class="dropdown-divider"></div>
-                    <?php require_once(APP_ROOT. '/views/cms_forms/sections/'. SECTION_3. '.php'); ?>
-                    <div class="dropdown-divider"></div>                    
-                </form>
+                <?php require_once(APP_ROOT . '/views/cms_forms/sections/' . SECTION_1 . '.php'); ?>
+                <div class="dropdown-divider"></div>
+                <?php require_once(APP_ROOT . '/views/cms_forms/sections/' . SECTION_2 . '.php'); ?>
+                <div class="dropdown-divider"></div>
+                <?php require_once(APP_ROOT . '/views/cms_forms/sections/' . SECTION_3 . '.php'); ?>
+                <div class="dropdown-divider"></div>
             </div>
             <!-- /.box-body -->
             <div class="box-footer"></div>

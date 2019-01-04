@@ -1,5 +1,3 @@
-<!-- SECTION_1 : start_change_process-->
-
 <div class="row p-2">
     <span class="row w-100 border ml-0 p-1">
         <h6 class="text-bold font-italic col m-1">
@@ -9,7 +7,8 @@
             </a>
         </h6>
         <span class="text-right float-right">
-            <?php if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id) && empty($payload['form']->hod_approval))
+            <?php /** @var array $payload */
+            if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id) && empty($payload['form']->hod_approval))
                   { ?>
             <a href="#" title="Edit this section">
                 <i class="fa fa-edit"></i>
@@ -29,7 +28,7 @@
                 <tr>
                     <td scope="row">
                         <span class="row">
-                            <span class="col-sm-4 text-sm-right" text-sm-right">
+                            <span class="col-sm-4 text-sm-right">
                                 <b>Name: </b>
                             </span>
                             <span class="col-sm-8">
@@ -39,7 +38,7 @@
                     </td>
                     <td scope="row">
                         <span class="row">
-                            <span class="col-sm-4 text-sm-right" text-sm-right">
+                            <span class="col-sm-4 text-sm-right">
                                 <b>Position: </b>
                             </span>
                             <span class="col-sm-8">
@@ -51,7 +50,7 @@
                 <tr>
                     <td scope="row">
                         <span class="row">
-                            <span class="col-sm-4 text-sm-right" text-sm-right">
+                            <span class="col-sm-4 text-sm-right">
                                 <b>Department:  </b>
                             </span>
                             <span class="col-sm-8">
@@ -61,7 +60,7 @@
                     </td>
                     <td scope="row">
                         <span class="row">
-                            <span class="col-sm-4 text-sm-right" text-sm-right">
+                            <span class="col-sm-4 text-sm-right">
                                 <b>Date:</b>
                             </span>
                             <span class="col-sm-8">
@@ -73,7 +72,7 @@
                 <tr>
                     <td scope="row">
                         <span class="row">
-                            <span class="col-sm-4 text-sm-right" text-sm-right">
+                            <span class="col-sm-4 text-sm-right">
                                 <b>Description: </b>
                             </span>
                             <span class="col-sm-8">
@@ -83,7 +82,7 @@
                     </td>
                     <td scope="row">
                         <span class="row">
-                            <span class="col-sm-4 text-sm-right" text-sm-right">
+                            <span class="col-sm-4 text-sm-right">
                                 <b>Advantage: </b>
                             </span>
                             <span class="col-sm-8">
@@ -95,7 +94,7 @@
                 <tr>
                     <td scope="row">
                         <span class="row">
-                            <span class="col-sm-4 text-sm-right" text-sm-right">
+                            <span class="col-sm-4 text-sm-right">
                                 <b>Alternatives: </b>
                             </span>
                             <span class="col-sm-8">
@@ -105,7 +104,7 @@
                     </td>
                     <td scope="row">
                         <span class="row">
-                            <span class="col-sm-4 text-sm-right" text-sm-right">
+                            <span class="col-sm-4 text-sm-right">
                                 <b>Area Affected: </b>
                             </span>
                             <span class="col-sm-8">
@@ -117,7 +116,7 @@
                 <tr>
                     <td scope="row">
                         <span class="row">
-                            <span class="col-sm-4 text-sm-right" text-sm-right">
+                            <span class="col-sm-4 text-sm-right">
                                 <b>Change Type:</b>
                             </span>
                             <span class="col-sm-8">
@@ -133,7 +132,8 @@
                             <span class="col-sm-8">
                                 <?php if (!empty($payload['form']->additional_info))
                                       { ?>
-                                <a href="<?php APP_ROOT. '/public/assets/uploads/additional-info/'. $payload['form']->additional_info; ?>" class="btn btn-primary" title="Download Additional Information">
+                                      <a href="<?php echo URL_ROOT . '/public/assets/uploads/additional-info/' . $payload['form']->additional_info; ?>"
+                                         class="btn btn-primary" title="Download Additional Information">
                                     <i class="fa fa-download"></i>
                                 </a><?php    } else {
                                           echoIfEmpty($payload['form']->additional_info, 'N/A');

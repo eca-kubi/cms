@@ -123,50 +123,54 @@ function uploadCSV($table)
 
 function uploadRiskAttachment($file, $cms_form_id)
 {
-    $path = APP_ROOT.  '\..\public\assets\attachments\risk-attachments\\';
+    $path = PATH_RISK_ATTACHMENT;
     $result['success'] = false;
     $result['file'] = '';
-    $allowedExts = array('doc', 'docx', 'pdf', 'xlsx', 'txt');
-    $temp = explode('.', $_FILES[$file]['name']);
-    $extension = end($temp);
-    if ($_FILES[$file]['size'] > 0) {
-        $filename = $_FILES[$file]['name'];
-        $filename = explode('/', $filename);
-        $filename = end($filename);
-        if ((($_FILES[$file]['type'] == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-            || ($_FILES[$file]['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            || ($_FILES[$file]['type'] == 'application/msword')
-            || ($_FILES[$file]['type'] == 'application/pdf')
-            || ($_FILES[$file]['type'] == 'txt/plain')
-          )
-            && in_array($extension, $allowedExts)) {
-            if ($_FILES[$file]['error'] > 0) {
-                $result['success'] = false;
-                $result['reason'] = $_FILES['file']['error'] . '<br>';
-            } else {
-                $filename = $_FILES[$file]['name'];
-                $result['success'] = move_uploaded_file($_FILES[$file]['tmp_name'], $path . $cms_form_id.  $extension);
-                $result['file'] = $cms_form_id . '.' . $extension;
-                if (!$result['success']) {
-                    $result['reason'];
+    $result['reason'] = '';
+    $allowedExts = array('doc', 'docx', 'pdf', 'xlsx', 'txt', 'pptx', 'ppt');
+    if (isset($_FILES[$file])) {
+        $temp = explode('.', $_FILES[$file]['name']);
+        $extension = end($temp);
+        if ($_FILES[$file]['size'] > 0) {
+            $filename = $_FILES[$file]['name'];
+            $filename = explode('/', $filename);
+            $filename = end($filename);
+            if ((($_FILES[$file]['type'] == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                    || ($_FILES[$file]['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                    || ($_FILES[$file]['type'] == 'application/msword')
+                    || ($_FILES[$file]['type'] == 'application/pdf')
+                    || ($_FILES[$file]['type'] == 'txt/plain')
+                )
+                && in_array($extension, $allowedExts)) {
+                if ($_FILES[$file]['error'] > 0) {
+                    $result['success'] = false;
+                    $result['reason'] = $_FILES['file']['error'] . '<br>';
+                } else {
+                    $filename = $_FILES[$file]['name'];
+                    $result['success'] = move_uploaded_file($_FILES[$file]['tmp_name'], $path . 'c_' . $cms_form_id . '_u_' . getUserSession()->user_id . '.' . $extension);
+                    $result['file'] = 'c_' . $cms_form_id . '_u_' . getUserSession()->user_id . '.' . $extension;
+                    if (!$result['success']) {
+                        $result['reason'];
+                    }
+                    return $result;
                 }
-                return $result;
+            } else {
+                $result['reason'] = 'The type of file uploaded is not supported';
             }
         } else {
-            $result['reason'] = 'The type of file uploaded is not supported';
+            $result['success'] = true;
         }
-    } else {
-        $result['success'] =true;
     }
+
     return $result;
 }
 
 function uploadAdditionalInfo($file, $cms_form_id)
 {
-    $path = APP_ROOT.  '\..\public\assets\attachments\additional-infos\\';
+    $path = APP_ROOT . '\..\public\assets\uploads\additional-infos\\';
     $result['success'] = false;
     $result['file'] = '';
-    $allowedExts = array('doc', 'docx', 'pdf', 'xlsx', 'txt');
+    $allowedExts = array('doc', 'docx', 'pdf', 'xlsx', 'txt', 'pptx', 'ppt');
     $temp = explode('.', $_FILES[$file]['name']);
     $extension = end($temp);
     if ($_FILES[$file]['size'] > 0) {
@@ -185,8 +189,8 @@ function uploadAdditionalInfo($file, $cms_form_id)
                 $result['reason'] = $_FILES['file']['error'] . '<br>';
             } else {
                 $filename = $_FILES[$file]['name'];
-                $result['success'] = move_uploaded_file($_FILES[$file]['tmp_name'], $path . $cms_form_id.  $extension);
-                $result['file'] = $cms_form_id . '.' . $extension;
+                $result['success'] = move_uploaded_file($_FILES[$file]['tmp_name'], $path . 'c_' . $cms_form_id . '_u_' . getUserSession()->user_id . '.' . $extension);
+                $result['file'] = 'c_' . $cms_form_id . '_u_' . getUserSession()->user_id . '.' . $extension;
                 if (!$result['success']) {
                     $result['reason'];
                 }

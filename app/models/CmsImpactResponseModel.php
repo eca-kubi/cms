@@ -4,8 +4,8 @@ class CmsImpactResponseModel extends Model
     public $cms_form_id;
     public $department_id;
     public $response;
-    public $impact_question_id;
-    public $impact_response_id;
+    public $cms_impact_question_id;
+    public $cms_impact_response_id;
     public static $table = 'cms_impact_response';
 
     public function __construct()
@@ -15,11 +15,14 @@ class CmsImpactResponseModel extends Model
 
     public function add(array $insertData)
     {
-    	return Database::getDbh()->insert(self::$table, $insertData);
+        return Database::getDbh()->
+        onDuplicate(['cms_form_id', 'cms_impact_question_id'])->
+        insert(self::$table, $insertData);
     }
 
-    public function updateAffectedDept($impact_response_id, $insertData) {
-        return Database::getDbh()->where('impact_response_id', $impact_response_id)->
+    public function updateAffectedDept($cms_impact_response_id, $insertData)
+    {
+        return Database::getDbh()->where('cms_impact_response_id', $cms_impact_response_id)->
         update(self::$table, $insertData);
     }
 
