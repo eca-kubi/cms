@@ -58,7 +58,7 @@ if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id) && em
                                     <?php
 
                                     foreach ($payload['departments'] as $dept) {
-                                        echo "<option value='$dept->department_id' >$dept->department</option>";
+                                        echo "<option value='\"$dept->department_id\"'> $dept->department </option>";
                                     }
                                     ?>
                                 </select>
