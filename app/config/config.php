@@ -71,3 +71,4 @@ const GMs = ['General Manager', 'Mining Manager', 'Process Manager'];
 const OHS_EMAIL = 'ecakubi@adamusgh.com';
 const EMAIL_SUBJECT = 'Change Proposal, Assessment and Implementation';
 const PATH_RISK_ATTACHMENT = APP_ROOT . '\..\public\assets\uploads\risk-attachments\\';
+const PATH_ADDITIONAL_INFO = APP_ROOT . '\..\public\assets\uploads\additional-info\\';
