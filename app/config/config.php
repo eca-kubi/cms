@@ -27,10 +27,10 @@ define('DATE_FORMATS', [
 define("BUTTONS", [
     'back' => '<a class="btn w3-btn bg-gray w3-small" href="javascript:history.go(-1)" role="button"><i class="fa fa-arrow-alt-circle-left"></i> Go back</a>'
 ], true);
-define('MY_PRIVATE_KEY' ,md5('my-private-key-daemon'));
+define('MY_PRIVATE_KEY', md5('my-private-key-daemon'));
 
 const NO_PROFILE = 'no_profile.jpg';
-const DEFAULT_PROFILE_PIC =  "no_profile.jpg";
+const DEFAULT_PROFILE_PIC = "no_profile.jpg";
 const SMS_GATEWAY_EMAIL = 'appiahmakuta70@gmail.com';
 const SMS_GATEWAY_PASSWORD = 'gmail300';
 const SMS_GATEWAY_DEVICE_ID = '104720';

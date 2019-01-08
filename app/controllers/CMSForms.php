@@ -16,7 +16,7 @@ class CMSForms extends Controller
             redirect('users/login');
         }
         $this->db = Database::getDbh();
-        $this->userModel = new UserModel(getUserSession()->user_id);
+        $this->userModel = new UserModel();
     }
 
     public function index()
@@ -46,10 +46,10 @@ class CMSForms extends Controller
         $payload = array();
         $payload['title'] = 'New Change Proposal Form';
         $payload['hod'] = Database::getDbh()->
-            objectBuilder()->
-            where('role', 'Manager')->
-            orWhere('role', 'Superintendent')->
-            get('users', null, '*');
+        objectBuilder()->
+        where('role', 'Manager')->
+        orWhere('role', 'Superintendent')->
+        get('users', null, '*');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
             $form = new CMSForm();
@@ -78,12 +78,12 @@ class CMSForms extends Controller
                 }
                 flash('flash_dashboard', 'Your change process application has been submitted successfully.
                             Your manager has been notified for approval.',
-                            'text-success text-sm text-center alert');
-                $originator = getUserSession()->first_name.' '.getUserSession()->last_name;
+                    'text-success text-sm text-center alert');
+                $originator = getUserSession()->first_name . ' ' . getUserSession()->last_name;
                 $recipient = new User($_POST['hod_id']);
-                $link = URL_ROOT.'/cms-forms/hod-assessment/'.$cms_form_id;
+                $link = URL_ROOT . '/cms-forms/hod-assessment/' . $cms_form_id;
                 //$subject = 'Change Proposal, Assessment and Implementation';
-                $body = 'Hi '. ucwords($recipient->first_name . ' '. $recipient->last_name, '-. '). ', '.HTML_NEW_LINE.'A Change Proposal application has been raised by '.$originator. '.'.
+                $body = 'Hi ' . ucwords($recipient->first_name . ' ' . $recipient->last_name, '-. ') . ', ' . HTML_NEW_LINE . 'A Change Proposal application has been raised by ' . $originator . '.' .
                     ' Kindly use the link below to approve it.' . HTML_NEW_LINE . genLink($cms_form_id, 'hod-assessment');
 
                 $email_model = new EmailModel();
@@ -92,7 +92,7 @@ class CMSForms extends Controller
                     'subject' => genEmailSubject($cms_form_id),
                     'body' => $body,
                     'recipient_address' => $recipient->email,
-                    'recipient_name' => $recipient->first_name . ' '. $recipient->last_name,
+                    'recipient_name' => $recipient->first_name . ' ' . $recipient->last_name,
                     'sender_user_id' => getUserSession()->user_id,
                     'parent' => true,
                     'cms_form_id' => $cms_form_id
@@ -137,7 +137,10 @@ class CMSForms extends Controller
             $form->hod_approval = $_POST['hod_approval'];
             $form->hod_reasons = $_POST['hod_reasons'];
             $form->hod_ref_num = $_POST['hod_ref_num'];
-            $form->hod_approval_date = (new DateTime())->format(DFB_DT);
+            try {
+                $form->hod_approval_date = (new DateTime())->format(DFB_DT);
+            } catch (Exception $e) {
+            }
             if (isset($_POST['gm_id'])) {
                 $form->gm_id = $_POST['gm_id'];
             }
@@ -149,15 +152,14 @@ class CMSForms extends Controller
                 if ($form['hod_approval'] == 'approved') {
                     notifyOHSForMonitoring($cms_form_id);
                 }
-                if (isset($_POST['gm_id']))
-                {
+                if (isset($_POST['gm_id'])) {
                     notifyGm($cms_form_id);
                 }
                 $originator = $payload['originator'];
                 $hod = $payload['hod'];
-                $link = URL_ROOT. "/cms-forms/risk-assessment/$cms_form_id";
+                $link = URL_ROOT . "/cms-forms/risk-assessment/$cms_form_id";
                 $subject = genEmailSubject($cms_form_id);
-                $body = "Hi, ". ucwords($originator->first_name. ' '. $originator->last_name, '-. '). HTML_NEW_LINE.
+                $body = "Hi, " . ucwords($originator->first_name . ' ' . $originator->last_name, '-. ') . HTML_NEW_LINE .
                     "Your Change Process Applicaton has been reviewed by " . ucwords($hod->first_name . ' ' . $hod->last_name) . '.' . HTML_NEW_LINE .
                     "Use the link below to continue the process." . HTML_NEW_LINE . '<a href="' .
                     $link . '" />' . $link . '</a>';
@@ -165,9 +167,9 @@ class CMSForms extends Controller
                 // email to originator
                 $email_model->add([
                     'subject' => $subject,
-                     'body' =>$body,
+                    'body' => $body,
                     'recipient_address' => $originator->email,
-                     'recipient_name' => ucwords($originator->first_name. ' '. $originator->last_name, '-. '),
+                    'recipient_name' => ucwords($originator->first_name . ' ' . $originator->last_name, '-. '),
                     'sender_user_id' => getUserSession()->user_id,
                     'follow_up' => true,
                     'cms_form_id' => $cms_form_id
@@ -204,7 +206,7 @@ class CMSForms extends Controller
             if ($form_model->updateForm($cms_form_id, [
                 'affected_dept' => $payload['form']->affected_dept,
                 'risk_attachment' => $uploaded['success'] ? $uploaded['file'] : ''
-                ])) {
+            ])) {
                 // Notify hod
                 (new EmailModel)->add([
                     'subject' => genEmailSubject($cms_form_id),
@@ -224,7 +226,7 @@ class CMSForms extends Controller
             } else {
                 flash('flash_risk_assessment', 'An error occurred!', 'text-danger text-center alert');
             }
-            redirect('cms-forms/risk-assessment/'.$cms_form_id);
+            redirect('cms-forms/risk-assessment/' . $cms_form_id);
         }
         $this->view('cms_forms/risk_assessment', $payload);
     }
@@ -345,8 +347,8 @@ class CMSForms extends Controller
         $payload = array();
         $payload['user'] = getUserSession();
         $payload['title'] = 'Process Closed';
-        flash('process_closed','This Change Process is complete and has been closed!', 'text-danger text-center',
-                            '&nbsp');
+        flash('process_closed', 'This Change Process is complete and has been closed!', 'text-danger text-center',
+            '&nbsp');
         $this->view('cms_forms/process_closed', $payload);
     }
 
@@ -356,7 +358,7 @@ class CMSForms extends Controller
         $payload['title'] = 'Change Proposal, Assessment & Implementation';
         $payload['form'] = new CMSForm($cms_form_id);
         $payload['originator'] = new User($payload['form']->originator_id);
-        redirect('cms-forms/'.$payload['form']->next_action.'/'.$cms_form_id);
+        redirect('cms-forms/' . $payload['form']->next_action . '/' . $cms_form_id);
     }
 
     public function StopChangeProcess()

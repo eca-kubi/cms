@@ -190,7 +190,7 @@ $( function ()
     // '/cms-forms/pl-closure'
 
     $( '.dataTables_length' ).addClass( 'd-inline-block mx-3' );
-    proxyEmail();
+    //proxyEmail();
 } );
 
 window.addEventListener("load", function (event) {

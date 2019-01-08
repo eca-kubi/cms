@@ -11,7 +11,7 @@
 </footer>
 </div>
 <!-- ./wrapper -->
-<input type="hidden" value="<?php echo URL_ROOT?>" id="url_root"/>
+<input type="hidden" value="<?php echo URL_ROOT ?>" id="url_root"/>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/jquery.min.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/datatables.min.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/jquery.ui.widget.js"></script>
