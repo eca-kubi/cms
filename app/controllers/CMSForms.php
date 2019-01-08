@@ -358,7 +358,8 @@ class CMSForms extends Controller
         $payload['title'] = 'Change Proposal, Assessment & Implementation';
         $payload['form'] = new CMSForm($cms_form_id);
         $payload['originator'] = new User($payload['form']->originator_id);
-        redirect('cms-forms/' . $payload['form']->next_action . '/' . $cms_form_id);
+        $this->view('cms_forms/view_change_process');
+        //redirect('cms-forms/' . $payload['form']->next_action . '/' . $cms_form_id);
     }
 
     public function StopChangeProcess()
@@ -372,5 +373,17 @@ class CMSForms extends Controller
             echo (new DateTime())->format(DFB);
         } catch (Exception $e) {
         }
+    }
+
+    public function DownloadAdditionalInfo($cms_form_id)
+    {
+        $file_name = (new CMSForm($cms_form_id))->additional_info;
+        download_file(PATH_ADDITIONAL_INFO . $file_name);
+    }
+
+    public function DownloadRiskAttachment($cms_form_id)
+    {
+        $file_name = (new CMSForm($cms_form_id))->risk_attachment;
+        download_file(PATH_ADDITIONAL_INFO . $file_name);
     }
 }

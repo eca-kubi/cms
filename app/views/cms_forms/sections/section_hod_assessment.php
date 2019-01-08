@@ -9,7 +9,7 @@ if (empty($payload['form']->hod_approval) && !isHOD($payload['form']->cms_form_i
             <span class="w-100 row border ml-0 p-1">
                 <h6 class="text-bold font-italic col m-1">
                     <a href="#section_2" data-toggle="collapse">
-                        <i class="fa fa-minus" data-id></i> Section 2 - Further Assesment by HOD
+                        <i class="fa fa-minus" data-id></i> Section 2 - Further Assessment by HOD
                         <span class="text-muted d-sm-inline d-block">
                             (To be Completed by - HoD)
                         </span>

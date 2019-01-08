@@ -6,7 +6,7 @@
                 <span class="text-muted d-sm-inline d-block">(Completed by - Originator)</span>
             </a>
         </h6>
-        <span class="text-right float-right">
+        <span class="text-right float-right d-none">
             <?php /** @var array $payload */
             if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id) && empty($payload['form']->hod_approval))
                   { ?>
@@ -132,7 +132,8 @@
                             <span class="col-sm-8">
                                 <?php if (!empty($payload['form']->additional_info))
                                       { ?>
-                                      <a href="<?php echo URL_ROOT . '/public/assets/uploads/additional-info/' . $payload['form']->additional_info; ?>"
+                                      <a href="<?php echo URL_ROOT . '/cms-forms/download-additional-info/' . $payload['form']->cms_form_id; ?>"
+                                         target="_blank"
                                          class="btn btn-primary" title="Download Additional Information">
                                     <i class="fa fa-download"></i>
                                 </a><?php    } else {

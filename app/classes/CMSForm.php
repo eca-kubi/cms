@@ -45,6 +45,7 @@ class CMSForm implements \JsonSerializable
     public $hod_approval_date;
     public $section_completed;
     public $email_subject;
+    public $risk_attachment;
 
     public function __construct($cms_form_id = -1)
     {
@@ -80,6 +81,7 @@ class CMSForm implements \JsonSerializable
             $this->section_completed = $cms_form->section_completed;
             $this->hod_reasons = $cms_form->hod_reasons;
             $this->email_subject = $cms_form->email_subject;
+            $this->risk_attachment = $cms_form->risk_attachment;
         }
     }
 
@@ -113,7 +115,8 @@ class CMSForm implements \JsonSerializable
             'affected_dept' => $this->affected_dept,
             'hod_approval_date' => $this->hod_approval_date,
             'section_completed' => $this->section_completed,
-            'email_subject' => $this->email_subject
+            'email_subject' => $this->email_subject,
+            'risk_attachment' => $this->risk_attachment
         ];
     }
 }
