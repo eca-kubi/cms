@@ -135,7 +135,7 @@
                                       <a href="<?php echo URL_ROOT . '/cms-forms/download-additional-info/' . $payload['form']->cms_form_id; ?>"
                                          target="_blank"
                                          class="btn btn-primary" title="Download Additional Information">
-                                    <i class="fa fa-download"></i>
+                                              <span class="text-sm">Download</span>
                                 </a><?php    } else {
                                           echoIfEmpty($payload['form']->additional_info, 'N/A');
                                       } ?>

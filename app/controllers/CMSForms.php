@@ -27,7 +27,7 @@ class CMSForms extends Controller
         redirect('cms-forms/dashboard');
     }
 
-    public function dashboard()
+    public function Dashboard()
     {
         if (!isLoggedIn()) {
             redirect('users/login');
@@ -81,7 +81,7 @@ class CMSForms extends Controller
                     'text-success text-sm text-center alert');
                 $originator = getUserSession()->first_name . ' ' . getUserSession()->last_name;
                 $recipient = new User($_POST['hod_id']);
-                $link = URL_ROOT . '/cms-forms/hod-assessment/' . $cms_form_id;
+                $link = URL_ROOT . '/cms-forms/view-change-process/' . $cms_form_id;
                 //$subject = 'Change Proposal, Assessment and Implementation';
                 $body = 'Hi ' . ucwords($recipient->first_name . ' ' . $recipient->last_name, '-. ') . ', ' . HTML_NEW_LINE . 'A Change Proposal application has been raised by ' . $originator . '.' .
                     ' Kindly use the link below to approve it.' . HTML_NEW_LINE . genLink($cms_form_id, 'hod-assessment');
@@ -101,14 +101,21 @@ class CMSForms extends Controller
                 $email_model->add([
                     'subject' => genEmailSubject($cms_form_id),
                     'body' => "Hi, $originator, the Change Process Application you raised has been submitted to your 
-                    HOD for review. You will be notified accordingly.",
+                    HOD for review. You will be notified accordingly --view the Change Application here: " . $link,
                     'recipient_address' => getUserSession()->email,
                     'recipient_name' => $originator,
                     'sender_user_id' => getUserSession()->user_id,
                     'parent' => true,
                     'cms_form_id' => $cms_form_id
                 ]);
-                redirect('cms-forms/dashboard/');
+                //set action log
+                $log_id = (new CmsActionLogModel())->setAction(ACTION_START_CHANGE_PROCESS)
+                    ->setPerformedBy(getUserSession()->user_id)
+                    ->setCmsFormId($cms_form_id)
+                    ->setSectionAffected(SECTION_START_CHANGE_PROCESS)
+                    ->insert();
+                completeSection($cms_form_id, SECTION_START_CHANGE_PROCESS);
+                redirect('cms-forms/view-change-process/' . $cms_form_id);
             }
         }
         $this->view('cms_forms/start_change_process', $payload);
@@ -175,10 +182,10 @@ class CMSForms extends Controller
                     'cms_form_id' => $cms_form_id
                 ]);
                 flash('flash_dashboard', 'Change Process updated successfully!', 'alert text-sm text-success text-center');
-                redirect('cms-forms/dashboard');
+                redirect('cms-forms/view-change-process/' . $cms_form_id);
             }
         }
-        $this->view('cms_forms/hod_assessment', $payload);
+        $this->view('cms_forms/view_change_process', $payload);
     }
 
     public function RiskAssessment(int $cms_form_id = -1)
@@ -357,8 +364,14 @@ class CMSForms extends Controller
         $payload = array();
         $payload['title'] = 'Change Proposal, Assessment & Implementation';
         $payload['form'] = new CMSForm($cms_form_id);
+        $payload['active'] = CMSFormModel::getActive();
+        $payload['closed'] = CMSFormModel::getClosed();
         $payload['originator'] = new User($payload['form']->originator_id);
-        $this->view('cms_forms/view_change_process');
+        $payload['hod'] = new User($payload['form']->hod_id);
+        $payload['departments'] = (new DepartmentModel())->getAllDepartments();
+        $payload['affected_departments'] = getAffectedDepartments($cms_form_id);
+        $payload['cms_questions'] = getImpactQuestions();
+        $this->view('cms_forms/view_change_process', $payload);
         //redirect('cms-forms/' . $payload['form']->next_action . '/' . $cms_form_id);
     }
 

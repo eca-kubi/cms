@@ -1,11 +1,12 @@
 <?php /** @var  array $payload */
-if (empty($payload['form']->hod_approval) && !isHOD($payload['form']->cms_form_id, getUserSession()->user_id)) {
-    alert('HOD Assessment Pending', 'text-primary text-bold alert');
-} elseif (empty($payload['form']->hod_approval) && isHOD($payload['form']->cms_form_id, getUserSession()->user_id)) {
-    ?>
-<div class="row p-2">
-    <form class="w-100" action="" method="post" data-toggle="validator" role="form" enctype="multipart/form-data">
-        <fieldset class="w-100">
+if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
+    if (isHOD($payload['form']->cms_form_id, getUserSession()->user_id)) { ?>
+        <div class="row p-2">
+            <form class="w-100"
+                  action="<?php echo URL_ROOT . '/cms-forms/hod-assessment/' . $payload['form']->cms_form_id ?>"
+                  method="post" data-toggle="validator" role="form"
+                  enctype="multipart/form-data">
+                <fieldset class="w-100">
             <span class="w-100 row border ml-0 p-1">
                 <h6 class="text-bold font-italic col m-1">
                     <a href="#section_2" data-toggle="collapse">
@@ -21,87 +22,93 @@ if (empty($payload['form']->hod_approval) && !isHOD($payload['form']->cms_form_i
                     </a><?php } ?>
                 </span>
             </span>
-            <div id="section_2" class="collapse show section border p-3">
-                <div class="row">
-                    <div class="col-sm-12 form-group">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="hod_approval" id="approved"
-                                   value="approved" required/>
-                            <label class="form-check-label" for="approved">Approve</label>
+                    <div id="section_2" class="collapse show section border p-3">
+                        <div class="row">
+                            <div class="col-sm-12 form-group">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="hod_approval" id="approved"
+                                           value="approved" required/>
+                                    <label class="form-check-label" for="approved">Approve</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="hod_approval" id="rejected"
+                                           value="rejected" required/>
+                                    <label class="form-check-label" for="rejected">Reject</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="hod_approval" id="delayed"
+                                           value="delayed" required/>
+                                    <label class="form-check-label" for="delayed">Delay</label>
+                                </div>
+                                <small class="help-block with-errors"></small>
+                            </div>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="hod_approval" id="rejected"
-                                   value="rejected" required/>
-                            <label class="form-check-label" for="rejected">Reject</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="hod_approval" id="delayed"
-                                   value="delayed" required/>
-                            <label class="form-check-label" for="delayed">Delay</label>
-                        </div>
-                        <small class="help-block with-errors"></small>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group form-row">
-                            <label for="" class="col-sm-12">Reasons</label>
-                            <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group form-row">
+                                    <label for="" class="col-sm-12">Reasons</label>
+                                    <div class="col-sm-8">
                                 <textarea class="form-control" name="hod_reasons" aria-describedby="helpId"
                                           placeholder="" required></textarea>
-                                <small id="helpId" class="form-text with-errors help-block"></small>
+                                        <small id="helpId" class="form-text with-errors help-block"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group form-row d-none" id="hod_ref_num">
+                                    <label for="" class="col-sm-12">
+                                        Reference Number
+                                        <small>(Required only if approved)</small>
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="hod_ref_num"
+                                               aria-describedby="helpId"
+                                               placeholder="" required/>
+                                        <small id="helpId" class="form-text with-errors help-block"></small>
+                                    </div>
+                                </div>
+                            </div><?php
+                            if (isBudgetHigh($payload['form']->cms_form_id) || isRiskHigh($payload['form']->cms_form_id)) { ?>
+                                <div class="col-sm-12">
+                                <div class="form-group form-row">
+                                    <label for="" class="col-sm-12">
+                                        Select GM
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <select class="replace-multiple-select form-control">
+                                            <option></option>
+                                        </select>
+                                        <select class="form-control bs-select multiple-hidden d-none"
+                                                data-none-selected-text="Select GM to Approve" name="gm_id"
+                                                data-size="5"
+                                                id="gm_id" aria-describedby="helpId" placeholder="" required>
+                                            <option class="d-none"></option><?php
+                                            foreach ((array)$payload['gms'] as $value) {
+                                                $hod = new User($value->user_id); ?>
+                                                <option
+                                                value="<?php echo $hod->user_id; ?>"><?php echo ucwords($hod->first_name . ' ' . $hod->last_name, '-. ') . ' (' . $hod->job_title . ')'; ?></option><?php } ?>
+                                        </select>
+                                        <small id="helpId" class="form-text text-muted help-block d-none">Hint: Select
+                                            GM to
+                                            Approve
+                                        </small>
+                                        <small id="helpId" class="form-text with-errors help-block"></small>
+                                    </div>
+                                </div>
+                                </div><?php } ?>
+                            <div class="col-sm-8 text-right">
+                                <button type="submit" class="btn bg-success w3-btn">Submit</button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-12">
-                        <div class="form-group form-row d-none" id="hod_ref_num">
-                            <label for="" class="col-sm-12">
-                                Reference Number
-                                <small>(Required only if approved)</small>
-                            </label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" name="hod_ref_num" aria-describedby="helpId"
-                                       placeholder="" required/>
-                                <small id="helpId" class="form-text with-errors help-block"></small>
-                            </div>
-                        </div>
-                    </div><?php
-                    if (isBudgetHigh($payload['form']->cms_form_id) || isRiskHigh($payload['form']->cms_form_id)) { ?>
-                        <div class="col-sm-12">
-                        <div class="form-group form-row">
-                            <label for="" class="col-sm-12">
-                                Select GM
-                            </label>
-                            <div class="col-sm-8">
-                                <select class="replace-multiple-select form-control">
-                                    <option></option>
-                                </select>
-                                <select class="form-control bs-select multiple-hidden d-none"
-                                        data-none-selected-text="Select GM to Approve" name="gm_id" data-size="5"
-                                        id="gm_id" aria-describedby="helpId" placeholder="" required>
-                                    <option class="d-none"></option><?php
-                                    foreach ((array)$payload['gms'] as $value) {
-                                        $hod = new User($value->user_id); ?>
-                                        <option
-                                        value="<?php echo $hod->user_id; ?>"><?php echo ucwords($hod->first_name . ' ' . $hod->last_name, '-. ') . ' (' . $hod->job_title . ')'; ?></option><?php } ?>
-                                </select>
-                                <small id="helpId" class="form-text text-muted help-block d-none">Hint: Select GM to
-                                    Approve
-                                </small>
-                                <small id="helpId" class="form-text with-errors help-block"></small>
-                            </div>
-                        </div>
-                        </div><?php } ?>
-                    <div class="col-sm-8 text-right">
-                        <button type="submit" class="btn bg-success w3-btn">Submit</button>
-                    </div>
-                </div>
-            </div>
-        </fieldset>
-    </form>
-</div>
-<?php } else { ?>
-<div class="row p-2">
+                </fieldset>
+            </form>
+        </div>
+    <?php } else {
+        alert('HOD Assessment Pending', 'text-primary text-bold alert');
+    }
+} else { ?>
+    <div class="row p-2">
     <span class="w-100 row border ml-0 p-1">
         <h6 class="text-bold font-italic col m-1">
             <a href="#section_2b" data-toggle="collapse">
@@ -112,27 +119,27 @@ if (empty($payload['form']->hod_approval) && !isHOD($payload['form']->cms_form_i
             </a>
         </h6>
         <span class="text-right float-right invisible"><?php if (isHod($payload['form']->cms_form_id, getUserSession()->user_id)) { ?>
-            <a href="#" title="Edit this section">
+                <a href="#" title="Edit this section">
                 <i class="fa fa-edit"></i>
             </a><?php } ?>
         </span>
     </span>
-    <div class="w-100 section collapse" id="section_2b">
-        <table class="table table-bordered table-user-information font-raleway">
-            <thead class="thead-default d-none">
+        <div class="w-100 section collapse" id="section_2b">
+            <table class="table table-bordered table-user-information font-raleway">
+                <thead class="thead-default d-none">
                 <tr>
                     <th></th>
                     <th></th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 <tr>
                     <td scope="row">
                         <span class="row">
                             <span class="col-sm-4 text-sm-right">
                                 <b>HOD: </b>
                             </span>
-                        <span class="col-sm-8"><?php echo ucwords($payload['hod']->first_name . ' ' . $payload['hod']->last_name); ?><?php echo "({$payload['hod']->job_title})"; ?>
+                        <span class="col-sm-8"><?php echo ucwords($payload['hod']->first_name . ' ' . $payload['hod']->last_name); ?><?php echo " ({$payload['hod']->job_title})"; ?>
                             </span>
                         </span>
                     </td>
@@ -141,7 +148,7 @@ if (empty($payload['form']->hod_approval) && !isHOD($payload['form']->cms_form_i
                             <span class="col-sm-4 text-sm-right">
                                 <b>HOD Approval: </b>
                             </span>
-                        <span class="col-sm-8"><?php echo ucwords($payload['form']->hod_approval); ?>
+                        <span class="col-sm-8 <?php echo $payload['form']->hod_approval == 'rejected' || 'delayed' ? 'text-danger' : ''; ?>"><?php echo ucwords($payload['form']->hod_approval); ?>
                             </span>
                         </span>
                     </td>
@@ -166,7 +173,7 @@ if (empty($payload['form']->hod_approval) && !isHOD($payload['form']->cms_form_i
                         </span>
                     </td>
                 </tr>
-        </table>
+            </table>
+        </div>
     </div>
-</div>
 <?php } ?>
