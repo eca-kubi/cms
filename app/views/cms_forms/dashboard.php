@@ -50,7 +50,7 @@
                                     <h3 class="box-title cursor-pointer" onclick="$('#btn_collapse_1').click();">Current
                                         CMS Forms
                                         <span
-                                                class="text-muted d-sm-inline d-block">(Active Now)</span></h3>
+                                                class="text-muted d-sm-inline d-block">(Active)</span></h3>
 
                                     <div class="box-tools pull-right">
                                         <button type="button" id="btn_collapse_1" class="btn btn-box-tool"
@@ -66,15 +66,21 @@
                                 <div class="box-body">
                                     <?php
                                     if (!empty($payload['active'])) { ?>
-                                        <ul class="products-list product-list-in-box row">
+                                        <div class="products-list product-list-in-box row">
                                             <?php
+                                            $count = 1;
                                             foreach ($payload['active'] as $val) {
                                                 $cms_form = new CMSForm($val->cms_form_id);
                                                 $originator = new User($cms_form->originator_id); ?>
-                                                <li class="item cms-list-item col-sm-6" data-target=""
-                                                    style="cursor:pointer"
-                                                    onclick="window.location.href = '<?php echo URL_ROOT . "/cms-forms/view-change-process/" . $cms_form->cms_form_id; ?>'">
+                                                <div class="item cms-list-item col-sm-5 <?php echo $count % 2 > 0 ? 'mx-sm-5' : '';
+                                                $count++; ?>" data-target=""
+                                                     style="cursor:pointer"
+                                                     onclick="window.location.href = '<?php echo URL_ROOT . "/cms-forms/view-change-process/" . $cms_form->cms_form_id; ?>'">
                                                     <dl class="row callout">
+                                                        <dt class="invisible">Id</dt>
+                                                        <dd class="col-sm-8 product-description"><span
+                                                                    class="badge">#<?php echo $cms_form->cms_form_id ?></span>
+                                                        </dd>
                                                         <dt class="col-sm-4 text-sm-right">Originator</dt>
                                                         <dd class="col-sm-8 product-description"><?php echo ucwords($originator->first_name . ' ' . $originator->last_name); ?>
                                                             (<?php echo $originator->job_title; ?>)
@@ -84,7 +90,7 @@
                                                         </dd>
                                                         <dt class="col-sm-4 text-sm-right">Date</dt>
                                                         <dd class="col-sm-8 product-description">
-                                                            <?php echo formatDate($cms_form->date_raised, DFB, DFF); ?>
+                                                            <?php echo formatDate($cms_form->date_raised, DFB_DT, DFF_DT); ?>
                                                         </dd>
                                                         <dt class="col-sm-4 text-sm-right">Description</dt>
                                                         <dd class="col-sm-8 product-description">
@@ -94,26 +100,26 @@
                                                         <dd class="col-sm-8">
                                                             <a href="<?php echo URL_ROOT . '/cms-forms/view-change-process/' . $cms_form->cms_form_id; ?>"
                                                                title="View Change Process"
-                                                               class="btn w3-btn badge badge-success">
-                                                                <i class="fa fa-eye"></i>
-                                                            </a>
-                                                            <a href="<?php echo URL_ROOT; ?>/cms-forms/stop-change-process/<?php echo $cms_form->cms_form_id; ?>"
-                                                               title="Stop Change Process"
-                                                               class="btn w3-btn badge badge-danger">
-                                                                <i class="fa fa-stop"></i>
+                                                               class="btn w3-btn badge bg-blue-gradient">
+                                                                <i class="fa fa-info-circle"></i>
                                                             </a>
                                                             <a href="<?php echo URL_ROOT; ?>/cms-forms/download-change-process/<?php echo $cms_form->cms_form_id; ?>"
                                                                title="Download Change Process"
-                                                               class="btn w3-btn badge badge-primary">
+                                                               class="btn w3-btn badge bg-aqua-gradient">
                                                                 <i class="fa fa-download"></i>
+                                                            </a>
+                                                            <a href="<?php echo URL_ROOT; ?>/cms-forms/stop-change-process/<?php echo $cms_form->cms_form_id; ?>"
+                                                               title="Stop Change Process"
+                                                               class="btn w3-btn badge bg-danger-gradient">
+                                                                <i class="fa fa-stop"></i>
                                                             </a>
                                                         </dd>
                                                     </dl>
-                                                </li>
+                                                </div>
                                             <?php }
                                             ?>
                                             <!-- /.item -->
-                                        </ul>
+                                        </div>
                                     <?php } else { ?>
                                         <p class="text-center text-muted">No Active Change Proposal Applications</p>
                                     <?php }
@@ -151,12 +157,14 @@
                                     if (!empty($payload['closed'])) { ?>
                                         <ul class="products-list product-list-in-box">
                                             <?php
+                                            $count = 1;
                                             foreach ((array)$payload['closed'] as $val) {
                                                 $cms_form = new CMSForm($val->cms_form_id);
                                                 $originator = new User($cms_form->originator_id); ?>
                                                 <li class="item cms-list-item" data-target="" style="cursor:pointer"
                                                     onclick="window.location.href = '<?php echo URL_ROOT . "/cms-forms/view-change-process/" . $cms_form->cms_form_id; ?>'">
-                                                    <dl class="row callout col-sm-6">
+                                                    <dl class="row callout col-sm-5 <?php echo $count % 2 > 0 ? 'mx-sm-5' : '';
+                                                    $count++; ?>">
                                                         <dt class="col-sm-2 text-sm-right">Originator</dt>
                                                         <dd class="col-sm-10 product-description">
                                                             <?php echo ucwords($originator->first_name . ' ' . $originator->last_name); ?>

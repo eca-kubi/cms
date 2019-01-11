@@ -75,32 +75,4 @@ class UserModel extends Model
         }
         return false;
     }
-
-    // Verify existence of staff_id with id_
-    public function hasWithIdUser($staff_id)
-    {
-        $this->db->where('staff_id', $staff_id);
-        if ($this->db->has($this->table)) {
-            return 'true';
-        }
-        return false;
-    }
-
-    public function hasRole($role, $staff_id)
-    {
-        $this->db->where('role', $role);
-        $this->db->where('staff_id', $staff_id);
-        if ($this->db->has($this->table)) {
-            return 'true';
-        }
-        return '';
-    }
-
-    public function getUsersByRole($role)
-    {
-        $this->db->where('role', $role)->orderBy('first_name', 'asc');
-        return $this->db->ObjectBuilder()->get($this->table);
-    }
-
-
 }

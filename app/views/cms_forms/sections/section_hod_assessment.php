@@ -114,7 +114,8 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
             <a href="#section_2b" data-toggle="collapse">
                 <i class="fa fa-plus" data-id></i> Section 2 - Further Assesment by HOD
                 <span class="text-muted d-sm-inline d-block">
-                    (Completed by - HoD on <?php echo formatDate($payload['form']->hod_approval_date, DFB_DT, DFF_DT); ?> )
+                    (Completed by  <?php echo concatName([$payload['hod']->first_name, $payload['hod']->last_name]); ?>
+                    - <i><?php echo $payload['hod']->job_title; ?>)</i>
                 </span>
             </a>
         </h6>
@@ -148,7 +149,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                             <span class="col-sm-4 text-sm-right">
                                 <b>HOD Approval: </b>
                             </span>
-                        <span class="col-sm-8 <?php echo $payload['form']->hod_approval == 'rejected' || 'delayed' ? 'text-danger' : ''; ?>"><?php echo ucwords($payload['form']->hod_approval); ?>
+                        <span class="col-sm-8 <?php echo $payload['form']->hod_approval == 'rejected' || $payload['form']->hod_approval == 'delayed' ? 'text-danger' : 'text-success'; ?>"><?php echo ucwords($payload['form']->hod_approval); ?>
                             </span>
                         </span>
                     </td>
@@ -172,6 +173,18 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                             </span>
                         </span>
                     </td>
+                </tr>
+                <tr>
+                    <td scope="row" colspan="2">
+                        <span class="row">
+                            <span class="col-sm-2 text-sm-right">
+                                <b>Date: </b>
+                            </span>
+                        <span class="col-sm-8"><?php echo formatDate($payload['form']->hod_approval_date, DFB_DT, DFF_DT); ?>
+                            </span>
+                        </span>
+                    </td>
+
                 </tr>
             </table>
         </div>

@@ -51,7 +51,7 @@ const HTML_NEW_LINE = '<br/>';
 
 const ACTION_START_CHANGE_PROCESS = 'start_change_process';
 const ACTION_HOD_ASSESSMENT = 'hod-assessment';
-const ACTION_RISK_ASSESSMENT = 'risk-assessment';
+const ACTION_RISK_ASSESSMENT_COMPLETED = 'risk_assessment_completed';
 const ACTION_IMPACT_ASSESSMENT = 'impact-assessment';
 const ACTION_GM_ASSESSMENT = 'gm-assessment';
 const ACTION_HOD_AUTHORISATION = 'hod-authorisation';

@@ -435,8 +435,11 @@ function sectionCompleted($cms_form_id, $section)
 function completeSection($cms_form_id, $section)
 {
     $db = Database::getDbh();
-    $section = $section . ',' . $db->where('cms_form_id', $cms_form_id)->
+    $s = $db->where('cms_form_id', $cms_form_id)->
         getValue('cms_form', 'section_completed');
+    if (!strpos($s, $section)) {
+        $section = trim($section . ',' . $s, ',');
+    }
     $db->where('cms_form_id', $cms_form_id)->
     update('cms_form', ['section_completed' => $section]);
 }
@@ -459,4 +462,17 @@ function setActionLog($data)
 {
     $db = Database::getDbh();
     return $db->insert('cms_action_log', $data);
+}
+
+function concatName(array $parts, $capitalize = true)
+{
+    $full_name = '';
+    foreach ($parts as $part) {
+        if ($capitalize) {
+            $full_name = trim($full_name . ' ' . ucwords($part, '-,. '), ' ');
+        } else {
+            $full_name = trim($full_name . ' ' . $part, ' ');
+        }
+    }
+    return $full_name;
 }

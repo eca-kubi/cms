@@ -3,7 +3,8 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
     if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
         if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id)) { ?>
             <div class="row p-2">
-                <form action="<?php echo URL_ROOT . '/cms-forms/risk-assessment/' . $payload['form']->cms_form_id ?>"
+                <form class="w-100"
+                      action="<?php echo URL_ROOT . '/cms-forms/risk-assessment/' . $payload['form']->cms_form_id ?>"
                       method="post" data-toggle="validator" role="form" enctype="multipart/form-data">
                     <fieldset class="w-100">
             <span class="row w-100 border ml-0 p-1">
@@ -13,10 +14,12 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                         <br/>
                         <span class="text-muted">
                             <small>
-                                (Consider geographical location, processess,
+                                Consider geographical location, processess,
                                 materials, equipment, machinery, costs, tasks, people, etc. Risk assessment
-                                to be conducted in terms of HSMP 2.01 PR - Health and Safety Identification
-                                and Risk Assessment Procedure. Attach risk assessment to this form)
+                                to be conducted in terms of <a href="#risk-assessment-procedure"
+                                                               title="Click here to read the Risk Assessment Procedure."> <u
+                                            class="text-danger ">HSMP 2.01 PR - Health and Safety Identification
+                                and Risk Assessment Procedure</u>.</a> <br><b>PS: Attach risk assessment document to this form. </b>
                             </small>
                         </span>
                     </a>
@@ -42,8 +45,8 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                                         <div class="col-sm-8">
                                             <input class="form-control" type="file" name="risk_attachment"
                                                    aria-describedby="helpId"
-                                                   accept="<?php echo DOC_FILE_TYPES; ?>"/>
-                                            <small id="helpId" class="form-text with-errors"></small>
+                                                   accept="<?php echo DOC_FILE_TYPES; ?>" required/>
+                                            <small id="helpId" class="form-text with-errors help-block"></small>
                                         </div>
                                     </div>
                                 </div>
@@ -58,7 +61,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                                                     name="affected_dept[]"
                                                     aria-describedby="helpId"
                                                     data-none-selected-text="Select Affected Departments"
-                                                    multiple="multiple">
+                                                    multiple="multiple" required>
                                                 <option class="d-none"></option>
                                                 <?php
 
@@ -68,7 +71,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                                                 ?>
                                             </select>
 
-                                            <small id="helpId" class="form-text with-errors"></small>
+                                            <small id="helpId" class="with-errors help-block"></small>
                                         </div>
                                     </div>
                                 </div>

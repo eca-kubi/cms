@@ -207,8 +207,8 @@ class CMSForms extends Controller
             $form_model = new CMSFormModel();
             $uploaded = uploadRiskAttachment('risk_attachment', $cms_form_id);
             if (!$uploaded['success']) {
-                flash('flash_risk_assessment', $uploaded['reason'], 'text-danger text-center alert');
-                redirect('cms-forms/risk-assessment/' . $cms_form_id);
+                flash('flash_risk_assessment', $uploaded['reason'], 'text-danger text-center alert text-sm');
+                redirect('cms-forms/view-change-process/' . $cms_form_id);
             }
             if ($form_model->updateForm($cms_form_id, [
                 'affected_dept' => $payload['form']->affected_dept,
@@ -227,15 +227,23 @@ class CMSForms extends Controller
                     'follow_up' => true,
                     'cms_form_id' => $cms_form_id
                 ]);
+                // log risk assessment complete action
+                $log = new CmsActionLogModel();
+                $log->setSectionAffected(SECTION_RISK_ASSESSMENT)
+                    ->setAction(ACTION_RISK_ASSESSMENT_COMPLETED)
+                    ->setPerformedBy(getUserSession()->user_id)
+                    ->setCmsFormId($cms_form_id)
+                    ->setDepartmentAffected($payload['form']->affected_dept)
+                    ->insert();
                 // Notify impact assessment reps
                 //notifyImpactAccessReps($cms_form_id);
                 populateImpactResponse(explode(',', $payload['form']->affected_dept), $cms_form_id);
             } else {
-                flash('flash_risk_assessment', 'An error occurred!', 'text-danger text-center alert');
+                flash('flash_risk_assessment', 'An error occurred!', 'text-danger text-center alert text-sm');
             }
-            redirect('cms-forms/risk-assessment/' . $cms_form_id);
+            redirect('cms-forms/view-change-process/' . $cms_form_id);
         }
-        $this->view('cms_forms/risk_assessment', $payload);
+        $this->view('cms_forms/view_change_process', $payload);
     }
 
     public function ImpactResponse($cms_form_id)

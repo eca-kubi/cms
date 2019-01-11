@@ -11,22 +11,26 @@ class CmsActionLogModel extends Model implements \JsonSerializable
     public $action;
     public $date;
 
-    public function __construct($cms_action_log_id = null)
+    public function __construct($where_col_val = null)
     {
         parent::__construct();
-        if (!empty($cms_action_log_id)) {
-            $log = $this->get($cms_action_log_id);
+        if (!empty($where_col_val)) {
+            $log = $this->fetchSingle($where_col_val);
             foreach ($log as $col => $value) {
                 $this->$col = $value;
             }
         }
     }
 
-    public function get($cms_action_log_id)
+    public function fetchSingle(array $where_col_val)
     {
-        return Database::getDbh()->objectBuilder()->
-        where('cms_action_log_id', $cms_action_log_id)->
-        getOne(self::$table);
+        $db = Database::getDbh()->objectBuilder();
+        if (!empty($where_col_val)) {
+            foreach ($where_col_val as $col => $val) {
+                $db = $db->where($col, $val);
+            }
+        }
+        return $db->getOne('cms_action_log');
     }
 
     public static function has($column, $value)
@@ -184,21 +188,5 @@ class CmsActionLogModel extends Model implements \JsonSerializable
     {
         $this->cms_form_id = $cms_form_id;
         return $this;
-    }
-
-    // Verify existence of column value
-
-    public function getActionLog($cms_form_id, $action, array $cols = null): array
-    {
-        $db = Database::getDbh();
-        $db = $db->objectBuilder();
-        $db = $db->where('cms_form_id', $cms_form_id)->
-        where('action', $action);
-        if (!empty($cols)) {
-            foreach ($cols as $col => $val) {
-                $db = $db->where($col, $val);
-            }
-        }
-        return $db->get('cms_action_log');
     }
 }

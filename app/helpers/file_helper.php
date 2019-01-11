@@ -139,7 +139,7 @@ function uploadRiskAttachment($file, $cms_form_id)
                     || ($_FILES[$file]['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
                     || ($_FILES[$file]['type'] == 'application/msword')
                     || ($_FILES[$file]['type'] == 'application/pdf')
-                    || ($_FILES[$file]['type'] == 'txt/plain')
+                    || ($_FILES[$file]['type'] == 'text/plain')
                 )
                 && in_array($extension, $allowedExts)) {
                 if ($_FILES[$file]['error'] > 0) {
@@ -155,7 +155,7 @@ function uploadRiskAttachment($file, $cms_form_id)
                     return $result;
                 }
             } else {
-                $result['reason'] = 'The type of file uploaded is not supported';
+                $result['reason'] = 'Please upload a risk assessment document in word or pdf format!';
             }
         } else {
             $result['success'] = true;
@@ -181,7 +181,7 @@ function uploadAdditionalInfo($file, $cms_form_id)
             || ($_FILES[$file]['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             || ($_FILES[$file]['type'] == 'application/msword')
             || ($_FILES[$file]['type'] == 'application/pdf')
-            || ($_FILES[$file]['type'] == 'txt/plain')
+                || ($_FILES[$file]['type'] == 'text/plain')
           )
             && in_array($extension, $allowedExts)) {
             if ($_FILES[$file]['error'] > 0) {
