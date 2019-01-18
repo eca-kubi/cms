@@ -2,6 +2,8 @@
 var datepicker_shown = 0;
 var moment_format = 'DD/MM/YYYY';
 var URL_ROOT = '';
+var form_submit_count = 0;
+form_is_valid = false;
 //=============================================================
 // Daterangepicker Plugin
 var date_rangepicker_options = {
@@ -14,26 +16,38 @@ var date_rangepicker_options = {
     monthSelect: true,
     yearSelect: true,
     format: 'ddd, MMM D, YYYY',
-    yearSelect: [1900, moment().get('year')]
+    //yearSelect: [1900, moment().get('year')]
     //startDate: '1900-01-01'
 };
 
-$( function ()
-{
-    $( '.content-wrapper' ).css( 'margin-top', $( '.navbar-fixed' ).height() + 'px' );
-    URL_ROOT = $( '#url_root' ).val();
-    moment.modifyHolidays.add( 'Ghana' );
+$(document).ready(function () {
+    $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
+    URL_ROOT = $('#url_root').val();
+    moment.modifyHolidays.add('Ghana');
 
-    $( window ).resize( function ()
-    {
-        $( '.content-wrapper' ).css( 'margin-top', $( '.navbar-fixed' ).height() + 'px' );
-    } );
+    $('td.not-allowed').click(function () {
+        department = $(this).data('department');
+        $.toast('You are not  allowed to respond to ' + department + ' Impact Assessment!');
+    });
 
+    $(window).resize(function () {
+        $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
+    });
+
+    $('form').submit(function (e) {
+        $submit_button = $(this).find('[type=submit]');
+        form_is_valid = this.checkValidity();
+        if (form_is_valid) {
+            form_submit_count++;
+            if (form_submit_count > 1) {
+                return false;
+            }
+        }
+    });
     //=============================================================
     // Datatables Plugin
-    if ( typeof $.fn.dataTable !== 'undefined' )
-    {
-        $.extend( true, $.fn.dataTable.defaults, {
+    if (typeof $.fn.dataTable !== 'undefined') {
+        $.extend(true, $.fn.dataTable.defaults, {
             responsive: true,
             processing: true,
             scrollY: 100,
@@ -61,102 +75,90 @@ $( function ()
                 'excel',
                 'print'
             ],
-            "initComplete": function ( settings, json )
-            {
+            "initComplete": function (settings, json) {
             },
-            "drawCallback": function ( settings )
-            {
+            "drawCallback": function (settings) {
             }
-        } );
+        });
     }
 
-    $( '.bs-select' )
-        .selectpicker( {
+    $('.bs-select')
+        .selectpicker({
             liveSearch: true,
             virtualization: true,
             showTick: false,
             showContent: false
-        } )
-        .on( 'loaded.bs.select show.bs.select', function ( e, clickedIndex, isSelected, previousValue )
-        {
-            $( '.replace-multiple-select' ).remove();
-            $( '.multiple-hidden.bs-select' ).removeClass( 'd-none' )
-            $( '.bs-select .dropdown-menu' ).addClass( 'p-0 rounded-0' );
-            $( '.bs-select button' ).addClass( 'w3-hover-none rounded-0 w3-transparent w3-border' );
-            $( '.bootstrap-select' ).addClass( 'exclude-hover' );
-            $( '.bs-select' ).attr( 'tabindex', 1 );
-        } );
+        })
+        .on('loaded.bs.select show.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+            $('.replace-multiple-select').remove();
+            $('.multiple-hidden.bs-select').removeClass('d-none');
+            $('.bs-select .dropdown-menu').addClass('p-0 rounded-0');
+            $('.bs-select button').addClass('w3-hover-none rounded-0 w3-transparent w3-border');
+            $('.bootstrap-select').addClass('exclude-hover');
+            $('.bs-select').attr('tabindex', 1);
+        });
 
     // '/cms-forms/add'
-    $( '#change_type' ).on( 'changed.bs.select', function ( e, clickedIndex, isSelected, previousValue )
-    {
-        var selected_option = $( this ).find( ':selected' );
-        var found = previousValue.find( function ( element )
-        {
-            return element == 'Other';
-        } );
-        if ( isSelected && clickedIndex == 8 || ( isSelected && found ) )
-        {
-            $( '#other_type' ).parents( '.row:eq(0)' ).removeClass( 'd-none' )
-            $( '[name=other_type]' ).attr( 'required', true );
-            $( '#add_cms_form' ).validator( 'update' );
+    $('#change_type').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+        var selected_option = $(this).find(':selected');
+        var found = previousValue.find(function (element) {
+            return element === 'Other';
+        });
+        if (isSelected && clickedIndex === 8 || (isSelected && found)) {
+            $('#other_type').removeClass('d-none');
+            $('[name=other_type]').attr('required', true);
+            $('#add_cms_form').validator('update');
+            $('#button_container').removeClass('col-sm-6').addClass('w-100');
+        } else {
+            $('#other_type').addClass('d-none');
+            $('[name=other_type]').removeAttr('required');
+            $('#add_cms_form').validator('update');
+            $('#button_container').addClass('col-sm-6').removeClass('w-100');
         }
-        else
-        {
-            $( '#other_type' ).parents( '.row:eq(0)' ).addClass( 'd-none' )
-            $( '[name=other_type]' ).removeAttr( 'required' );
-            $( '#add_cms_form' ).validator( 'update' );
-        }
-    } );
+    });
 
-    $( '.section' ).on( 'shown.bs.collapse', function ( e )
-    {
-        $( this ).parent().find( '.fa' ).eq( 0 ).removeClass( 'fa-plus' ).addClass( 'fa-minus' )
+    $('.section').on('shown.bs.collapse', function (e) {
+        $(this).parent().find('.fa').eq(0).removeClass('fa-plus').addClass('fa-minus');
         resizeTables();
         return false;
-    } )
-        .on( 'hidden.bs.collapse', function ( e )
-        {
-            $( this ).parent().find( '.fa' ).eq( 0 ).removeClass( 'fa-minus' ).addClass( 'fa-plus' )
+    })
+        .on('hidden.bs.collapse', function (e) {
+            $(this).parent().find('.fa').eq(0).removeClass('fa-minus').addClass('fa-plus');
             return false;
-        } );
+        });
 
     // '/cms-forms/hod-assesment'
-    $( '[name=hod_approval]' ).on( 'change', function ( e )
-    {
-        if ( $( this ).val() == 'approved' )
-        {
-            $('#hod_ref_num').removeClass('d-none')
-            $('[name=hod_ref_num]').attr('required', true);
+    $('[name=hod_approval]').on('change', function (e) {
+        if ($(this).val() === "approved") {
+            $('#hod_ref_num').removeClass('d-none');
+            $('.gm.form-group').removeClass('d-none');
+            $('[name=hod_ref_num], [name=gm_id]').attr('required', true);
+            $('#hod_assessment_form').validator('update');
+        } else {
+            $('#hod_ref_num').addClass('d-none');
+            $('.gm.form-group').addClass('d-none');
+            $("[name=hod_ref_num], [name=gm_id]").attr('required', false);
             $('#hod_assessment_form').validator('update');
         }
-        else
-        {
-            $('#hod_ref_num').addClass('d-none')
-            $('[name=hod_ref_num]').attr('required', false);
-            $('#hod_assessment_form').validator('update');
-        }
-    } );
+    });
 
     // '/cms-forms/risk-assesment'
-    $( '.impact_tbl' ).DataTable( { searching: false, paging: false, info: false } );
+    //$('.impact_tbl').DataTable({searching: false, paging: false, info: false});
 
     // auto adjust dt columns
-    $( window ).resize( function ()
-    {
-        setTimeout( function ()
-        {
+    $(window).resize(function () {
+        setTimeout(function () {
             // body...
             resizeTables();
-        }, 1000 );
-        kendo.resize( $( "#action_list" ).parent() );
-    } );
+        }, 1000);
+        kendo.resize($("#action_list").parent());
+    });
 
     // fix column width for tables in collapse
-    $( '.hide-child' ).removeClass( 'show' ).trigger( 'hidden.bs.collapse' )
+    $('.hide-child').removeClass('show').trigger('hidden.bs.collapse');
 
     // '/cms-forms/action-list'
-    $( '#action_list' ).kendoGrid( {
+    $('#action_list').kendoGrid({
         columns: [
             {
                 field: 'no',
@@ -185,22 +187,25 @@ $( function ()
         ],
         toolbar: ["create", "save", "cancel"],
         editable: true
-    } );
+    });
 
     // '/cms-forms/pl-closure'
 
-    $( '.dataTables_length' ).addClass( 'd-inline-block mx-3' );
+    $('.dataTables_length').addClass('d-inline-block mx-3');
     //proxyEmail();
-} );
+    $('.bs-searchbox >input').attr('data-validate', false);
+});
 
 window.addEventListener("load", function (event) {
     setTimeout(() => {
-        $('.content').removeClass('d-none invisible')
-        $( 'footer' ).removeClass( 'd-none' );
-       
+        $('.content').removeClass('d-none invisible');
+        $('footer').removeClass('d-none');
+
         setTimeout(function () {
-            $('body').scrollTo('.box', 1000, { offset: -150 });
-            $('body').scrollTo('#box', 1000, { offset: -150 });
+            $.unblockUI();
+            $('.blockable').unblock({message: null});
+            $('body').scrollTo('.box', 1000, {offset: -150})
+                .scrollTo('#box', 1000, {offset: -150});
         }, 1000);
     }, 500);
 
@@ -232,7 +237,7 @@ function capitalize(s) {
 }
 
 function proxyEmail() {
-    $.get(URL_ROOT + "/helpers/proxymail", { name: "value" },
+    $.get(URL_ROOT + "/helpers/proxymail", {name: "value"},
         function (data, textStatus, jqXHR) {
             console.log(textStatus);
         }
@@ -261,25 +266,26 @@ function nextWeekDay(moment_date) {
 }
 
 function nextWorkingDay(moment_start_date) {
-    var moment_day = moment(moment_start_date.toDate(), moment_format);
     /*do {
         bizniz.default.addWeekDays(moment_day.toDate(), 1);
     } while (!moment_day.isHoliday());*/
-    return moment_day;
+    return moment(moment_start_date.toDate(), moment_format);
 }
 
 function getDays(moment_start_date, moment_resume_date) {
     var holidays = moment_start_date.holidaysBetween(moment_resume_date);
     var holiday_count = holidays ? holidays.length : 0;
-    var days_applied_for = moment_start_date.businessDiff(moment_resume_date)
+    var days_applied_for = moment_start_date.businessDiff(moment_resume_date);
     return {
-        'holiday_count' : holiday_count,
+        'holiday_count': holiday_count,
         'days_applied_for': days_applied_for
     }
 }
 
 function resizeTables() {
-    $.fn.dataTable
-        .tables({ visible: true, api: true})
-        .columns.adjust();
+    if (typeof $.fn.dataTable !== 'undefined') {
+        $.fn.dataTable
+            .tables({visible: true, api: true})
+            .columns.adjust();
+    }
 }

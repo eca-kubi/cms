@@ -4,7 +4,8 @@
         "phpmailer/phpmailer": "@stable",
         "react/child-process": "^0.5.2",
       "peppeocchi/php-cron-scheduler": "^2.4",
-       "smsgatewayme/client": "^0.0.1"
+      "smsgatewayme/client": "^0.0.1",
+      "fightbulc/moment": "^1.29"
     },
     "repositories": [
       {

@@ -13,6 +13,7 @@ return array(
     'React\\EventLoop\\' => array($vendorDir . '/react/event-loop/src'),
     'React\\ChildProcess\\' => array($vendorDir . '/react/child-process/src'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
+    'Moment\\' => array($vendorDir . '/fightbulc/moment/src'),
     'GO\\' => array($vendorDir . '/peppeocchi/php-cron-scheduler/src/GO'),
     'Cron\\' => array($vendorDir . '/mtdowling/cron-expression/src/Cron'),
 );

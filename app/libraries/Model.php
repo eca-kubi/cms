@@ -74,6 +74,15 @@ class Model
       return $this->columns;
   }
 
+    public function getColumnsWhere(string $table, string $columns, array $where)
+    {
+        $db = Database::getDbh()->objectBuilder();
+        foreach ($where as $col => $value) {
+            $db->where($col, $value);
+        }
+        return $db->get($table, $columns);
+    }
+
   public function filterCols($params, $target_cols)
   {
       foreach ($params as $key => $value) {

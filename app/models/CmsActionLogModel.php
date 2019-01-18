@@ -33,10 +33,15 @@ class CmsActionLogModel extends Model implements \JsonSerializable
         return $db->getOne('cms_action_log');
     }
 
-    public static function has($column, $value)
+    public static function has($column, $value, array $where = null)
     {
         $db = Database::getDbh();
         $db->where($column, $value);
+        if (!empty($where)) {
+            foreach ($where as $col => $value) {
+                $db->where($col, $value);
+            }
+        }
         if ($db->has(self::$table)) {
             return 'true';
         }

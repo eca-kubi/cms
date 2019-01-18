@@ -1,7 +1,7 @@
 <?php
 function uploadAttachment($file, $staff_id)
 {
-    $result['success'] =false;
+    $result['success'] = false;
     $result['file'] = '';
     $allowedExts = array('doc', 'docx', 'pdf', 'xlsx', 'txt');
     $temp = explode('.', $_FILES[$file]['name']);
@@ -11,11 +11,11 @@ function uploadAttachment($file, $staff_id)
         // $filename = explode('/', $filename);
         // $filename = end($filename);
         if ((($_FILES[$file]['type'] == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-            || ($_FILES[$file]['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            || ($_FILES[$file]['type'] == 'application/msword')
-            || ($_FILES[$file]['type'] == 'application/pdf')
-            || ($_FILES[$file]['type'] == 'txt/plain')
-          )
+                || ($_FILES[$file]['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                || ($_FILES[$file]['type'] == 'application/msword')
+                || ($_FILES[$file]['type'] == 'application/pdf')
+                || ($_FILES[$file]['type'] == 'txt/plain')
+            )
             && in_array($extension, $allowedExts)) {
             if ($_FILES[$file]['error'] > 0) {
                 // echo 'Return Code: ' . $_FILES['file']['error'] . '<br>';
@@ -38,14 +38,14 @@ function uploadAttachment($file, $staff_id)
         }
         return $result;
     } else {
-        $result['success'] =true;
+        $result['success'] = true;
         return $result;
     }
 }
 
 function uploadProfilePic($file, $staff_id)
 {
-    $result['success'] =false;
+    $result['success'] = false;
     $result['file'] = '';
     $allowedExts = array('gif', 'jpeg', 'jpg', 'png');
     $temp = explode('.', $_FILES[$file]['name']);
@@ -55,11 +55,11 @@ function uploadProfilePic($file, $staff_id)
         // $filename = explode('/', $filename);
         // $filename = end($filename);
         if ((($_FILES[$file]['type'] == 'image/gif')
-            || ($_FILES[$file]['type'] == 'image/jpeg')
-            || ($_FILES[$file]['type'] == 'image/jpg')
-            || ($_FILES[$file]['type'] == 'image/pjpeg')
-            || ($_FILES[$file]['type'] == 'image/x-png')
-            || ($_FILES[$file]['type'] == 'image/png'))
+                || ($_FILES[$file]['type'] == 'image/jpeg')
+                || ($_FILES[$file]['type'] == 'image/jpg')
+                || ($_FILES[$file]['type'] == 'image/pjpeg')
+                || ($_FILES[$file]['type'] == 'image/x-png')
+                || ($_FILES[$file]['type'] == 'image/png'))
             && in_array($extension, $allowedExts)) {
             if ($_FILES[$file]['error'] > 0) {
                 // echo 'Return Code: ' . $_FILES['file']['error'] . '<br>';
@@ -82,7 +82,7 @@ function uploadProfilePic($file, $staff_id)
         }
         return $result;
     } else {
-        $result['success'] =true;
+        $result['success'] = true;
         return $result;
     }
 }
@@ -90,7 +90,7 @@ function uploadProfilePic($file, $staff_id)
 function uploadCSV($table)
 {
     $db = DataBase::getDbh();
-    $result['success'] =false;
+    $result['success'] = false;
     $allowedExts = array('csv');
     $temp = explode('.', $_FILES['file']['name']);
     $extension = end($temp);
@@ -127,7 +127,7 @@ function uploadRiskAttachment($file, $cms_form_id)
     $result['success'] = false;
     $result['file'] = '';
     $result['reason'] = '';
-    $allowedExts = array('doc', 'docx', 'pdf', 'xlsx', 'txt', 'pptx', 'ppt');
+    $allowedExts = array('doc', 'docx', 'pdf', 'xlsx', 'xls', 'txt', 'pptx', 'ppt');
     if (isset($_FILES[$file])) {
         $temp = explode('.', $_FILES[$file]['name']);
         $extension = end($temp);
@@ -141,7 +141,7 @@ function uploadRiskAttachment($file, $cms_form_id)
                     || ($_FILES[$file]['type'] == 'application/pdf')
                     || ($_FILES[$file]['type'] == 'text/plain')
                 )
-                && in_array($extension, $allowedExts)) {
+                || in_array($extension, $allowedExts)) {
                 if ($_FILES[$file]['error'] > 0) {
                     $result['success'] = false;
                     $result['reason'] = $_FILES['file']['error'] . '<br>';
@@ -155,7 +155,7 @@ function uploadRiskAttachment($file, $cms_form_id)
                     return $result;
                 }
             } else {
-                $result['reason'] = 'Please upload a risk assessment document in word or pdf format!';
+                $result['reason'] = 'Please upload a risk assessment document in word, pdf, or an excel-supported format (xlsx, csv...)!';
             }
         } else {
             $result['success'] = true;
@@ -178,12 +178,12 @@ function uploadAdditionalInfo($file, $cms_form_id)
         $filename = explode('/', $filename);
         $filename = end($filename);
         if ((($_FILES[$file]['type'] == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-            || ($_FILES[$file]['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            || ($_FILES[$file]['type'] == 'application/msword')
-            || ($_FILES[$file]['type'] == 'application/pdf')
+                || ($_FILES[$file]['type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                || ($_FILES[$file]['type'] == 'application/msword')
+                || ($_FILES[$file]['type'] == 'application/pdf')
                 || ($_FILES[$file]['type'] == 'text/plain')
-          )
-            && in_array($extension, $allowedExts)) {
+            )
+            || in_array($extension, $allowedExts)) {
             if ($_FILES[$file]['error'] > 0) {
                 $result['success'] = false;
                 $result['reason'] = $_FILES['file']['error'] . '<br>';
@@ -200,7 +200,7 @@ function uploadAdditionalInfo($file, $cms_form_id)
             $result['reason'] = 'The type of file uploaded is not supported';
         }
     } else {
-        $result['success'] =true;
+        $result['success'] = true;
     }
     return $result;
 }

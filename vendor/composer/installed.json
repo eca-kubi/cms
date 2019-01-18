@@ -45,6 +45,61 @@
         ]
     },
     {
+        "name": "fightbulc/moment",
+        "version": "1.29.0",
+        "version_normalized": "1.29.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/fightbulc/moment.php.git",
+            "reference": "bd57bba6d00dfa012e7b7b167e7006c6247ce3c8"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/fightbulc/moment.php/zipball/bd57bba6d00dfa012e7b7b167e7006c6247ce3c8",
+            "reference": "bd57bba6d00dfa012e7b7b167e7006c6247ce3c8",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^4.8.36 || ^5.5 || ^6.5 || ^7.5"
+        },
+        "time": "2019-01-07T11:16:45+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Moment\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Tino Ehrich",
+                "email": "tino@bigpun.me",
+                "role": "developer"
+            }
+        ],
+        "description": "Parse, validate, manipulate, and display dates in PHP w/ i18n support. Inspired by moment.js",
+        "keywords": [
+            "date",
+            "display",
+            "format",
+            "i18n",
+            "locale",
+            "manipulate",
+            "moment",
+            "parse",
+            "time",
+            "translation",
+            "validate"
+        ]
+    },
+    {
         "name": "mtdowling/cron-expression",
         "version": "v1.2.1",
         "version_normalized": "1.2.1.0",

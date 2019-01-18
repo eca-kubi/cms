@@ -23,6 +23,7 @@ class User
     public $job_title;
     public $department;
     public $department_id;
+    public $can_assess_impact;
 
     public function __construct($user_id)
     {
@@ -40,6 +41,7 @@ class User
         $this->job_title = $userObj->job_title;
         $this->department_id = $userObj->department_id;
         $this->department = new Department($this->department_id);
+        $this->can_assess_impact = $userObj->can_assess_impact;
     }
 
     public function jsonSerialize(){
@@ -54,7 +56,8 @@ class User
             'department' => $this->department,
             'department_id' => $this->department_id,
             'password' => $this->password,
-            'user_id' => $this->user_id
+            'user_id' => $this->user_id,
+            'can_assess_impact' => $this->can_assess_impact
         ];
     }
 }

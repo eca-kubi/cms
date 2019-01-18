@@ -37,16 +37,9 @@ $user = getUserSession();
             <div class="box">
                 <div class="box-header">
                     <h5>
-                        <?php flash('flash'); ?>
+                        <?php flash('flash_view_change_process'); ?>
                     </h5>
                     <h3 class="box-title text-bold w-100">
-                        <?php /** @var array $payload */
-                        if ($payload['form']->hod_approval == 'rejected') {
-                            alert("This Change Process has been rejected by the HOD!", 'text-danger text-sm text-center mx-auto');
-                        } elseif ($payload['form']->hod_approval == 'delayed') {
-                            alert("This Change Process has been delayed by the HOD!", 'text-danger text-sm text-center');
-                        }
-                        ?>
                     </h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse">
@@ -59,6 +52,7 @@ $user = getUserSession();
                     <?php
                     require_once APP_ROOT . "/views/cms_forms/sections/section_start_change_process.php";
                     require_once APP_ROOT . "/views/cms_forms/sections/section_hod_assessment.php";
+                    /** @var array $payload */
                     if ($payload['form']->hod_approval !== 'rejected' && $payload['form']->hod_approval !== 'delayed') {
                         require_once APP_ROOT . "/views/cms_forms/sections/section_risk_assessment.php";
                     }

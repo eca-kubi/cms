@@ -41,7 +41,7 @@ const INTRANET = 'http://intranet.arlgh.com';
 const DFF = 'd-m-Y'; //date format for front-end
 const DFB = 'Y-m-d'; //date format for back-end
 const DFF_DT = 'd-m-Y h:i a';
-const DFB_DT = 'Y-m-d h:i:s';
+const DFB_DT = 'Y-m-d H:i:s';
 const MEDIA_FILE_TYPES = 'image/*,  video/*, audio/*';
 const PHOTO_FILE_TYPES = 'image/*';
 const VIDEO_FILE_TYPES = 'video/*';
@@ -50,22 +50,28 @@ const DOC_FILE_TYPES = '.csv, application/vnd.openxmlformats-officedocument.spre
 const HTML_NEW_LINE = '<br/>';
 
 const ACTION_START_CHANGE_PROCESS = 'start_change_process';
-const ACTION_HOD_ASSESSMENT = 'hod-assessment';
+const ACTION_START_CHANGE_PROCESS_COMPLETED = 'start_change_process_completed';
+const ACTION_HOD_ASSESSMENT = 'hod_assessment';
+const ACTION_HOD_ASSESSMENT_COMPLETED = 'hod_assessment_completed';
+const ACTION_RISK_ASSESSMENT = 'risk_assessment';
 const ACTION_RISK_ASSESSMENT_COMPLETED = 'risk_assessment_completed';
-const ACTION_IMPACT_ASSESSMENT = 'impact-assessment';
-const ACTION_GM_ASSESSMENT = 'gm-assessment';
+const ACTION_IMPACT_ASSESSMENT = 'impact_assessment';
+const ACTION_GM_ASSESSMENT = 'gm_assessment';
 const ACTION_HOD_AUTHORISATION = 'hod-authorisation';
 const ACTION_PL_ACCEPTANCE = 'pl-acceptance';
 const ACTION_ACTION_LIST = 'action-list';
 const ACTION_PL_CLOSURE = 'pl-closure';
-const ACTION_ORIGINATOR_CLOSURE = 'originator-closure';
-const ACTION_HOD_CLOSURE = 'hod-closure';
-const ACTION_PROCESS_CLOSED = 'process-closed';
+const ACTION_ORIGINATOR_CLOSURE = 'originator_closure';
+const ACTION_HOD_CLOSURE = 'hod_closure';
+const ACTION_PROCESS_CLOSED = 'process_closed';
 const ACTION_SECTION_COMPLETED = 'section_completed';
 const ACTION_SECTION_MODIFIED = 'section_modified';
 const ACTION_CHANGE_REJECTED = 'section_change_rejected';
 const ACTION_CHANGE_DELAYED = 'section_change_delayed';
 const ACTION_CHANGE_APPROVED = 'section_change_approved';
+const ACTION_IMPACT_ASSESSMENT_COMPLETED = 'impact-assessment-completed';
+const ACTION_IMPACT_ASSESSMENT_MODIFIED = 'impact-assessment-modified';
+const ACTION_IMPACT_ASSESSMENT_HOD_COMMENTED = 'impact_assessment_hod_commented';
 
 const SECTION_START_CHANGE_PROCESS = 'start_change_process';
 const SECTION_HOD_ASSESSMENT = 'hod-assessment';
@@ -87,6 +93,55 @@ const SECTION_3 = 'section_risk_assessment';
 const SECTION_3B = 'section_possible_impact';
 const GMs = ['General Manager', 'Mining Manager', 'Process Manager'];
 const OHS_EMAIL = 'ecakubi@adamusgh.com';
-const EMAIL_SUBJECT = 'Change Proposal, Assessment and Implementation';
+const EMAIL_SUBJECT = 'Change Proposal';
 const PATH_RISK_ATTACHMENT = APP_ROOT . '\..\public\assets\uploads\risk-attachments\\';
 const PATH_ADDITIONAL_INFO = APP_ROOT . '\..\public\assets\uploads\additional-infos\\';
+
+const STATUS_PENDING_APPROVAL = 'pending_approval';
+const STATUS_APPROVED = 'approved';
+const STATUS_REJECTED = 'rejected';
+const STATUS_DELAYED = 'delayed';
+const STATUS_STOPPED = 'stopped';
+const STATUS_CLOSED = 'closed';
+const STATUS_ACTIVE = 'active';
+
+define('STATE', [
+        [
+            'name' => STATUS_ACTIVE,
+            'color' => 'success',
+            'desc' => ''
+        ],
+        [
+            'name' => STATUS_CLOSED,
+            'color' => 'gray',
+            'desc' => ''
+        ],
+        [
+            'name' => STATUS_REJECTED,
+            'color' => 'danger',
+            'desc' => ''
+        ],
+        [
+            'name' => STATUS_DELAYED,
+            'color' => 'primary',
+            'desc' => ''
+        ],
+        [
+            'name' => STATUS_STOPPED,
+            'color' => 'warning',
+            'desc' => ''
+        ]
+    ]
+);
+const STATUS_PENDING = 'pending';
+const STATUS_IMPACT_ASSESSMENT_COMPLETED = 'impact_assessment_completed';
+const STATUS_IMPACT_ASSESSMENT_HOD_COMMENT_PENDING = 'hod_comment_pending';
+const STATUS_IMPACT_ASSESSMENT_HOD_COMMENTED = 'hod_commented';
+const STATUS_IMPACT_ASSESSMENT_RESPONSE_PENDING = 'response_pending';
+const MESSAGE_IMPACT_ASSESSMENT_APPROVED = 1;
+const STATUS_HIGH_RISK_LEVEL = 'High';
+const STATUS_MEDIUM_RISK_LEVEL = 'Medium';
+const STATUS_LOW_RISK_LEVEL = 'Low';
+const STATUS_HIGH_BUDGET_LEVEL = 'High';
+const STATUS_MEDIUM_BUDGET_LEVEL = 'Medium';
+const STATUS_LOW_BUDGET_LEVEL = 'Low';

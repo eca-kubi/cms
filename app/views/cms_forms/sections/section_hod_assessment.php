@@ -5,12 +5,12 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
             <form class="w-100"
                   action="<?php echo URL_ROOT . '/cms-forms/hod-assessment/' . $payload['form']->cms_form_id ?>"
                   method="post" data-toggle="validator" role="form"
-                  enctype="multipart/form-data">
+                  enctype="multipart/form-data" id="hod_assessment_form">
                 <fieldset class="w-100">
             <span class="w-100 row border ml-0 p-1">
                 <h6 class="text-bold font-italic col m-1">
                     <a href="#section_2" data-toggle="collapse">
-                        <i class="fa fa-minus" data-id></i> Section 2 - Further Assessment by HOD
+                        <i class="fa fa-minus" data-id></i> Section 2 - HoD's Approval
                         <span class="text-muted d-sm-inline d-block">
                             (To be Completed by - HoD)
                         </span>
@@ -70,7 +70,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                             </div><?php
                             if (isBudgetHigh($payload['form']->cms_form_id) || isRiskHigh($payload['form']->cms_form_id)) { ?>
                                 <div class="col-sm-12">
-                                <div class="form-group form-row">
+                                <div class="form-group form-row gm">
                                     <label for="" class="col-sm-12">
                                         Select GM
                                     </label>
@@ -84,9 +84,9 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                                                 id="gm_id" aria-describedby="helpId" placeholder="" required>
                                             <option class="d-none"></option><?php
                                             foreach ((array)$payload['gms'] as $value) {
-                                                $hod = new User($value->user_id); ?>
+                                                $gm = new User($value->user_id); ?>
                                                 <option
-                                                value="<?php echo $hod->user_id; ?>"><?php echo ucwords($hod->first_name . ' ' . $hod->last_name, '-. ') . ' (' . $hod->job_title . ')'; ?></option><?php } ?>
+                                                value="<?php echo $gm->user_id; ?>"><?php echo ucwords($gm->first_name . ' ' . $gm->last_name, '-. ') . ' (' . $gm->job_title . ')'; ?></option><?php } ?>
                                         </select>
                                         <small id="helpId" class="form-text text-muted help-block d-none">Hint: Select
                                             GM to
@@ -105,88 +105,106 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
             </form>
         </div>
     <?php } else {
-        alert('HOD Assessment Pending', 'text-primary text-bold alert');
+        alert('HOD Approval Pending...', 'text-primary text-bold alert');
     }
 } else { ?>
     <div class="row p-2">
     <span class="w-100 row border ml-0 p-1">
         <h6 class="text-bold font-italic col m-1">
-            <a href="#section_2b" data-toggle="collapse">
-                <i class="fa fa-plus" data-id></i> Section 2 - Further Assesment by HOD
-                <span class="text-muted d-sm-inline d-block">
-                    (Completed by  <?php echo concatName([$payload['hod']->first_name, $payload['hod']->last_name]); ?>
-                    - <i><?php echo $payload['hod']->job_title; ?>)</i>
-                </span>
-            </a>
+            <a href="#section_2" data-toggle="collapse">
+                <i class="fa fa-plus" data-id></i> Section 2 - HOD Approval
+        <span class="small d-sm-inline d-block"><?php echoCompleted($payload['action_log'][ACTION_HOD_ASSESSMENT_COMPLETED]->date, $payload['hod']->user_id); ?> </span>
+        </a>
+            <?php if ($payload['form']->hod_approval == STATUS_REJECTED) {
+                echo "<i class='text-danger text-bold mx-2'>--Change application rejected</i> ";
+            } elseif ($payload['form']->hod_approval == STATUS_DELAYED) {
+                echo "<i class='text-danger text-bold mx-2'>--Change application delayed</i> ";
+            } ?>
         </h6>
         <span class="text-right float-right invisible"><?php if (isHod($payload['form']->cms_form_id, getUserSession()->user_id)) { ?>
                 <a href="#" title="Edit this section">
                 <i class="fa fa-edit"></i>
             </a><?php } ?>
         </span>
-    </span>
-        <div class="w-100 section collapse" id="section_2b">
-            <table class="table table-bordered table-user-information font-raleway">
-                <thead class="thead-default d-none">
-                <tr>
-                    <th></th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td scope="row">
+        </span>
+        <div class="w-100 section collapse" id="section_2">
+            <div class="d-sm-block d-none">
+                <table class="table table-bordered table-user-information font-raleway">
+                    <thead class="thead-default d-none">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="text-right" style="width:17%"><b>HOD Approval: </b></td>
+                        <td scope="row" style="width:83%"
+                            class="<?php echo ($payload['form']->hod_approval == STATUS_REJECTED || $payload['form']->hod_approval == STATUS_DELAYED) ? 'text-danger' : 'text-success'; ?>">
+                            <?php echo ucwords($payload['form']->hod_approval); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right"><b>Reasons: </b></td>
+                        <td scope="row" class="">
+                            <?php echo $payload['form']->hod_reasons; ?>
+                        </td>
+                    </tr>
+                    <?php if (!empty($payload['form']->hod_ref_num)) { ?>
+                        <tr>
+                            <td class="text-sm-right"><b>Reference: </b></td>
+                            <td scope="row">
+                                <?php echoIfEmpty($payload['form']->hod_ref_num, 'N/A'); ?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-sm-none d-block">
+                <table class="table table-bordered table-user-information font-raleway">
+                    <thead class="thead-default d-none">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td scope="row">
                         <span class="row">
-                            <span class="col-sm-4 text-sm-right">
-                                <b>HOD: </b>
-                            </span>
-                        <span class="col-sm-8"><?php echo ucwords($payload['hod']->first_name . ' ' . $payload['hod']->last_name); ?><?php echo " ({$payload['hod']->job_title})"; ?>
-                            </span>
-                        </span>
-                    </td>
-                    <td scope="row">
-                        <span class="row">
-                            <span class="col-sm-4 text-sm-right">
+                            <span class="col-sm-2 text-sm-right">
                                 <b>HOD Approval: </b>
                             </span>
-                        <span class="col-sm-8 <?php echo $payload['form']->hod_approval == 'rejected' || $payload['form']->hod_approval == 'delayed' ? 'text-danger' : 'text-success'; ?>"><?php echo ucwords($payload['form']->hod_approval); ?>
+                        <span class="col-sm-8 <?php echo $payload['form']->hod_approval == STATUS_REJECTED || $payload['form']->hod_approval == STATUS_DELAYED ? 'text-danger' : 'text-success'; ?>"><?php echo ucwords($payload['form']->hod_approval); ?>
                             </span>
                         </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td scope="row">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td scope="row">
                         <span class="row">
-                            <span class="col-sm-4 text-sm-right">
-                                <b>Reasons: </b>
-                            </span>
-                        <span class="col-sm-8"><?php echo $payload['form']->hod_reasons; ?>
-                            </span>
-                        </span>
-                    </td>
-                    <td scope="row" colspan="2">
-                        <span class="row">
-                            <span class="col-sm-4 text-sm-right">
+                            <span class="col-sm-2 text-sm-right">
                                 <b>Reference: </b>
                             </span>
                         <span class="col-sm-8"><?php echoIfEmpty($payload['form']->hod_ref_num, 'N/A'); ?>
                             </span>
                         </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td scope="row" colspan="2">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td scope="row">
                         <span class="row">
                             <span class="col-sm-2 text-sm-right">
-                                <b>Date: </b>
+                                <b>Reasons: </b>
                             </span>
-                        <span class="col-sm-8"><?php echo formatDate($payload['form']->hod_approval_date, DFB_DT, DFF_DT); ?>
+                        <span class="col-sm-8"><?php echo $payload['form']->hod_reasons; ?>
                             </span>
                         </span>
-                    </td>
-
-                </tr>
-            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 <?php } ?>
