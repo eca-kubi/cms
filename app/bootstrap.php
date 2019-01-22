@@ -29,4 +29,4 @@ require_once 'helpers/session_helper.php';
 require_once 'helpers/file_helper.php';
 require_once 'helpers/validation_helper.php';
 require_once 'helpers/sms.php';
-require_once 'helpers/send_mail.php';
+require_once 'helpers/phpmailer.php';

@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>
-    <?php echo $payload['title']; ?>
+      <?php /** @var array $payload */
+      echo $payload['title']; ?>
   </title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,6 +34,7 @@
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/fontastic/styles.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/fonts.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/pignose.calendar.css" />
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/jquery-toast.min.css"/>
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/custom-assets/css/custom.css" />
 </head>
 

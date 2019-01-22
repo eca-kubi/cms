@@ -11,12 +11,46 @@
 </footer>
 </div>
 <!-- ./wrapper -->
-<input type="hidden" value="<?php echo URL_ROOT?>" id="url_root"/>
+<input type="hidden" value="<?php echo URL_ROOT ?>" id="url_root"/>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/jquery.min.js"></script>
-<script src="<?php echo URL_ROOT; ?>/public/assets/js/datatables.min.js"></script>
+<script src="<?php echo URL_ROOT; ?>/public/assets/js/blockui.js"></script>
+<script>
+    $.blockUI({
+        message: '<i class="fa fa-spinner w3-spin" style="font-size:32px"></i>',
+        css: {
+            padding: 0,
+            margin: 0,
+            width: '0%',
+            top: '40%',
+            left: '50%',
+            textAlign: 'center',
+            color: '#000',
+            border: '0',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            cursor: 'default'
+        },
+        overlayCSS: {
+            backgroundColor: '#000',
+            opacity: 0.0,
+            cursor: 'default'
+        },
+        onUnblock: function () {
+            $('.hide-on-init').removeClass('invisible');
+        }
+    });
+    $('.blockable').block({
+        message: null,
+        overlayCSS: {
+            backgroundColor: '#000',
+            opacity: 0.0,
+            cursor: 'default'
+        },
+    });
+</script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/jquery.ui.widget.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/jquery.iframe-transport.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/jquery.fileupload.js"></script>
+<script src="<?php echo URL_ROOT; ?>/public/assets/js/jquery-toast.min.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/bootstrap.bundle.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/adminlte.min.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/adminlte-2.js"></script>

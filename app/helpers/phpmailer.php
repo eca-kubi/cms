@@ -22,21 +22,26 @@ function sendMail()
         $emails = Database::getDbh()
             ->objectBuilder()
             ->where('sender_user_id', getUserSession()->user_id)
+            ->where('sent', false)
             ->get('cms_email');
-        foreach ($emails as $email)
-        {
+        foreach ($emails as $email) {
             $mail->addAddress($email->recipient_address, $email->recipient_name);     // Add a recipient
             $mail->isHTML(true); // Set email format to HTML
             $mail->Subject = $email->subject;
-            $mail->Body    = $email->body;
+            $mail->Body = $email->body;
             //msgHTML also sets AltBody, but if you want a custom one, set it afterwards
             $mail->AltBody = 'To view the message, please use an HTML compatible email viewer!';
             //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-            if (!empty($email->in_reply_to)) {
-                $mail->addCustomHeader('In-Reply-To', '<' . $email->in_reply_to . '>');
+
+            if ($email->parent) {
+                $mail->MessageID = '<' . $mail->Subject . '@cms>';
             }
-            if (!$mail->send())
-            {
+            if ($email->follow_up) {
+                $mail->Subject = 'Re: ' . $mail->Subject;
+                $mail->addCustomHeader('In-Reply-To', '<' . $email->subject . '@cms>');
+                $mail->addCustomHeader('References', '<' . $email->subject . '@cms>');
+            }
+            if (!$mail->send()) {
                 //"Mailer Error (" . str_replace("@", "&#64;", $mail->body) . ') ' . $mail->ErrorInfo . '<br />';
                 //$mail->ErrorInfo . '<br />';
                 return false;
@@ -44,7 +49,10 @@ function sendMail()
             }
             $mail->clearAddresses();
         }
-
+// update emails sent status
+        Database::getDbh()->
+        where('sender_user_id', getUserSession()->user_id)->
+        update('cms_email', ['sent' => true]);
         /* $mail->setFrom('webservices@adamusgh.com', 'Mailer');
         $mail->addAddress('webservices@adamusgh.com');               // Name is optional
         $mail->addReplyTo('info@example.com', 'Information');
@@ -58,8 +66,7 @@ function sendMail()
         //Content
         return true;
         //echo 'Message has been sent';
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
         //echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
         return false;
     }

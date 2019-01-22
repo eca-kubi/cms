@@ -1,5 +1,4 @@
-
-<div class="navbar-fixed fixed-top">
+<div class="navbar-fixed fixed-top blockable">
     <nav class="main-header navbar navbar-expand bg-white navbar-light border-bottom px-3">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
@@ -212,13 +211,13 @@
                         </li>
                         <li class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item" href="<?php echo URL_ROOT; ?>/CMS-Forms/Active">
+                            <a class="dropdown-item" href="<?php echo URL_ROOT; ?>/CMS-Forms/Dashboard/Active">
                                 Active
                             </a>
                         </li>
                         <li class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item"  href="<?php echo URL_ROOT; ?>/CMS-Forms/Closed">
+                            <a class="dropdown-item" href="<?php echo URL_ROOT; ?>/CMS-Forms/Dashboard/Closed">
                                 Closed
                             </a>
                         </li>

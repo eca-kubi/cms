@@ -27,6 +27,10 @@ class ComposerStaticInit99f203d20b84ea527760ef3459054891
         array (
             'PHPMailer\\PHPMailer\\' => 20,
         ),
+        'M' => 
+        array (
+            'Moment\\' => 7,
+        ),
         'G' => 
         array (
             'GO\\' => 3,
@@ -65,6 +69,10 @@ class ComposerStaticInit99f203d20b84ea527760ef3459054891
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
+        'Moment\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/fightbulc/moment/src',
         ),
         'GO\\' => 
         array (

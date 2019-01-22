@@ -13,11 +13,11 @@ class DepartmentModel extends Model implements \JsonSerializable
     /**
      * Summary of getDepartment
      * @param mixed $department_id
-     * @return object
+     * @return array
      */
     public function getDepartment(int $department_id = null)
     {
-        $ret =   (object)  Database::getDbh()->where('department_id', $department_id)->
+        $ret = Database::getDbh()->where('department_id', $department_id)->
                         objectBuilder()->
                         getOne(self::$table);
         if (count((array)$ret) < 1)

@@ -1,5 +1,5 @@
 <!-- Main Sidebar Container -->
-<aside class="fa main-sidebar sidebar-dark-primary elevation-4" style="left:-1px">
+<aside class="fa main-sidebar sidebar-dark-primary elevation-4 blockable" style="left:-1px">
     <!-- Brand Logo -->
     <a href="<?php echo URL_ROOT;?>" class="brand-link">
         <img src="<?php echo URL_ROOT;?>/public/assets/images/adamus.jpg" alt="logo" class="brand-image  ml-0  elevation-3" style="opacity: .8" />
@@ -49,13 +49,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?php echo URL_ROOT;?>/CMS-Forms/Active" class="nav-link">
+                            <a href="<?php echo URL_ROOT; ?>/CMS-Forms/Dashboard/Active" class="nav-link">
                                 <i class="nav-icon fa fa-circle-notch animated rotateIn"></i>
                                 <p>Active</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?php echo URL_ROOT;?>/CMS-Forms/Closed" class="nav-link">
+                            <a href="<?php echo URL_ROOT; ?>/CMS-Forms/Dashboard/Closed" class="nav-link">
                                 <i class="fa fa-circle-notch animated rotateIn nav-icon"></i>
                                 <p>Closed</p>
                             </a>

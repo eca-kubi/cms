@@ -53,7 +53,8 @@
                     <?php flash('flash'); ?>
                 </h5>
                 <h3 class="box-title text-bold">
-                    <?php echo $payload['title']; ?>
+                    <?php /** @var array $payload */
+                    echo $payload['title']; ?>
                 </h3>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse">
