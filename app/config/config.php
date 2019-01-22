@@ -52,7 +52,9 @@ const HTML_NEW_LINE = '<br/>';
 const ACTION_START_CHANGE_PROCESS = 'start_change_process';
 const ACTION_START_CHANGE_PROCESS_COMPLETED = 'start_change_process_completed';
 const ACTION_HOD_ASSESSMENT = 'hod_assessment';
+const ACTION_HOD_AUTHORISATION_COMPLETED = 'hod_authorisation_completed';
 const ACTION_HOD_ASSESSMENT_COMPLETED = 'hod_assessment_completed';
+const ACTION_GM_ASSESSMENT_COMPLETED = 'gm_assessment_completed';
 const ACTION_RISK_ASSESSMENT = 'risk_assessment';
 const ACTION_RISK_ASSESSMENT_COMPLETED = 'risk_assessment_completed';
 const ACTION_IMPACT_ASSESSMENT = 'impact_assessment';
@@ -84,7 +86,7 @@ const SECTION_SECTION_LIST = 'SECTION-list';
 const SECTION_PL_CLOSURE = 'pl-closure';
 const SECTION_ORIGINATOR_CLOSURE = 'originator-closure';
 const SECTION_HOD_CLOSURE = 'hod-closure';
-const SECTION_PROCESS_CLOSED = 'process-closed';
+const SECTION_PROCESS_CLOSURE = 'process-closed';
 const OHS_DEPARTMENT = 'OHS';
 const TABLE_DEPARTMENT = 'departments';
 const SECTION_1 = 'section_start_change_process';
@@ -104,6 +106,11 @@ const STATUS_DELAYED = 'delayed';
 const STATUS_STOPPED = 'stopped';
 const STATUS_CLOSED = 'closed';
 const STATUS_ACTIVE = 'active';
+const STATUS_AUTHORIZED = 'authorized';
+const STATUS_ACCEPTED = 'accepted';
+
+const ROLE_MANAGER = 'Manager';
+const ROLE_SUPERINTENDENT = 'Superintendent';
 
 define('STATE', [
         [
@@ -145,3 +152,4 @@ const STATUS_LOW_RISK_LEVEL = 'Low';
 const STATUS_HIGH_BUDGET_LEVEL = 'High';
 const STATUS_MEDIUM_BUDGET_LEVEL = 'Medium';
 const STATUS_LOW_BUDGET_LEVEL = 'Low';
+$_GET['target'] = empty($_GET['target']) ? '' : $_GET['target'];

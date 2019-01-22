@@ -1,12 +1,11 @@
 /// <reference path='../../assets/ts/kendo.all.d.ts' />
-var datepicker_shown = 0;
-var moment_format = 'DD/MM/YYYY';
-var URL_ROOT = '';
-var form_submit_count = 0;
-form_is_valid = false;
+
+let moment_format = 'DD/MM/YYYY';
+let URL_ROOT = '';
+let form_submit_count = 0;
 //=============================================================
 // Daterangepicker Plugin
-var date_rangepicker_options = {
+let date_rangepicker_options = {
     singleDate: true,
     showShortcuts: false,
     autoClose: true,
@@ -25,18 +24,18 @@ $(document).ready(function () {
     URL_ROOT = $('#url_root').val();
     moment.modifyHolidays.add('Ghana');
 
-    $('td.not-allowed').click(function () {
-        department = $(this).data('department');
+    $('td.not-allowed').on('click', function () {
+        let department = $(this).data('department');
         $.toast('You are not  allowed to respond to ' + department + ' Impact Assessment!');
     });
 
     $(window).resize(function () {
         $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
     });
+    //$(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
 
-    $('form').submit(function (e) {
-        $submit_button = $(this).find('[type=submit]');
-        form_is_valid = this.checkValidity();
+    $('form').submit(function () {
+        let form_is_valid = this.checkValidity();
         if (form_is_valid) {
             form_submit_count++;
             if (form_submit_count > 1) {
@@ -89,7 +88,7 @@ $(document).ready(function () {
             showTick: false,
             showContent: false
         })
-        .on('loaded.bs.select show.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+        .on('loaded.bs.select show.bs.select', function () {
             $('.replace-multiple-select').remove();
             $('.multiple-hidden.bs-select').removeClass('d-none');
             $('.bs-select .dropdown-menu').addClass('p-0 rounded-0');
@@ -100,10 +99,10 @@ $(document).ready(function () {
 
     // '/cms-forms/add'
     $('#change_type').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-        var selected_option = $(this).find(':selected');
-        var found = previousValue.find(function (element) {
+        let found;
+        found = previousValue ? previousValue.find(function (element) {
             return element === 'Other';
-        });
+        }) : '';
         if (isSelected && clickedIndex === 8 || (isSelected && found)) {
             $('#other_type').removeClass('d-none');
             $('[name=other_type]').attr('required', true);
@@ -117,18 +116,18 @@ $(document).ready(function () {
         }
     });
 
-    $('.section').on('shown.bs.collapse', function (e) {
+    $('.section').on('shown.bs.collapse', function () {
         $(this).parent().find('.fa').eq(0).removeClass('fa-plus').addClass('fa-minus');
         resizeTables();
         return false;
     })
-        .on('hidden.bs.collapse', function (e) {
+        .on('hidden.bs.collapse', function () {
             $(this).parent().find('.fa').eq(0).removeClass('fa-minus').addClass('fa-plus');
             return false;
         });
 
     // '/cms-forms/hod-assesment'
-    $('[name=hod_approval]').on('change', function (e) {
+    $('[name=hod_approval]').on('change', function () {
         if ($(this).val() === "approved") {
             $('#hod_ref_num').removeClass('d-none');
             $('.gm.form-group').removeClass('d-none');
@@ -169,7 +168,7 @@ $(document).ready(function () {
                 title: 'Action to be Taken'
             },
             {
-                field: 'res_person',
+                field: 'person_responsible',
                 title: 'Responsible Person'
             },
             {
@@ -196,7 +195,7 @@ $(document).ready(function () {
     $('.bs-searchbox >input').attr('data-validate', false);
 });
 
-window.addEventListener("load", function (event) {
+window.addEventListener("load", function () {
     setTimeout(() => {
         $('.content').removeClass('d-none invisible');
         $('footer').removeClass('d-none');
@@ -217,14 +216,14 @@ function isOffDay(date) {
 }
 
 function getWeekendDays(startMoment, endMoment) {
-    s = startMoment.toDate();
-    e = endMoment.toDate();
+    startMoment.toDate();
+    endMoment.toDate();
     return Math.abs(bizniz.default.weekendDaysBetween(s, e));
 }
 
 function getWeekDays(startMoment, endMoment) {
-    s = startMoment.toDate();
-    e = endMoment.toDate();
+    startMoment.toDate();
+    endMoment.toDate();
     return Math.abs(bizniz.default.weekDaysBetween(s, e));
 }
 
@@ -238,23 +237,21 @@ function capitalize(s) {
 
 function proxyEmail() {
     $.get(URL_ROOT + "/helpers/proxymail", {name: "value"},
-        function (data, textStatus, jqXHR) {
+        function (data, textStatus) {
             console.log(textStatus);
         }
     );
 }
 
 function getUrlParam(parameter, defaultvalue) {
-    var urlparameter = defaultvalue;
-    if (window.location.href.indexOf(parameter) > -1) {
-        urlparameter = getUrlVars()[parameter];
-    }
-    return urlparameter;
+    let url_parameter = defaultvalue;
+    if (window.location.href.indexOf(parameter) > -1) url_parameter = getUrlVars()[parameter];
+    return url_parameter;
 }
 
 function getUrlVars() {
-    var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+    let vars = {};
+    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
         vars[key] = value;
     });
     return vars;
@@ -273,9 +270,9 @@ function nextWorkingDay(moment_start_date) {
 }
 
 function getDays(moment_start_date, moment_resume_date) {
-    var holidays = moment_start_date.holidaysBetween(moment_resume_date);
-    var holiday_count = holidays ? holidays.length : 0;
-    var days_applied_for = moment_start_date.businessDiff(moment_resume_date);
+    let holidays = moment_start_date.holidaysBetween(moment_resume_date);
+    let holiday_count = holidays ? holidays.length : 0;
+    let days_applied_for = moment_start_date.businessDiff(moment_resume_date);
     return {
         'holiday_count': holiday_count,
         'days_applied_for': days_applied_for
@@ -283,9 +280,10 @@ function getDays(moment_start_date, moment_resume_date) {
 }
 
 function resizeTables() {
-    if (typeof $.fn.dataTable !== 'undefined') {
-        $.fn.dataTable
-            .tables({visible: true, api: true})
-            .columns.adjust();
+    if (typeof $.fn.dataTable === 'undefined') {
+        return
     }
+    $.fn.dataTable
+        .tables({visible: true, api: true})
+        .columns.adjust();
 }

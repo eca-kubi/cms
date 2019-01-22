@@ -12,6 +12,7 @@ class CMSForms extends Controller
      */
     public function __construct()
     {
+        parent::__construct();
         if (!isLoggedIn()) {
             redirect('users/login');
         }
@@ -62,18 +63,17 @@ class CMSForms extends Controller
             $form->area_affected = $_POST['area_affected'];
             $form->change_type = concatWith(', ', ' & ', $_POST['change_type']);
             $form->originator_id = getUserSession()->user_id;
-            $form->risk_level = $_POST['risk_level'];
-            $form->budget_level = $_POST['budget_level'];
+            $form->certify_details = $_POST['certify_details'];
             $form->setState(STATUS_ACTIVE);
+            //$form->risk_level = $_POST['risk_level'];
+            //$form->budget_level = $_POST['budget_level'];
             if (isset($_POST['other_type'])) {
                 $form->other_type = $_POST['other_type'];
             }
-            if (isset($_POST['certify_details'])) {
-                $form->certify_details = $_POST['certify_details'];
-            }
+
             // upload additional info
             $form->hod_id = $_POST['hod_id'];
-            $form->next_action = ACTION_HOD_ASSESSMENT;
+            //$form->next_action = ACTION_HOD_ASSESSMENT;
             $cms_form_id = $form->insert();
             if ($cms_form_id) {
                 /*$result = uploadAdditionalInfo('additional_info', $cms_form_id);
@@ -83,37 +83,21 @@ class CMSForms extends Controller
                 flash('flash_view_change_process', 'Your Change Proposal has been submitted successfully.
                             Your manager has been notified for approval.',
                     'text-success text-sm text-center alert');
-                $originator = concatNameWithUserId(getUserSession()->user_id);
-                $recipient = new User($_POST['hod_id']);
-                $link = URL_ROOT . '/cms-forms/view-change-process/' . $cms_form_id;
+                $originator_name = concatNameWithUserId(getUserSession()->user_id);
+                $hod = new User($_POST['hod_id']);
                 //$subject = 'Change Proposal, Assessment and Implementation';
-                $body = 'Hi ' . ucwords($recipient->first_name . ' ' . $recipient->last_name, '-. ') . ', ' . HTML_NEW_LINE . 'A Change Proposal application has been raised by ' . $originator . '.' .
+                $body = 'Hi ' . ucwords($hod->first_name . ' ' . $hod->last_name, '-. ') . ', ' . HTML_NEW_LINE . 'A Change Proposal application has been raised by ' . $originator_name . '.' .
                     ' Kindly use the link below to approve it.' . HTML_NEW_LINE . genLink($cms_form_id, 'view-change-process');
+                insertEmail(genEmailSubject($cms_form_id), $body, $hod->email, $hod->first_name . ' ' . $hod->last_name);
 
-                $email_model = new EmailModel();
-                // email to the hod
-                $email_model->add([
-                    'subject' => genEmailSubject($cms_form_id),
-                    'body' => $body,
-                    'recipient_address' => $recipient->email,
-                    'recipient_name' => $recipient->first_name . ' ' . $recipient->last_name,
-                    'sender_user_id' => getUserSession()->user_id,
-                    'parent' => true,
-                    'cms_form_id' => $cms_form_id
-                ]);
-                // email to the originator
-                $email_model->add([
-                    'subject' => genEmailSubject($cms_form_id),
-                    'body' => "Hi, $originator, " . HTML_NEW_LINE . " Your Change Proposal has been submitted to your 
-                    HoD for review. You will be notified accordingly. Monitor progress with this link: " . "<a href='$link' target='_blank'>$link</a>",
-                    'recipient_address' => getUserSession()->email,
-                    'recipient_name' => $originator,
-                    'sender_user_id' => getUserSession()->user_id,
-                    'parent' => true,
-                    'cms_form_id' => $cms_form_id
-                ]);
+                $body = 'Hi ' . $originator_name . ', ' . HTML_NEW_LINE .
+                    'Your Change Proposal has been submitted to your manager for approval. ' .
+                    ' Kindly use the link below to monitor progress.' . HTML_NEW_LINE .
+                    genLink($cms_form_id, 'view-change-process');
+                insertEmail(genEmailSubject($cms_form_id), $body, getUserSession()->email, $originator_name);
+
                 //set action log
-                $log_id = (new CmsActionLogModel())->setAction(ACTION_START_CHANGE_PROCESS_COMPLETED)
+                (new CmsActionLogModel())->setAction(ACTION_START_CHANGE_PROCESS_COMPLETED)
                     ->setPerformedBy(getUserSession()->user_id)
                     ->setCmsFormId($cms_form_id)
                     ->setSectionAffected(SECTION_START_CHANGE_PROCESS)
@@ -139,8 +123,6 @@ class CMSForms extends Controller
         $payload['action_log'] = getActionLog($cms_form_id);
         $link = URL_ROOT . "/cms-forms/view-change-process/$cms_form_id";
         $subject = genEmailSubject($cms_form_id);
-        $email_model = new EmailModel();
-        $body = '';
         $_POST = filterPost();
         $form->next_action = ACTION_RISK_ASSESSMENT;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -182,11 +164,11 @@ class CMSForms extends Controller
                 insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
             }
             $data = $form->jsonSerialize();
-            $form_update_success = (new CMSFormModel(null))->updateForm($cms_form_id, $data);
+            (new CMSFormModel(null))->updateForm($cms_form_id, $data);
 
             completeSection($cms_form_id, SECTION_HOD_ASSESSMENT);
             //set action log
-            $log_id = (new CmsActionLogModel())->setAction(ACTION_HOD_ASSESSMENT_COMPLETED)
+            (new CmsActionLogModel())->setAction(ACTION_HOD_ASSESSMENT_COMPLETED)
                 ->setPerformedBy(getUserSession()->user_id)
                 ->setCmsFormId($cms_form_id)
                 ->setSectionAffected(SECTION_HOD_ASSESSMENT)
@@ -298,7 +280,7 @@ class CMSForms extends Controller
                 }
                 actionLog($cms_form_id, ACTION_IMPACT_ASSESSMENT_COMPLETED, getUserSession()->user_id, $department->department_id);
                 flash('flash_view_change_process', ' Impact Assessment ' . 'for ' . $department->department . ' Completed Successfully!', 'text-sm text-center text-success alert');
-                // Notify originator
+                // Notify originator & hod
                 /* if ($payload['originator']->user_id !== getUserSession()->user_id) {
                       $department = new Department(getUserSession()->department_id);
                       (new EmailModel)->add([
@@ -316,6 +298,57 @@ class CMSForms extends Controller
                       ]);
                   } */
             }
+        }
+        redirect('cms-forms/view-change-process/' . $cms_form_id);
+    }
+
+    public function GMAssessment(int $cms_form_id = -1)
+    {
+        if (!isLoggedIn()) {
+            redirect('users/login');
+        }
+        if (!isGM(getUserSession()->user_id)) {
+            redirect('cms-forms/view-change-process/' . $cms_form_id);
+        }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $cms_form = new CMSForm(['cms_form_id' => $cms_form_id]);
+            $originator = new User($cms_form->originator_id);
+            $hod = new User($cms_form->hod_id);
+            $gm = new User(getUserSession()->user_id);
+            $link = URL_ROOT . "/cms-forms/view-change-process/$cms_form_id";
+            $subject = genEmailSubject($cms_form_id);
+            $_POST = filterPost();
+            $cms_form->gm_approval = $_POST['gm_approval'];
+            $cms_form->gm_approval_reasons = $_POST['gm_approval_reasons'];
+            try {
+                $cms_form->gm_approval_date = (new DateTime())->format(DFB_DT);
+            } catch (Exception $e) {
+            }
+            $cms_form->gm_id = getUserSession()->user_id;
+            $body = "Hi, " . ucwords($originator->first_name . ' ' . $originator->last_name, '-. ') . HTML_NEW_LINE .
+                "Your Change Proposal has been <u>$cms_form->gm_approval</u> by GM, " . ucwords($gm->first_name . ' ' . $gm->last_name) . '.' . HTML_NEW_LINE .
+                "Click this link for more details" . '<a href="' . $link . '" />' . $link . '</a>';
+            insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
+            $body = "Hi, " . concatNameWithUserId($hod->user_id) . ", " . HTML_NEW_LINE .
+                ucwords($gm->first_name . ' ' . $gm->last_name) . '(GM)' . " has " . $cms_form->gm_approval . " this Change Proposal." . HTML_NEW_LINE .
+                "Click this link for more details: " . '<a href="' . $link . '" />' . $link . '</a>';
+            insertEmail($subject, $body, $hod->email, concatNameWithUserId($hod->user_id));
+
+            if ($cms_form->gm_approval == STATUS_REJECTED) {
+                $cms_form->state = STATUS_REJECTED;
+            } elseif ($cms_form->gm_approval == STATUS_DELAYED) {
+                $cms_form->state = STATUS_DELAYED;
+            }
+            $data = $cms_form->jsonSerialize();
+            (new CMSFormModel(null))->updateForm($cms_form_id, $data);
+            completeSection($cms_form_id, SECTION_GM_ASSESSMENT);
+            //set action log
+            (new CmsActionLogModel())->setAction(ACTION_GM_ASSESSMENT_COMPLETED)
+                ->setPerformedBy(getUserSession()->user_id)
+                ->setCmsFormId($cms_form_id)
+                ->setSectionAffected(SECTION_GM_ASSESSMENT)
+                ->insert();
+            redirect('cms-forms/view-change-process/' . $cms_form_id);
         }
         redirect('cms-forms/view-change-process/' . $cms_form_id);
     }
@@ -388,39 +421,67 @@ class CMSForms extends Controller
         redirect('cms-forms/risk-assessment/' . $cms_form_id);
     }
 
-    public function GMAssessment(int $cms_form_id = -1)
-    {
-        $payload = array();
-        $payload['user'] = getUserSession();
-        $payload['title'] = 'GM Assessment';
-        $this->view('cms_forms/gm_assessment', $payload);
-    }
-
     public function HODAuthorisation(int $cms_form_id = -1)
     {
-        $payload = array();
-        $payload['user'] = getUserSession();
-        $payload['title'] = 'Authorisation by HOD to Implement Change';
-        $this->view('cms_forms/hod_authorisation', $payload);
+        if (!isLoggedIn()) {
+            redirect('users/login');
+        }
+        if (!isHOD($cms_form_id, getUserSession()->user_id)) {
+            redirect('cms-forms/view-change-process/' . $cms_form_id);
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $cms_form = new CMSForm(['cms_form_id' => $cms_form_id]);
+            $originator = new User($cms_form->originator_id);
+            $hod = new User(getUserSession()->user_id);
+            $link = URL_ROOT . "/cms-forms/view-change-process/$cms_form_id";
+            $subject = genEmailSubject($cms_form_id);
+            $_POST = filterPost();
+            $cms_form->hod_authorization = $_POST['hod_authorization'];
+            $cms_form->hod_authorization_comment = $_POST['hod_authorization_comment'];
+            $cms_form->project_leader_id = $_POST['project_leader_id'];
+            $project_leader = new User($cms_form->project_leader_id);
+            try {
+                $cms_form->hod_authorization_date = (new DateTime())->format(DFB_DT);
+            } catch (Exception $e) {
+            }
+            $body = "Hi, " . ucwords($originator->first_name . ' ' . $originator->last_name, '-. ') . HTML_NEW_LINE .
+            concatNameWithUserId($hod->user_id) . " ( $hod->job_title) has selected " .
+            $project_leader->user_id === $originator->user_id ? "you " : concatNameWithUserId($project_leader->user_id) .
+                " as Project Leader for this Change Proposal" . HTML_NEW_LINE .
+                "Click this link for more details: " . '<a href="' . $link . '" />' . $link . '</a>';
+            insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
+
+            $body = "Hi, " . ucwords($project_leader->first_name . ' ' . $project_leader->last_name, '-. ') . HTML_NEW_LINE .
+                "You have been selected as Project Leader for this Change Proposal" . HTML_NEW_LINE .
+                "Click this link for more details: " . '<a href="' . $link . '" />' . $link . '</a>';
+            insertEmail($subject, $body, $project_leader->email, concatNameWithUserId($project_leader->user_id));
+
+            $data = $cms_form->jsonSerialize();
+            (new CMSFormModel(null))->updateForm($cms_form_id, $data);
+            completeSection($cms_form_id, SECTION_HOD_AUTHORISATION);
+            //set action log
+            (new CmsActionLogModel())->setAction(ACTION_HOD_AUTHORISATION_COMPLETED)
+                ->setPerformedBy(getUserSession()->user_id)
+                ->setCmsFormId($cms_form_id)
+                ->setSectionAffected(SECTION_HOD_AUTHORISATION)
+                ->insert();
+            redirect('cms-forms/view-change-process/' . $cms_form_id);
+        }
+        redirect('cms-forms/view-change-process/' . $cms_form_id);
     }
 
-    public function PLAcceptance(int $cms_form_id = -1)
+    public function ProjectLeaderAcceptance(int $cms_form_id = -1)
     {
-        $payload = array();
-        $payload['user'] = getUserSession();
-        $payload['title'] = 'Project Leader Acceptance';
-        $this->view('cms_forms/pl_acceptance', $payload);
+
     }
 
     public function ActionList(int $cms_form_id = -1)
     {
-        $payload = array();
-        $payload['user'] = getUserSession();
-        $payload['title'] = 'Action List';
-        $this->view('cms_forms/action_list', $payload);
+
     }
 
-    public function PLClosure(int $cms_form_id = -1)
+    public function ProjectLeaderClosure(int $cms_form_id = -1)
     {
         $payload = array();
         $payload['user'] = getUserSession();
@@ -471,6 +532,11 @@ class CMSForms extends Controller
         $payload['cms_questions'] = getImpactQuestions();
         $payload['action_log'] = getActionLog($cms_form_id);
         $payload['gms'] = getGms();
+        $payload['department_members'] = Database::getDbh()->where('department_id', getUserSession()->department_id)
+            ->where('role', 'Manager', '<>')
+            ->where('role', 'Superintendent', '<>')
+            ->objectBuilder()
+            ->get('users');
         $this->view('cms_forms/view_change_process', $payload);
         //redirect('cms-forms/' . $payload['form']->next_action . '/' . $cms_form_id);
     }

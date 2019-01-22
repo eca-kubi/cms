@@ -34,6 +34,9 @@
             opacity: 0.0,
             cursor: 'default'
         },
+        onUnblock: function () {
+            $('.hide-on-init').removeClass('invisible');
+        }
     });
     $('.blockable').block({
         message: null,

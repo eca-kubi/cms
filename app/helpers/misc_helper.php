@@ -140,11 +140,30 @@ function isOriginator($cms_form_id, $user_id)
         ->has('cms_form');
 }
 
+function isAssignedHOD($cms_form_id, $user_id)
+{
+    return Database::getDbh()->where('cms_form_id', $cms_form_id)
+        ->where('hod_id', $user_id)
+        ->has('cms_form');
+}
+
 function isHOD($cms_form_id, $user_id)
 {
     return Database::getDbh()->where('cms_form_id', $cms_form_id)
         ->where('hod_id', $user_id)
         ->has('cms_form');
+}
+
+function isAssignedGM($cms_form_id, $user_id)
+{
+    return Database::getDbh()->where('cms_form_id', $cms_form_id)
+        ->where('gm_id', $user_id)
+        ->has('cms_form');
+}
+
+function isGM($user_id)
+{
+    return in_array(getUserSession()->job_title, GMs);
 }
 
 /**
@@ -473,7 +492,7 @@ function completeSection($cms_form_id, $section)
 function getActionLog($cms_form_id, $action = '', array $cols = null, $single = false)
 {
     $db = Database::getDbh();
-    $db = $db->objectBuilder();
+    $db->objectBuilder();
     if (!empty($action)) {
         $db = $db->where('cms_form_id', $cms_form_id)
             ->objectBuilder()
@@ -571,13 +590,16 @@ function echoCompleted($date, $user_id, $return = false)
 {
     $user = new User($user_id);
     $department = new Department($user->department_id);
+    $department_name = (!empty($department->department) ? $department->department : 'Adamus');
     if ($return) {
         return "[Completed " . echoDate($date, true) . " by " .
-        its_logged_in_user($user_id) ? ' You ' : concatNameWithUserId($user_id) . " - " . $user->job_title . " @ " . $department->department . "]";
+        its_logged_in_user($user_id) ? ' You ' : concatNameWithUserId($user_id) . " - " . $user->job_title . " @ " .
+            $department_name . "]";
     }
     echo "[Completed ";
     echoDate($date);
-    echo " by " . (its_logged_in_user($user_id) ? ' You ]' : concatNameWithUserId($user_id) . " - " . $user->job_title . " @ " . $department->department . "]");
+    echo " by " . (its_logged_in_user($user_id) ? ' You ]' : concatNameWithUserId($user_id) . " - " . $user->job_title . " @ " .
+            $department_name . "]");
 }
 
 function insertEmail($subject, $body, $recipient_address, $recipient_name)
@@ -595,4 +617,16 @@ function insertEmail($subject, $body, $recipient_address, $recipient_name)
 function its_logged_in_user($user_id)
 {
     return getUserSession()->user_id === $user_id;
+}
+
+function isProjectLeader($user_id, $cms_form_id)
+{
+    $pl_id = (new CMSForm(['cms_form_id' => $cms_form_id, 'project_leader_id' => $user_id]))->getProjectLeaderId();
+    return $pl_id === $user_id;
+}
+
+function isDepartmentManager($user_id, $department_id)
+{
+    $user = new User($user_id);
+    return ($user->department_id === $department_id && ($user->role === ROLE_MANAGER || $user->role === ROLE_SUPERINTENDENT));
 }

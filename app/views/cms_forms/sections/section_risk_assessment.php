@@ -10,7 +10,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                         <div class="row w-100 border ml-0 p-1">
                             <h6 class="text-bold font-italic col m-1">
                                 <a href="#section_3" data-toggle="collapse">
-                                    <i class="fa fa-minus" data-id></i> Section 3 - Risk Assessment
+                                    <i class="fa fa-plus" data-id></i> Section 3 - Risk Assessment
                                     <br/>
                                     <span class="text-muted">
                                         <small>
@@ -34,7 +34,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                                 } ?>
                             </span>
                         </div>
-                        <div id="section_3" class="collapse show section p-3 border">
+                        <div id="section_3" class="collapse section p-3 border">
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group form-row">
@@ -62,6 +62,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                                                     name="affected_dept[]"
                                                     aria-describedby="helpId"
                                                     data-none-selected-text="Select Affected Departments"
+                                                    data-actions-box="true"
                                                     data-size="7"
                                                     multiple="multiple" required>
                                                 <?php
@@ -94,7 +95,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                     <div class="row w-100 border ml-0 p-1">
                         <h6 class="text-bold font-italic col m-1">
                             <a href="#section_3" data-toggle="collapse">
-                                <i class="fa fa-minus" data-id></i> Section 3 - Risk Assessment
+                                <i class="fa fa-plus" data-id></i> Section 3 - Risk Assessment
                                 <span class="small d-sm-inline d-block"><?php echoCompleted($payload['action_log'][ACTION_RISK_ASSESSMENT_COMPLETED]->date, $payload['originator']->user_id); ?> </span>
                             </a>
                             <?php if (!empty($payload['form']->risk_attachment)) {
@@ -129,19 +130,19 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                             } ?>
                         </span>
                     </div>
-                    <div id="section_3" class="w-100 collapse show section">
-                        <table class="table table-bordered table-user-information font-raleway mb-0">
-                            <thead class="thead-default d-none">
-                            <tr>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td scope="row" colspan="2">
-                                    <span class="row">
-                                        <span class="col-sm-2 text-sm-right">
+                    <div id="section_3" class="w-100 collapse section">
+                        <div class="d-sm-none d-block">
+                            <table class="table table-bordered table-user-information font-raleway mb-0">
+                                <thead class="thead-default d-none">
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="" colspan="2">
+                                        <span class="col-sm-4 text-sm-right">
                                             <b>Affected Departments: </b>
                                         </span>
                                         <span class="col-sm-8">
@@ -154,13 +155,12 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                                                 echo concatWith(', ', '& ', $dep);
                                             } ?>
                                         </span>
-                                    </span>
-                                </td>
-                            </tr>
-                            <?php
-                            if (!empty($payload['form']->risk_attachment)) { ?>
-                                <tr class="d-none">
-                                    <td scope="row">
+                                    </td>
+                                </tr>
+                                <?php
+                                if (!empty($payload['form']->risk_attachment)) { ?>
+                                    <tr class="d-none">
+                                        <td scope="row">
                                         <span class="row">
                                             <span class="col-sm-2 text-sm-right">
                                                 <b>Risk Assessment: </b>
@@ -173,12 +173,60 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                                             <small class="text-muted"><i>(Download the risk assessment document attached to this form)</i></small>
                                             </span>
                                         </span>
+                                        </td>
+                                    </tr>
+                                <?php }
+                                ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-sm-block d-none">
+                            <table class="table table-bordered table-user-information font-raleway mb-0">
+                                <thead class="thead-default d-none">
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="text-right" scope="row" style="width:17%">
+                                        <b>Affected Departments: </b>
+                                    </td>
+                                    <td style="width:83%">
+                                        <?php
+                                        $dep = [];
+                                        foreach (getAffectedDepartments($payload['form']->cms_form_id) as $value) {
+                                            $dep[] = $value->department;
+                                        }
+                                        if (count($dep) > 0) {
+                                            echo concatWith(', ', '& ', $dep);
+                                        } ?>
                                     </td>
                                 </tr>
-                            <?php }
-                            ?>
-                            </tbody>
-                        </table>
+                                <?php
+                                if (!empty($payload['form']->risk_attachment)) { ?>
+                                    <tr class="d-none">
+                                        <td scope="row">
+                                        <span class="row">
+                                            <span class="col-sm-2 text-sm-right">
+                                                <b>Risk Assessment: </b>
+                                            </span>
+                                        <span class="col-sm-8">
+                                                <a href="<?php echo URL_ROOT . '/cms-forms/download-risk-attachment/' . $payload['form']->cms_form_id; ?>"
+                                                   target="_blank"
+                                                   title="Download Attached Risk Assessment"
+                                                   class="btn btn-primary btn-sm">Download</a>
+                                            <small class="text-muted"><i>(Download the risk assessment document attached to this form)</i></small>
+                                            </span>
+                                        </span>
+                                        </td>
+                                    </tr>
+                                <?php }
+                                ?>
+                                </tbody>
+                            </table>
+                        </div>
                         <?php require_once APP_ROOT . "/views/cms_forms/sections/section_possible_impact.php"; ?>
                     </div>
                 </div>

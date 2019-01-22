@@ -167,6 +167,7 @@ td.action > span {
 .table td {
     padding: 0.5rem !important;
 }
+
 .cursor-disabled {
     cursor: not-allowed !important;
 }
@@ -311,6 +312,17 @@ select[multiple='multiple'] {
 
 .dtr-title::after {
     content: ':'
+}
+
+#action_list tr:not(.child) {
+    counter-increment: rowNumber;
+}
+
+#action_list tr:not(.child) td:first-child::before {
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
 }
 
 /* plugin fixes */

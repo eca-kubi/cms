@@ -51,6 +51,8 @@ class CMSForm implements \JsonSerializable
     public $email_subject;
     public $risk_attachment;
     public $state;
+    public $gm_approval_date;
+    public $hod_authorization_date;
 
     public function __construct(array $where_col_val = null)
     {
@@ -775,7 +777,9 @@ class CMSForm implements \JsonSerializable
             'email_subject' => $this->email_subject,
             'risk_attachment' => $this->risk_attachment,
             'gm_id' => $this->gm_id,
-            'state' => $this->getState()
+            'state' => $this->getState(),
+            'gm_approval_date' => $this->getGmApprovalDate(),
+            'hod_authorization_date' => $this->hod_authorization_date
         ];
     }
 
@@ -812,6 +816,24 @@ class CMSForm implements \JsonSerializable
     public function setState($state)
     {
         $this->state = $state;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGmApprovalDate()
+    {
+        return $this->gm_approval_date;
+    }
+
+    /**
+     * @param mixed $gm_approval_date
+     * @return CMSForm
+     */
+    public function setGmApprovalDate($gm_approval_date)
+    {
+        $this->gm_approval_date = $gm_approval_date;
         return $this;
     }
 }

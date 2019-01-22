@@ -176,11 +176,12 @@ $user = getUserSession();
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group form-row">
-                                                <label for="" class="col-sm-4 text-sm-right">
+                                                <label for="change_type" class="col-sm-4 text-sm-right">
                                                     Change Type
                                                 </label>
                                                 <div class="col-sm-8">
-                                                    <select class=" replace-multiple-select form-control">
+                                                    <select class=" replace-multiple-select form-control"
+                                                            id="change_type">
                                                         <option class="d-none"></option>
                                                     </select>
                                                     <select class="form-control bs-select multiple-hidden d-none"
@@ -241,7 +242,7 @@ $user = getUserSession();
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-6 d-none">
                                             <div class="form-group form-row">
                                                 <label class="col-sm-4 text-sm-right">Risk Measure</label>
                                                 <div class="col-sm-8 radio">
@@ -249,7 +250,7 @@ $user = getUserSession();
                                                         <input class="form-check-input" type="radio"
                                                                id="inlineCheckbox1" name="risk_level"
                                                                value="<?php echo STATUS_LOW_RISK_LEVEL ?>"
-                                                               required>
+                                                        >
                                                         <label class="form-check-label"
                                                                for="inlineCheckbox1">Low</label>
                                                     </div>
@@ -257,7 +258,7 @@ $user = getUserSession();
                                                         <input class="form-check-input" type="radio"
                                                                id="inlineCheckbox2" name="risk_level"
                                                                value="<?php echo STATUS_MEDIUM_RISK_LEVEL ?>"
-                                                               required>
+                                                        >
                                                         <label class="form-check-label"
                                                                for="inlineCheckbox2">Medium</label>
                                                     </div>
@@ -265,7 +266,7 @@ $user = getUserSession();
                                                         <input class="form-check-input" type="radio"
                                                                id="inlineCheckbox3" name="risk_level"
                                                                value="<?php echo STATUS_HIGH_RISK_LEVEL ?>"
-                                                               required>
+                                                        >
                                                         <label class="form-check-label" for="inlineCheckbox3">
                                                             High</label>
                                                     </div>
@@ -275,11 +276,11 @@ $user = getUserSession();
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group form-row">
-                                                <label for="" class="col-sm-4 text-sm-right">
+                                                <label for="hod_id" class="col-sm-4 text-sm-right">
                                                     Select HOD
                                                 </label>
                                                 <div class="col-sm-8">
-                                                    <select class="replace-multiple-select form-control">
+                                                    <select class="replace-multiple-select form-control" id="hod_id">
                                                         <option></option>
                                                     </select>
                                                     <select class="form-control bs-select multiple-hidden d-none"
@@ -302,7 +303,7 @@ $user = getUserSession();
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-6 d-none">
                                             <div class="form-group form-row">
                                                 <label class="col-sm-4 text-sm-right">Budget Measure</label>
                                                 <div class="col-sm-8 radio">
@@ -310,7 +311,7 @@ $user = getUserSession();
                                                         <input class="form-check-input" type="radio"
                                                                id="inlineCheckbox11" name="budget_level"
                                                                value="<?php echo STATUS_LOW_BUDGET_LEVEL ?>"
-                                                               required>
+                                                        >
                                                         <label class="form-check-label"
                                                                for="inlineCheckbox11">Low</label>
                                                     </div>
@@ -318,7 +319,7 @@ $user = getUserSession();
                                                         <input class="form-check-input" type="radio"
                                                                id="inlineCheckbox22" name="budget_level"
                                                                value="<?php echo STATUS_MEDIUM_BUDGET_LEVEL ?>"
-                                                               required>
+                                                        >
                                                         <label class="form-check-label"
                                                                for="inlineCheckbox22">Medium</label>
                                                     </div>
@@ -326,7 +327,7 @@ $user = getUserSession();
                                                         <input class="form-check-input" type="radio"
                                                                id="inlineCheckbox33" name="budget_level"
                                                                value="<?php echo STATUS_HIGH_BUDGET_LEVEL ?>"
-                                                               required>
+                                                        >
                                                         <label class="form-check-label"
                                                                for="inlineCheckbox33">High</label>
                                                     </div>

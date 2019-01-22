@@ -48,9 +48,9 @@ try {
             $mail->addAddress($email->recipient_address, $email->recipient_name);     // Add a recipient
             $mail->isHTML(true); // Set email format to HTML
             $mail->Subject = 'Re: ' . $email->subject;
-            $mail->MessageID = '<' . $mail->Subject . '@cms>';
-            $mail->addCustomHeader('In-Reply-To', '<' . $email->subject . '@cms>');
-            $mail->addCustomHeader('References', '<' . $email->subject . '@cms>');
+            //$mail->MessageID = '<' . $mail->Subject . '@cms>';
+            //$mail->addCustomHeader('In-Reply-To', '<' . $email->subject . '@cms>');
+            //$mail->addCustomHeader('References', '<' . $email->subject . '@cms>');
             $mail->Body = $email->body;
             if ($mail->send()) {
                 update_status($email->email_id);

@@ -12,19 +12,19 @@
             <?php /** @var array $payload */
             $department_count = count($payload['affected_departments']);
             foreach ($payload['affected_departments'] as $department) {
-                $department_hods = (new UserModel())->getColumnsWhere('users', 'user_id', ['department_id' => $department->department_id]);
-                $hod_ids = [];
-                foreach ($department_hods as $department_hod) {
-                    $hod_ids = $department_hod->user_id;
-                }
+
                 $can_assess_impact_for_dept = canAssessImpactForDept($department->department_id);
                 $questions = getImpactQuestions($department->department_id);
                 $action_impact_assessment_completed = getActionLog($payload['form']->cms_form_id, ACTION_IMPACT_ASSESSMENT_COMPLETED, ['department_affected' => $department->department_id], true);
                 $action_hod_commented = getActionLog($payload['form']->cms_form_id, ACTION_IMPACT_ASSESSMENT_HOD_COMMENTED, ['department_affected' => $department->department_id], true);
                 $impact_ass_status = new ImpactAssStatusModel(['department_id' => $department->department_id, 'cms_form_id' => $payload['form']->cms_form_id]);
                 $performed_by = null;
+                $hod = '';
                 if (!empty($action_impact_assessment_completed)) {
                     $performed_by = new User($action_impact_assessment_completed->performed_by);
+                }
+                if (!empty($action_hod_commented)) {
+                    $hod = new User($action_hod_commented->performed_by);
                 }
                 // $responses = getImpactResponsesForDepartment($payload['form']->cms_form_id, $department->department_id);
                 if (!empty($questions)) { ?>
@@ -136,21 +136,21 @@
                                     ?>
                                 </fieldset>
                             </form>
-                            <form method="post"
-                                  action="<?php echo URL_ROOT . '/cms-forms/hod-comment/' . $payload['form']->cms_form_id . '/' . $department->department_id; ?>"
-                                  role="form">
-                                <?php
-                                if ($impact_ass_status->getStatus() == STATUS_IMPACT_ASSESSMENT_COMPLETED && empty($impact_ass_status->getApprovedBy()) && in_array(getUserSession()->user_id, $hod_ids)) { ?>
+                            <?php
+                            if ($impact_ass_status->getStatus() == STATUS_IMPACT_ASSESSMENT_COMPLETED && empty($action_hod_commented)
+                                && isDepartmentManager(getUserSession()->user_id, $department->department_id)) { ?>
+                                <form method="post"
+                                      action="<?php echo URL_ROOT . '/cms-forms/hod-comment/' . $payload['form']->cms_form_id . '/' . $department->department_id; ?>"
+                                      role="form">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group form-row">
-                                                <label class="col-sm-4">
-
+                                                <label class="col-sm-4" for="hod_comment">
+                                                    HoD Comment
                                                 </label>
                                                 <div class="col-sm-8">
-                                                    <label>
-                                                        <textarea class="form-control" name="hod_comment"></textarea>
-                                                    </label>
+                                                    <textarea class="form-control" name="hod_comment"
+                                                              id="hod_comment"></textarea>
                                                 </div>
                                                 <small id="helpId" class="with-errors help-block"></small>
                                             </div>
@@ -179,9 +179,40 @@
                                             </div>
                                         </div>
                                     </div>
+                                </form>
+                            <?php } else {
+                                if (!empty($action_hod_commented)) { ?>
+                                    <div class="d-sm-block d-none">
+                                        <table>
+                                            <thead class="thead-default">
+                                            </thead>
+                                            <tbody>
+                                            <tr class="row">
+                                                <td style="width:17%"><b>HoD's comment:</b></td>
+                                                <td style="width: 83%;"><?php $impact_ass_status->getHodComment(); ?></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="d-sm-none d-block">
+                                        <table>
+                                            <thead class="thead-default">
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-4 text-right"><b>HoD's comment:</b></div>
+                                                        <div class="col-sm-8"><?php $impact_ass_status->getHodComment(); ?></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 <?php }
-                                ?>
-                            </form>
+                            }
+                            ?>
                         </div>
                         <?php
                         $department_count--;
