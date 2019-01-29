@@ -330,6 +330,9 @@ select[multiple='multiple'] {
 
 }
 
+.completed {
+    color: #000;
+}
 /* shim */
 
 /* Portrait phones and smaller */

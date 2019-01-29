@@ -89,6 +89,10 @@ function filterPost()
     return $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 }
 
+/**
+ * @param string $model
+ * @return mixed
+ */
 function requireModel(string $model)
 {
     require_once '../app/models/' . ucwords($model) . '.php';
@@ -161,14 +165,17 @@ function isAssignedGM($cms_form_id, $user_id)
         ->has('cms_form');
 }
 
-function isGM($user_id)
+function isGM($user_id = '')
 {
-    return in_array(getUserSession()->job_title, GMs);
+    $job_title = !empty($user_id) ? (new User($user_id))->job_title : getUserSession()->job_title;
+    return in_array($job_title, GMs);
 }
 
 /**
  *Concats array elements with $symbol and $symbolForlastElem.
  *
+ * @param string $symbol
+ * @param $symbolForLastElem
  * @param array $array
  *
  * @return string
@@ -232,10 +239,10 @@ function notifyOHSForMonitoring($cms_form_id)
     }
 }
 
-function notifyGm($cms_form_id, $cms_form)
+function notifyGm($cms_form_id)
 {
-    $risk_budget_level = '';
-    if ($cms_form->risk_level == STATUS_HIGH_RISK_LEVEL && $cms_form->budget_level == STATUS_HIGH_BUDGET_LEVEL) {
+    /*
+     * if ($cms_form->risk_level == STATUS_HIGH_RISK_LEVEL && $cms_form->budget_level == STATUS_HIGH_BUDGET_LEVEL) {
         $risk_budget_level = ' high risk and budget';
     } else {
         if (($cms_form->risk_level == STATUS_HIGH_RISK_LEVEL)) {
@@ -244,6 +251,9 @@ function notifyGm($cms_form_id, $cms_form)
             $risk_budget_level = ' high budget ';
         }
     }
+     * */
+    $cms_form = new CMSForm($cms_form_id);
+    // get the hod who approved the start change process ie. hod-assessment
     $link = URL_ROOT . '/cms-forms/view-change-process/' . $cms_form_id;
     $subject = genEmailSubject($cms_form_id);
     $gm = (new User($cms_form->gm_id))->jsonSerialize();
@@ -252,8 +262,7 @@ function notifyGm($cms_form_id, $cms_form)
     $email_model->add([
         'subject' => $subject,
         'body' => 'Hi ' . ucwords($gm['first_name'] . ' ' . $gm['last_name'], '-. ') . ', ' . HTML_NEW_LINE .
-            'A Change Proposal with a' . $risk_budget_level . ' level has been
-        reviewed by ' . ucwords($hod['first_name'] . ' ' . $hod['last_name'], '-. ') . ' (' . $hod['job_title'] . ').' .
+            'A Change Proposal has been reviewed by ' . ucwords($hod['first_name'] . ' ' . $hod['last_name'], '-. ') . ' (' . $hod['job_title'] . ').' .
             ' This requires your approval. Kindly click this link to approve it: '
             . "<a href='$link'> $link</a>",
         'recipient_address' => $gm['email'],
@@ -262,6 +271,57 @@ function notifyGm($cms_form_id, $cms_form)
     ]);
 }
 
+/**To notify Gms for their approval
+ * This function can be customized with the help of
+ * its parameters for general notifications to GMs
+ * @param $cms_form_id
+ * @param null $message
+ * @param null $action
+ * @param null $action_options
+ */
+function notifyGms($cms_form_id, $message = null, $action = null, $action_options = null)
+{
+    // get the hod who approved the start change process ie. hod-assessment
+    $action_hod_commented = getActionLog($cms_form_id, $action ? $action : ACTION_HOD_ASSESSMENT_COMPLETED, $action_options ? $action_options : [], true);
+    $gms = getGms();
+    $link = URL_ROOT . '/cms-forms/view-change-process/' . $cms_form_id;
+    $subject = genEmailSubject($cms_form_id);
+    $hod = new User($action_hod_commented->performed_by);
+    foreach ($gms as $gm) {
+        $message = $message ? $message : 'Hi ' . concatNameWithUserId($gm->user_id) . ', ' . HTML_NEW_LINE .
+            'A Change Proposal reviewed by ' . getNameJobTitleAndDepartment($action_hod_commented->performed_by) .
+            ', requires your approval as GM. You may click this link to approve it: '
+            . "<a href='$link'> $link</a>";
+        insertEmail($subject, $message, $gm->email, concatNameWithUserId($gm->user_id));
+    }
+}
+
+/**To notify Department heads; managers & superintendents for their approval
+ * This function can be customized with the help of
+ * its parameters for general notifications to department heads
+ * @param $cms_form_id
+ * @param $department_id
+ * @param null $message
+ * @param null $action
+ * @param null $action_options
+ */
+function notifyDepartmentManagers($cms_form_id, $department_id, $message = null, $action = null, $action_options = null)
+{
+    // get the hod who approved the start change process ie. hod-assessment
+    //$action_hod_commented = getActionLog($cms_form_id, ACTION_HOD_ASSESSMENT_COMPLETED, [], true);
+    $hods = getDepartmentHods($department_id);
+    //$link = URL_ROOT . '/cms-forms/view-change-process/' . $cms_form_id;
+    $subject = genEmailSubject($cms_form_id);
+    //$hod = new User($action_hod_commented->performed_by);
+    foreach ($hods as $hod) {
+        insertEmail($subject, $message, $hod->email, concatNameWithUserId($hod->user_id));
+    }
+}
+
+function notifyAllHODs()
+{
+
+}
 
 function isBudgetHigh($cms_form_id)
 {
@@ -279,7 +339,10 @@ function isRiskHigh($cms_form_id)
 
 function alert($message, $class)
 {
-    echo "<p class='$class'>" . $message . '</p>';
+    global $pending_sections;
+    echo "<p class='$class mb-0 small text-bold py-1 alert alert-dismissible'>" . "<i class='fa fa-warning text-warning'></i> " . $message . '</p>';
+    $ps = "<p class='$class mb-0 small text-bold py-1 alert alert-dismissible'>" . "<i class='fa fa-warning text-warning'></i> " . $message . '</p>';
+    array_push($pending_sections, $ps);
 }
 
 function getAffectedDepartments($cms_form_id)
@@ -437,15 +500,21 @@ function isAssessmentComplete($cms_form_id)
     has('cms_impact_response');
 }
 
+/**
+ * @param $cms_form_id
+ * @param $department_id
+ * @return array
+ * @throws Exception
+ */
 function getImpactResponsesForDepartment($cms_form_id, $department_id)
 {
     $db = Database::getDbh();
-    return $db->where('cms_form_id', $cms_form_id)->
-    objectBuilder()->
-    where('department_id', $department_id)->
-    join('cms_impact_question ciq', 'ciq.cms_impact_question_id=cir.cms_impact_question_id', 'left')->
-    join('departments d', 'd.department_id=ciq.department_id', 'left')->
-    get('cms_impact_response');
+    return $db->where('cms_form_id', $cms_form_id)
+        ->objectBuilder()
+        ->where('department_id', $department_id)
+        ->join('cms_impact_question ciq', 'ciq.cms_impact_question_id=cir.cms_impact_question_id', 'left')
+        ->join('departments d', 'd.department_id=ciq.department_id', 'left')
+        ->get('cms_impact_response');
 }
 
 /**
@@ -484,9 +553,24 @@ function completeSection($cms_form_id, $section)
 }
 
 /**
+ * Add a department to the list of departments who have completed
+ * their impact assessment
+ * @param $cms_form_id
+ * @param $department_id
+ */
+function updateImpactAssessmentCompleteList($cms_form_id, $department_id)
+{
+    $db = Database::getDbh();
+    $list = (new CMSForm())->getImpactAssCompletedDept();
+    $db->where('cms_form_id', $cms_form_id)
+        ->update('cms_form', ['impact_ass_completed_dept' => trim($department_id . ',' . $list, ', ')]);
+}
+
+/**
  * @param $cms_form_id
  * @param string $action
  * @param array|null $cols
+ * @param bool $single
  * @return array|object
  */
 function getActionLog($cms_form_id, $action = '', array $cols = null, $single = false)
@@ -538,7 +622,7 @@ function concatName(array $parts, $capitalize = true)
     return $full_name;
 }
 
-function concatNameWithUserId($user_id, $capitalize = true)
+function concatNameWithUserId($user_id)
 {
     $u = (new User($user_id));
     return ucwords($u->first_name . ' ' . $u->last_name, '- .');
@@ -564,6 +648,18 @@ function echoDate(string $date, $return = false)
         echo $d . ' at ' . $t;
     } catch (\Moment\MomentException $e) {
     }
+    return '';
+}
+
+function returnDate(string $date)
+{
+    try {
+        $d = (new \Moment\Moment($date))->calendar(false);
+        $t = (new \Moment\Moment($date))->format('hh:mm a', new \Moment\CustomFormats\MomentJs());
+        return $d . ' at ' . $t;
+    } catch (\Moment\MomentException $e) {
+    }
+    return '';
 }
 
 function message($message_id, array $data = [])
@@ -580,13 +676,15 @@ function message($message_id, array $data = [])
 function getDepartmentHods($department_id)
 {
     $db = Database::getDbh();
-    return $db->where('role', 'Manager')
+    return $db->where('role', ROLE_MANAGER)
+        ->where('role', ROLE_SUPERINTENDENT)
         ->where('department_id', $department_id)
         ->objectBuilder()
         ->get('users');
 }
 
-function echoCompleted($date, $user_id, $return = false)
+/*
+ * function echoCompleted($date, $user_id, $return = false)
 {
     $user = new User($user_id);
     $department = new Department($user->department_id);
@@ -600,6 +698,19 @@ function echoCompleted($date, $user_id, $return = false)
     echoDate($date);
     echo " by " . (its_logged_in_user($user_id) ? ' You ]' : concatNameWithUserId($user_id) . " - " . $user->job_title . " @ " .
             $department_name . "]");
+    return '';
+}
+ * */
+
+function echoCompleted()
+{
+    return "<span class=\"font-italic completed\"> <span class=\"small animated completed\">[Completed]</span>  <i
+                            class=\"fa fa-check fa-1x completed d-none animated\"></i></span>";
+}
+
+function echoInComplete()
+{
+    return "<span class=\"font-italic \"> <span class=\"text-dark small animated incomplete ml-1\">[Incomplete]</span> </span>";
 }
 
 function insertEmail($subject, $body, $recipient_address, $recipient_name)
@@ -629,4 +740,73 @@ function isDepartmentManager($user_id, $department_id)
 {
     $user = new User($user_id);
     return ($user->department_id === $department_id && ($user->role === ROLE_MANAGER || $user->role === ROLE_SUPERINTENDENT));
+}
+
+function echoPendingSections()
+{
+    global $pending_sections;
+    foreach ($pending_sections as $section) {
+        echo '<input  value=' . "$section" . 'class="pending-section">';
+    }
+    if (!empty($pending_sections)) {
+        echo json_encode($pending_sections);
+    }
+    echo json_encode([""]);
+}
+
+function isAllImpactAssessmentComplete($cms_form_id)
+{
+    /*
+     * Check if all departments affected have completed
+     * impact assessment
+     * */
+    $completed_departments_string = (new CMSForm(['cms_form_id' => $cms_form_id]))->getImpactAssCompletedDept();
+    if (!empty($completed_departments_string)) {
+        $completed_departments_array = explode(',', trim($completed_departments_string, ', '));
+        return count(getAffectedDepartments($cms_form_id)) === count($completed_departments_array);
+    }
+    return false;
+}
+
+/**
+ * @param $user_id
+ * @return string
+ */
+function getDepartment($user_id)
+{
+    return ((new User($user_id))->department)->department;
+}
+
+/**
+ * @param $user_id
+ * @return string
+ */
+function getJobTitle($user_id)
+{
+    return (new User($user_id))->job_title;
+
+}
+
+function getNameJobTitleAndDepartment($user_id)
+{
+    $user = new User($user_id);
+    return concatNameWithUserId($user_id) .
+        " - " . $user->job_title . " @ " .
+        getDepartment($user_id);
+}
+
+function getOriginatorDepartmentID($cms_form_id)
+{
+    return (new User((new CMSForm(['cms_form_id' => $cms_form_id]))->getOriginatorId()))->department_id;
+}
+
+/**Return current date & time
+ * @return string
+ */
+function now()
+{
+    try {
+        return (new DateTime())->format(DFB_DT);
+    } catch (Exception $e) {
+    }
 }

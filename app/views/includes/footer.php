@@ -36,6 +36,11 @@
         },
         onUnblock: function () {
             $('.hide-on-init').removeClass('invisible');
+            setTimeout(function () {
+                $('.completed:not(.fa)').addClass('text-success fadeIn text-bold');
+                $('.completed .fa').removeClass('d-none').addClass('rotateInUpLeft text-success text-bold');
+                $('.incomplete').addClass('text-danger text-bold').removeClass('text-dark');
+            }, 1000)
         }
     });
     $('.blockable').block({

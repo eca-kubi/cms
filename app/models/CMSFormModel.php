@@ -18,7 +18,6 @@ class CMSFormModel extends Model implements \JsonSerializable
     public $hod_reasons;
     public $gm_approval;
     public $gm_approval_reasons;
-    public $gm_reasons;
     public $hod_authorization;
     public $hod_authorization_comment;
     public $project_leader_id;
@@ -69,6 +68,7 @@ class CMSFormModel extends Model implements \JsonSerializable
         if ($ret) {
             return $db->getInsertId();
         }
+        return false;
     }
 
     public function fetchSingle(array $where_col_val)
@@ -870,7 +870,7 @@ class CMSFormModel extends Model implements \JsonSerializable
             'hod_approval' => $this->hod_approval,
             'hod_ref_num' => $this->hod_ref_num,
             'gm_approval' => $this->gm_approval,
-            'gm_approval_reasons' => $this->gm_reasons,
+            'gm_approval_reasons' => $this->gm_approval_reasons,
             'hod_authorization' => $this->hod_authorization,
             'hod_authorization_comment' => $this->getHodAuthorizationComment(),
             'project_leader_id' => $this->project_leader_id,

@@ -10,6 +10,44 @@ class ImpactAssStatusModel extends Model implements \JsonSerializable
     public $approved_by;
     public $hod_comment;
     public $hod_comment_date;
+    public $completed_by;
+    public $completed_date;
+
+    /**
+     * @return mixed
+     */
+    public function getCompletedBy()
+    {
+        return $this->completed_by;
+    }
+
+    /**
+     * @param mixed $completed_by
+     * @return ImpactAssStatusModel
+     */
+    public function setCompletedBy($completed_by)
+    {
+        $this->completed_by = $completed_by;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompletedDate()
+    {
+        return $this->completed_date;
+    }
+
+    /**
+     * @param mixed $completed_date
+     * @return ImpactAssStatusModel
+     */
+    public function setCompletedDate($completed_date)
+    {
+        $this->completed_date = $completed_date;
+        return $this;
+    }
 
     public function __construct(array $where_col_val = null)
     {
@@ -104,6 +142,7 @@ class ImpactAssStatusModel extends Model implements \JsonSerializable
         if ($ret) {
             return $db->getInsertId();
         }
+        return false;
     }
 
     public function jsonSerialize(): array
@@ -114,7 +153,9 @@ class ImpactAssStatusModel extends Model implements \JsonSerializable
             'approved_by' => $this->getApprovedBy(),
             'cms_form_id' => $this->cms_form_id,
             'hod_comment_date' => $this->getHodCommentDate(),
-            'hod_comment' => $this->getHodComment()
+            'hod_comment' => $this->getHodComment(),
+            'completed_by' => $this->getCompletedBy(),
+            'completed_date' => $this->getCompletedDate()
         ];
     }
 
@@ -206,5 +247,11 @@ class ImpactAssStatusModel extends Model implements \JsonSerializable
     {
         $this->hod_comment = $hod_comment;
         return $this;
+    }
+
+    public function updateForm($cms_form_id, array $data)
+    {
+        return Database::getDbh()->where('cms_form_id', $cms_form_id)
+            ->update(self::$table, $data);
     }
 }

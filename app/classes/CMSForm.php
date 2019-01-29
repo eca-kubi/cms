@@ -32,7 +32,7 @@ class CMSForm implements \JsonSerializable
     public $hod_authorization_comment;
     public $project_leader_id;
     public $project_leader_acceptance;
-    public $project_leader_comment;
+    public $project_leader_acceptance_comment;
     public $hod_close_change;
     public $originator_close_change;
     public $project_leader_close_change;
@@ -53,7 +53,13 @@ class CMSForm implements \JsonSerializable
     public $state;
     public $gm_approval_date;
     public $hod_authorization_date;
+    public $impact_ass_completed_dept;
+    public $project_leader_acceptance_date;
 
+    /**
+     * CMSForm constructor.
+     * @param array|null $where_col_val
+     */
     public function __construct(array $where_col_val = null)
     {
         if (!empty($where_col_val)) {
@@ -65,6 +71,7 @@ class CMSForm implements \JsonSerializable
             }
         }
     }
+
 
     public function fetchSingle(array $where_col_val)
     {
@@ -134,18 +141,18 @@ class CMSForm implements \JsonSerializable
     /**
      * @return mixed
      */
-    public function getProjectLeaderComment()
+    public function getProjectLeaderAcceptanceComment()
     {
-        return $this->project_leader_comment;
+        return $this->project_leader_acceptance_comment;
     }
 
     /**
-     * @param mixed $project_leader_comment
+     * @param mixed $project_leader_acceptance_comment
      * @return CMSForm
      */
-    public function setProjectLeaderComment($project_leader_comment)
+    public function setProjectLeaderAcceptanceComment($project_leader_acceptance_comment)
     {
-        $this->project_leader_comment = $project_leader_comment;
+        $this->project_leader_acceptance_comment = $project_leader_acceptance_comment;
         return $this;
     }
 
@@ -779,8 +786,47 @@ class CMSForm implements \JsonSerializable
             'gm_id' => $this->gm_id,
             'state' => $this->getState(),
             'gm_approval_date' => $this->getGmApprovalDate(),
-            'hod_authorization_date' => $this->hod_authorization_date
+            'hod_authorization_date' => $this->hod_authorization_date,
+            'impact_ass_completed_dept' => $this->impact_ass_completed_dept,
+            'project_leader_acceptance_date' => $this->project_leader_acceptance_date,
+            'project_leader_acceptance_comment' => $this->getProjectLeaderAcceptanceComment()
         ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHodAuthorizationDate()
+    {
+        return $this->hod_authorization_date;
+    }
+
+    /**
+     * @param mixed $hod_authorization_date
+     * @return CMSForm
+     */
+    public function setHodAuthorizationDate($hod_authorization_date)
+    {
+        $this->hod_authorization_date = $hod_authorization_date;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImpactAssCompletedDept()
+    {
+        return $this->impact_ass_completed_dept;
+    }
+
+    /**
+     * @param mixed $impact_ass_completed_dept
+     * @return CMSForm
+     */
+    public function setImpactAssCompletedDept($impact_ass_completed_dept)
+    {
+        $this->impact_ass_completed_dept = $impact_ass_completed_dept;
+        return $this;
     }
 
     /**
@@ -835,5 +881,10 @@ class CMSForm implements \JsonSerializable
     {
         $this->gm_approval_date = $gm_approval_date;
         return $this;
+    }
+
+    public function setProjectLeaderAcceptanceDate(string $now)
+    {
+        $this->project_leader_acceptance_date = $now;
     }
 }

@@ -50,6 +50,7 @@ const DOC_FILE_TYPES = '.csv, application/vnd.openxmlformats-officedocument.spre
 const HTML_NEW_LINE = '<br/>';
 
 const ACTION_START_CHANGE_PROCESS = 'start_change_process';
+const ACTION_IMPACT_ASSESSMENT_RESPONSE_COMPLETED = 'impact_assessment_response_complete';
 const ACTION_START_CHANGE_PROCESS_COMPLETED = 'start_change_process_completed';
 const ACTION_HOD_ASSESSMENT = 'hod_assessment';
 const ACTION_HOD_AUTHORISATION_COMPLETED = 'hod_authorisation_completed';
@@ -60,6 +61,7 @@ const ACTION_RISK_ASSESSMENT_COMPLETED = 'risk_assessment_completed';
 const ACTION_IMPACT_ASSESSMENT = 'impact_assessment';
 const ACTION_GM_ASSESSMENT = 'gm_assessment';
 const ACTION_HOD_AUTHORISATION = 'hod-authorisation';
+const ACTION_PROJECT_LEADER_ACCEPTANCE_COMPLETED = 'project-leader-acceptance-completed';
 const ACTION_PL_ACCEPTANCE = 'pl-acceptance';
 const ACTION_ACTION_LIST = 'action-list';
 const ACTION_PL_CLOSURE = 'pl-closure';
@@ -77,6 +79,7 @@ const ACTION_IMPACT_ASSESSMENT_HOD_COMMENTED = 'impact_assessment_hod_commented'
 
 const SECTION_START_CHANGE_PROCESS = 'start_change_process';
 const SECTION_HOD_ASSESSMENT = 'hod-assessment';
+const SECTION_ACTION_LIST = 'action-list';
 const SECTION_RISK_ASSESSMENT = 'risk-assessment';
 const SECTION_IMPACT_ASSESSMENT = 'impact-assessment';
 const SECTION_GM_ASSESSMENT = 'gm-assessment';
@@ -108,6 +111,7 @@ const STATUS_CLOSED = 'closed';
 const STATUS_ACTIVE = 'active';
 const STATUS_AUTHORIZED = 'authorized';
 const STATUS_ACCEPTED = 'accepted';
+
 
 const ROLE_MANAGER = 'Manager';
 const ROLE_SUPERINTENDENT = 'Superintendent';
@@ -152,4 +156,8 @@ const STATUS_LOW_RISK_LEVEL = 'Low';
 const STATUS_HIGH_BUDGET_LEVEL = 'High';
 const STATUS_MEDIUM_BUDGET_LEVEL = 'Medium';
 const STATUS_LOW_BUDGET_LEVEL = 'Low';
+
+const ICON_FA_PLUS = 'fa-plus-circle';
+const ICON_FA_MINUS = 'fa-minus-circle';
 $_GET['target'] = empty($_GET['target']) ? '' : $_GET['target'];
+$pending_sections = [];

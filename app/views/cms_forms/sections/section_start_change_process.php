@@ -1,24 +1,23 @@
 <div class="row p-2">
-    <span class="row w-100 border ml-0 p-1">
+    <div class="row w-100 border ml-0 p-1">
         <h6 class="text-bold font-italic col m-1">
             <a href="#section_1" data-toggle="collapse">
-                <i class="fa fa-plus" data-target="#section_1"></i> Section 1 - Proposed Change
-                <span class="small d-sm-inline d-block"><?php /** @var array $payload */
-                    echoCompleted($payload['action_log'][ACTION_START_CHANGE_PROCESS_COMPLETED]->date, $payload['originator']->user_id); ?> </span>
+                <i class="fa <?php echo ICON_FA_PLUS ?>" data-target="#section_1"></i> Section 1 - Proposed Change
+                <?php echo echoCompleted(); ?>
             </a>
         </h6>
         <span class="text-right float-right d-none">
-            <?php /** @var array $payload */
+            <?php /** @var array $payload */ //todo: Consider sections as database tables in the future.
             if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id) && empty($payload['form']->hod_approval)) { ?>
                 <a href="#" title="Edit this section">
                 <i class="fa fa-edit"></i>
             </a>
             <?php } ?>
         </span>
-    </span>
+    </div>
     <div class="w-100 section collapse" id="section_1">
         <div class="d-sm-block d-none">
-            <table class="table table-bordered table-user-information font-raleway">
+            <table class="table table-bordered table-user-information font-raleway table-striped table-active">
                 <thead class="thead-default d-none">
                 <tr>
                     <th></th>
@@ -26,6 +25,12 @@
                 </tr>
                 </thead>
                 <tbody>
+                <tr>
+                    <td class="text-sm-right" style="width:17%"><b>By: </b></td>
+                    <td scope="row" style="width:83%">
+                        <?php echo getNameJobTitleAndDepartment($payload['form']->originator_id) ?>
+                    </td>
+                </tr>
                 <tr>
                     <td class="text-sm-right" style="width:17%"><b>Description: </b></td>
                     <td scope="row" style="width:83%">
@@ -56,11 +61,17 @@
                         <?php echo $payload['form']->area_affected; ?>
                     </td>
                 </tr>
+                <tr>
+                    <td class="text-sm-right" style="width:17%"><b>Completed: </b></td>
+                    <td scope="row" style="width:83%">
+                        <?php echo returnDate($payload['action_log'][ACTION_START_CHANGE_PROCESS_COMPLETED]->date) ?>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
         <div class="d-sm-none d-block">
-            <table class="table table-bordered table-user-information font-raleway">
+            <table class="table table-bordered table-user-information font-raleway table-striped table-active">
                 <thead class="thead-default d-none">
                 <tr>
                     <th></th>
@@ -142,6 +153,30 @@
                         </span>
                         <span class="col-sm-8">
                             <?php echo $payload['form']->area_affected; ?>
+                        </span>
+                    </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td scope="row">
+                    <span class="row">
+                        <span class="col-lg-2 text-sm-right">
+                            <b>Completed: </b>
+                        </span>
+                        <span class="col-sm-8">
+                            <?php echo returnDate($payload['action_log'][ACTION_START_CHANGE_PROCESS_COMPLETED]->date); ?>
+                        </span>
+                    </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td scope="row">
+                    <span class="row">
+                        <span class="col-lg-2 text-sm-right">
+                            <b>By: </b>
+                        </span>
+                        <span class="col-sm-8">
+                            <?php echo getNameJobTitleAndDepartment($payload['form']->originator_id); ?>
                         </span>
                     </span>
                     </td>

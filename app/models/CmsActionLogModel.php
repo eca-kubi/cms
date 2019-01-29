@@ -119,7 +119,7 @@ class CmsActionLogModel extends Model implements \JsonSerializable
             'date' => $this->getDate(),
             'action' => $this->getAction(),
             'performed_by' => $this->performed_by,
-            'cms_form_id' => $this->getCmsFormId()
+            'cms_form_id' => $this->getCmsFormId(),
         ];
     }
 

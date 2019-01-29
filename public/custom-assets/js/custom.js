@@ -117,12 +117,12 @@ $(document).ready(function () {
     });
 
     $('.section').on('shown.bs.collapse', function () {
-        $(this).parent().find('.fa').eq(0).removeClass('fa-plus').addClass('fa-minus');
+        $(this).parent().find('.fa').eq(0).removeClass('fa-plus-circle').addClass('fa-minus-circle');
         resizeTables();
         return false;
     })
         .on('hidden.bs.collapse', function () {
-            $(this).parent().find('.fa').eq(0).removeClass('fa-minus').addClass('fa-plus');
+            $(this).parent().find('.fa').eq(0).removeClass('fa-minus-circle').addClass('fa-plus-circle');
             return false;
         });
 
@@ -156,12 +156,76 @@ $(document).ready(function () {
     // fix column width for tables in collapse
     $('.hide-child').removeClass('show').trigger('hidden.bs.collapse');
 
+
     // '/cms-forms/action-list'
+    let dataSource = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: URL_ROOT + "/ActionLists/index/" + $('#cms_form_id').val(),
+                dataType: "json"
+            },
+            update: {
+                url: "/ActionLists/Update",
+                type: "POST",
+                dataType: "json"
+            },
+            destroy: {
+                url: "/ActionLists/Destroy",
+                type: "POST"
+            },
+            create: {
+                url: "/ActionLists/Create",
+                type: "POST"
+            },
+            parameterMap: function (options, operation) {
+                if (operation !== "read" && options.models) {
+                    return {models: kendo.stringify(options.models)};
+                }
+            }
+        },
+        schema: {
+            model: {
+                id: "cms_action_list_id",
+                fields: {
+                    no: {
+                        editable: false,
+                    },
+                    action: {
+                        type: 'string',
+                        validation: { //set validation rules
+                            required: true
+                        }
+                    },
+                    person_responsible: {
+                        type: 'string',
+                        validation: {
+                            required: true
+                        }
+                    },
+                    completed: {
+                        type: 'boolean'
+                    },
+                    date: {
+                        type: 'date'
+                    },
+                    cms_action_list_id: {
+                        //this field will not be editable (default value is true)
+                        type: 'number',
+                        editable: false,
+                        nullable: true
+                    }
+                }
+            }
+        }
+    });
     $('#action_list').kendoGrid({
+        mobile: true,
+        navigatable: true,
         columns: [
             {
                 field: 'no',
-                title: 'No.'
+                title: 'No.',
+                editable: false,
             },
             {
                 field: 'action',
@@ -172,18 +236,25 @@ $(document).ready(function () {
                 title: 'Responsible Person'
             },
             {
-                field: 'date',
-                title: 'Date'
-            },
-            {
                 field: 'completed',
                 title: 'Completed?',
-                type: 'boolean'
+                type: 'boolean',
+                template: kendo.template("#= completed? 'Yes'   : 'No' #"),
+                //editor: customBoolEditor
+            },
+            {
+                field: 'date',
+                title: 'Date',
+                template: "#= dateTemplate(date) #"
             },
             {
                 command: "destroy"
             }
         ],
+        dataSource: dataSource,
+        dataBinding: function () {
+            no = (this.dataSource.page() - 1) * this.dataSource.pageSize();
+        },
         toolbar: ["create", "save", "cancel"],
         editable: true
     });
@@ -286,4 +357,25 @@ function resizeTables() {
     $.fn.dataTable
         .tables({visible: true, api: true})
         .columns.adjust();
+}
+
+function customBoolEditor(container, options) {
+    var guid = kendo.guid();
+    $('<input class="k-checkbox" id="' + guid + '" type="checkbox" name="completed" data-type="boolean" data-bind="checked:checkedCompleted">').appendTo(container);
+    $('<label class="k-checkbox-label" for="' + guid + '">&#8203;</label>').appendTo(container);
+    /*if (options.model.checkedCompleted) {
+        options.model.completed = 1;
+    } else {
+        options.model.completed = 0;
+    }*/
+}
+
+function checkedCompleted(param) {
+    console.log(param)
+}
+
+function dateTemplate(date) {
+    m = moment(date);
+    m = moment(m.format("DD-MM-YYYY"), "DD-MM-YYYY");
+    return m.isValid() ? (m.calendar().split(" at"))[0] : '';
 }
