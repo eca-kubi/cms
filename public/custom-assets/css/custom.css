@@ -208,7 +208,7 @@ td.action > span {
     right: 0;
     height: 56px;
     content: "";
-    background-image: url(/sms/public/assets/images/arrow-down.png);
+    background-image: url("/public/assets/images/arrow-down.png");
     display: block;
     margin: 0 auto;
     background-size: 100%;
