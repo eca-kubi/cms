@@ -360,7 +360,7 @@ function resizeTables() {
 }
 
 function customBoolEditor(container, options) {
-    var guid = kendo.guid();
+    let guid = kendo.guid();
     $('<input class="k-checkbox" id="' + guid + '" type="checkbox" name="completed" data-type="boolean" data-bind="checked:checkedCompleted">').appendTo(container);
     $('<label class="k-checkbox-label" for="' + guid + '">&#8203;</label>').appendTo(container);
     /*if (options.model.checkedCompleted) {
@@ -375,7 +375,7 @@ function checkedCompleted(param) {
 }
 
 function dateTemplate(date) {
-    m = moment(date);
+    let m = moment(date);
     m = moment(m.format("DD-MM-YYYY"), "DD-MM-YYYY");
     return m.isValid() ? (m.calendar().split(" at"))[0] : '';
 }
