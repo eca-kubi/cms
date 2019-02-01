@@ -1,11 +1,13 @@
 /// <reference path='../../assets/ts/kendo.all.d.ts' />
+/// <reference path='../../assets/typescript/moment.d.ts' />
 
-let moment_format = 'DD/MM/YYYY';
+//let moment_format = 'DD/MM/YYYY';
+
 let URL_ROOT = '';
 let form_submit_count = 0;
 //=============================================================
 // Daterangepicker Plugin
-let date_rangepicker_options = {
+/*let date_rangepicker_options = {
     singleDate: true,
     showShortcuts: false,
     autoClose: true,
@@ -17,8 +19,15 @@ let date_rangepicker_options = {
     format: 'ddd, MMM D, YYYY',
     //yearSelect: [1900, moment().get('year')]
     //startDate: '1900-01-01'
-};
+};*/
 
+// noinspection JSDeprecatedSymbols
+// noinspection JSCheckFunctionSignatures
+// noinspection JSDeprecatedSymbols
+// noinspection JSCheckFunctionSignatures
+// noinspection JSDeprecatedSymbols
+// noinspection JSCheckFunctionSignatures
+// noinspection JSDeprecatedSymbols
 $(document).ready(function () {
     $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
     URL_ROOT = $('#url_root').val();
@@ -98,12 +107,8 @@ $(document).ready(function () {
         });
 
     // '/cms-forms/add'
-    $('#change_type').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-        let found;
-        found = previousValue ? previousValue.find(function (element) {
-            return element === 'Other';
-        }) : '';
-        if (isSelected && clickedIndex === 8 || (isSelected && found)) {
+    $('#change_type').on('changed.bs.select', function () {
+        if ($(this).has('option[value=Other]:selected').length) {
             $('#other_type').removeClass('d-none');
             $('[name=other_type]').attr('required', true);
             $('#add_cms_form').validator('update');
@@ -245,7 +250,7 @@ $(document).ready(function () {
             {
                 field: 'date',
                 title: 'Date',
-                template: "#= dateTemplate(date) #"
+                template: kendo.template("#= dateTemplate(data.date) #")
             },
             {
                 command: "destroy"
@@ -253,7 +258,7 @@ $(document).ready(function () {
         ],
         dataSource: dataSource,
         dataBinding: function () {
-            no = (this.dataSource.page() - 1) * this.dataSource.pageSize();
+            //let no = (this.dataSource.page() - 1) * this.dataSource.pageSize();
         },
         toolbar: ["create", "save", "cancel"],
         editable: true
@@ -282,7 +287,7 @@ window.addEventListener("load", function () {
     console.log("All resources finished loading!");
 });
 
-function isOffDay(date) {
+/*function isOffDay(date) {
     return bizniz.isWeekendDay(date);
 }
 
@@ -296,14 +301,6 @@ function getWeekDays(startMoment, endMoment) {
     startMoment.toDate();
     endMoment.toDate();
     return Math.abs(bizniz.default.weekDaysBetween(s, e));
-}
-
-function capitalize(s) {
-    if (typeof s !== 'string') return '';
-    return s.split(/[\s,-.]+/).map(function (line) {
-        line = line[0].toUpperCase() + line.substr(1);
-        return line;
-    }).join(" ");
 }
 
 function proxyEmail() {
@@ -328,15 +325,14 @@ function getUrlVars() {
     return vars;
 }
 
-
 function nextWeekDay(moment_date) {
     return moment(moment_date.toDate(), moment_format).weekday(8);
 }
 
 function nextWorkingDay(moment_start_date) {
-    /*do {
+    /!*do {
         bizniz.default.addWeekDays(moment_day.toDate(), 1);
-    } while (!moment_day.isHoliday());*/
+    } while (!moment_day.isHoliday());*!/
     return moment(moment_start_date.toDate(), moment_format);
 }
 
@@ -348,31 +344,36 @@ function getDays(moment_start_date, moment_resume_date) {
         'holiday_count': holiday_count,
         'days_applied_for': days_applied_for
     }
-}
+}*/
+
+/*function capitalize(s) {
+    if (typeof s !== 'string') return '';
+    return s.split(/[\s,-.]+/).map(function (line) {
+        line = line[0].toUpperCase() + line.substr(1);
+        return line;
+    }).join(" ");
+}*/
 
 function resizeTables() {
     if (typeof $.fn.dataTable === 'undefined') {
         return
     }
-    $.fn.dataTable
-        .tables({visible: true, api: true})
+    $.fn.dataTable.tables({visible: true, api: true})
         .columns.adjust();
 }
 
+/*
 function customBoolEditor(container, options) {
     let guid = kendo.guid();
     $('<input class="k-checkbox" id="' + guid + '" type="checkbox" name="completed" data-type="boolean" data-bind="checked:checkedCompleted">').appendTo(container);
     $('<label class="k-checkbox-label" for="' + guid + '">&#8203;</label>').appendTo(container);
-    /*if (options.model.checkedCompleted) {
+    /!*if (options.model.checkedCompleted) {
         options.model.completed = 1;
     } else {
         options.model.completed = 0;
-    }*/
-}
+    }
+}*/
 
-function checkedCompleted(param) {
-    console.log(param)
-}
 
 function dateTemplate(date) {
     let m = moment(date);

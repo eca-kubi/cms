@@ -214,8 +214,8 @@ function notifyOHSForMonitoring($cms_form_id)
         ->where('role', 'Manager')
         ->getOne('users');
     $body = 'Hi ' . ucwords($ohs_superintendent['first_name'] . ' ' . $ohs_superintendent['last_name'], '-. ') . ' a Change Proposal application '
-        . ' has been approved by ' . ucwords($hod->first_name . '.' . $hod->last_name, '-. ') . ($hod->job_title) . '.' .
-        'Use this link to monitor the change progress' . "<a href='$link'>$link</a>";
+        . ' has been approved by ' . getNameJobTitleAndDepartment($hod->user_id) . '. ' .
+        'Use this link to monitor the change progress: ' . "<a href='$link'>$link</a>";
     $email_model = new EmailModel();
     if ($ohs_superintendent) {
         $email_model->add([
@@ -230,8 +230,7 @@ function notifyOHSForMonitoring($cms_form_id)
         $email_model->add([
             'subject' => $subject,
             'body' => 'Hi ' . ucwords($ohs_manager['first_name'] . ' ' . $ohs_manager['last_name'] . ', ', '-. ') . HTML_NEW_LINE . 'A Change Proposal application '
-                . ' has been approved by ' . ucwords($hod->first_name . ' ' . $hod->last_name, '-. ') . ' (' . $hod->job_title . ') .' .
-                'Use this link to monitor the change progress: ' . "<a href='$link'>$link</a>",
+                . ' has been approved by ' . getNameJobTitleAndDepartment($hod->user_id) . '. Use this link to monitor the change progress: ' . "<a href='$link'>$link</a>",
             'recipient_address' => $ohs_manager['email'],
             'recipient_name' => ucwords($ohs_manager['first_name'] . ' ' . $ohs_manager['last_name'], '-. '),
             'sender_user_id' => getUserSession()->user_id
@@ -281,18 +280,18 @@ function notifyGm($cms_form_id)
  */
 function notifyGms($cms_form_id, $message = null, $action = null, $action_options = null)
 {
-    // get the hod who approved the start change process ie. hod-assessment
-    $action_hod_commented = getActionLog($cms_form_id, $action ? $action : ACTION_HOD_ASSESSMENT_COMPLETED, $action_options ? $action_options : [], true);
+    // get the hod or the change owner who approved the start change process ie. hod-assessment
+    $change_owner = new User(getActionLog($cms_form_id, $action ? $action : ACTION_HOD_ASSESSMENT_COMPLETED,
+        $action_options ? $action_options : [], true)->performed_by);
     $gms = getGms();
     $link = URL_ROOT . '/cms-forms/view-change-process/' . $cms_form_id;
     $subject = genEmailSubject($cms_form_id);
-    $hod = new User($action_hod_commented->performed_by);
     foreach ($gms as $gm) {
-        $message = $message ? $message : 'Hi ' . concatNameWithUserId($gm->user_id) . ', ' . HTML_NEW_LINE .
-            'A Change Proposal reviewed by ' . getNameJobTitleAndDepartment($action_hod_commented->performed_by) .
+        $m = $message ? $message : 'Hi ' . concatNameWithUserId($gm->user_id) . ', ' . HTML_NEW_LINE .
+            'A Change Proposal owned by ' . getNameJobTitleAndDepartment($change_owner->user_id) .
             ', requires your approval as GM. You may click this link to approve it: '
             . "<a href='$link'> $link</a>";
-        insertEmail($subject, $message, $gm->email, concatNameWithUserId($gm->user_id));
+        insertEmail($subject, $m, $gm->email, concatNameWithUserId($gm->user_id));
     }
 }
 
@@ -458,8 +457,8 @@ function notifyImpactAccessReps($cms_form_id)
             ->objectBuilder()
             ->get('users');
         foreach ($reps as $rep) {
-            $body = "Hi, " . ucwords($rep->first_name . ' ' . $rep->last_name, '-. ') . HTML_NEW_LINE .
-                "A Change Proposal raised by " . ($rep->user_id === $originator->user_id ? " you " : ucwords($originator->first_name . ' ' . $originator->last_name, '-. ')) .
+            $body = "Hi, " . ucwords($rep->first_name . ' ' . $rep->last_name, '-. ') . ', ' . HTML_NEW_LINE .
+                "A Change Proposal raised by " . ($rep->user_id === $originator->user_id ? " you " : getNameJobTitleAndDepartment($originator->user_id)) .
                 " requires response to questions on Possible Impacts related to your department (" . $affected_department->department . "). " .
                 "Click this link if you wish to respond to the questions: " . '<a href="' .
                 $link . '" />' . $link . '</a>';
@@ -485,10 +484,10 @@ function populateImpactResponse(array $affected_depts, $cms_form_id)
                 'cms_impact_question_id' => $ques->cms_impact_question_id,
             ];
             $response_model->add($insert_data);
-            (new ImpactAssStatusModel())->setCmsFormId($cms_form_id)
-                ->setStatus(STATUS_IMPACT_ASSESSMENT_RESPONSE_PENDING)
-                ->setDepartmentId($dept_id)->insert();
         }
+        (new ImpactAssStatusModel())->setCmsFormId($cms_form_id)
+            ->setStatus(STATUS_IMPACT_ASSESSMENT_RESPONSE_PENDING)
+            ->setDepartmentId($dept_id)->insert();
     }
 }
 
@@ -651,7 +650,7 @@ function echoDate(string $date, $return = false)
     return '';
 }
 
-function returnDate(string $date)
+function returnDate($date)
 {
     try {
         $d = (new \Moment\Moment($date))->calendar(false);

@@ -1,6 +1,6 @@
 <?php /** @var  array $payload */
 if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
-    if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id) && sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
+    if (isDepartmentManager(getUserSession()->user_id, getOriginatorDepartmentID($payload['form']->cms_form_id)) && sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
         ?>
         <div class="row p-2">
             <form class="w-100"
@@ -10,7 +10,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                     <div class="row w-100 border ml-0 p-1">
                         <h6 class="text-bold font-italic col m-1">
                             <a href="#section_3" data-toggle="collapse">
-                                <i class="fa <?php echo ICON_FA_PLUS ?>"></i> Section 3 - Risk Assessment
+                                <i class="fa <?php echo ICON_FA_MINUS ?>"></i> Section 3 - Risk Assessment
                                 <br/>
                                 <span class="text-muted">
                                         <small>
@@ -34,7 +34,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                                 } ?>
                             </span>
                     </div>
-                    <div id="section_3" class="collapse section p-3 border">
+                    <div id="section_3" class="collapse show section p-3 border">
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group form-row">

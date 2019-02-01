@@ -22,6 +22,7 @@ class DepartmentModel extends Model implements \JsonSerializable
                         getOne(self::$table);
         if (count((array)$ret) < 1)
         {
+            $ret = isset($ret) ? $ret : new stdClass();
         	$ret->department ='N/A';
         }
         return $ret;

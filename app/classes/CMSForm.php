@@ -27,7 +27,6 @@ class CMSForm implements \JsonSerializable
     public $hod_reasons;
     public $gm_approval;
     public $gm_approval_reasons;
-    public $gm_reasons;
     public $hod_authorization;
     public $hod_authorization_comment;
     public $project_leader_id;
@@ -314,6 +313,7 @@ class CMSForm implements \JsonSerializable
      */
     public function setAdvantages($advantages)
     {
+        /** @var string $advantages */
         $this->advantages = $advantages;
         return $this;
     }
@@ -441,24 +441,6 @@ class CMSForm implements \JsonSerializable
     public function setGmApproval($gm_approval)
     {
         $this->gm_approval = $gm_approval;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getGmReasons()
-    {
-        return $this->gm_reasons;
-    }
-
-    /**
-     * @param mixed $gm_reasons
-     * @return CMSForm
-     */
-    public function setGmReasons($gm_reasons)
-    {
-        $this->gm_reasons = $gm_reasons;
         return $this;
     }
 
@@ -765,7 +747,7 @@ class CMSForm implements \JsonSerializable
             'hod_approval' => $this->hod_approval,
             'hod_ref_num' => $this->hod_ref_num,
             'gm_approval' => $this->gm_approval,
-            'gm_approval_reasons' => $this->gm_reasons,
+            'gm_approval_reasons' => $this->gm_approval_reasons,
             'hod_authorization' => $this->hod_authorization,
             'hod_authorization_comment' => $this->getHodAuthorizationComment(),
             'project_leader_id' => $this->project_leader_id,

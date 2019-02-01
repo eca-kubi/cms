@@ -92,7 +92,7 @@ class ImpactAssStatusModel extends Model implements \JsonSerializable
     {
         $db = Database::getDbh();
         foreach ($where_values as $col => $val) {
-            $db->where($col, $val);
+            $db = $db->where($col, $val);
         }
         $db->update(self::$table, $data);
     }

@@ -86,7 +86,8 @@ class CMSForms extends Controller
                 $originator_name = concatNameWithUserId(getUserSession()->user_id);
                 $hod = new User($_POST['hod_id']);
                 //$subject = 'Change Proposal, Assessment and Implementation';
-                $body = 'Hi ' . ucwords($hod->first_name . ' ' . $hod->last_name, '-. ') . ', ' . HTML_NEW_LINE . 'A Change Proposal application has been raised by ' . $originator_name . '.' .
+                $body = 'Hi ' . ucwords($hod->first_name . ' ' . $hod->last_name, '-. ') . ', ' . HTML_NEW_LINE . 'A Change Proposal application has been raised by ' .
+                    getNameJobTitleAndDepartment(getOriginatorId($cms_form_id)) . '.' .
                     ' Kindly use the link below to approve it.' . HTML_NEW_LINE . genLink($cms_form_id, 'view-change-process');
                 insertEmail(genEmailSubject($cms_form_id), $body, $hod->email, $hod->first_name . ' ' . $hod->last_name);
 
@@ -238,7 +239,8 @@ class CMSForms extends Controller
             $_POST = filterPost();
             $ret = false;
             foreach ($_POST as $key => $response) {
-                @ $cms_response_id = end(explode('_', $key));
+                $array_key_value = explode('_', $key);
+                $cms_response_id = end($array_key_value);
                 $ret = Database::getDbh()->where('cms_impact_response_id', $cms_response_id)
                     ->update('cms_impact_response', ['response' => $response]);
             }
@@ -444,18 +446,12 @@ class CMSForms extends Controller
                 $cms_form->hod_authorization_date = (new DateTime())->format(DFB_DT);
             } catch (Exception $e) {
             }
-            $body = "Hi, " . ucwords($originator->first_name . ' ' . $originator->last_name, '-. ') . HTML_NEW_LINE .
-            concatNameWithUserId($hod->user_id) . " ( $hod->job_title) has selected " .
-            $project_leader->user_id === $originator->user_id ? "you " : concatNameWithUserId($project_leader->user_id) .
-                " as Project Leader for this Change Proposal" . HTML_NEW_LINE .
+            $body = "Hi, " . concatNameWithUserId($originator->user_id) . HTML_NEW_LINE .
+                getNameJobTitleAndDepartment($hod->user_id) . " has selected " .
+                ($project_leader->user_id === $originator->user_id ? "you " : getNameJobTitleAndDepartment($project_leader->user_id)) .
+                " as Project Leader for this Change Proposal." . HTML_NEW_LINE .
                 "Click this link for more details: " . '<a href="' . $link . '" />' . $link . '</a>';
             insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
-            if ($project_leader->user_id !== $originator->user_id) {
-                $body = "Hi, " . ucwords($project_leader->first_name . ' ' . $project_leader->last_name, '-. ') . HTML_NEW_LINE .
-                    "You have been selected as Project Leader for this Change Proposal" . HTML_NEW_LINE .
-                    "Click this link for more details: " . '<a href="' . $link . '" />' . $link . '</a>';
-            }
-            insertEmail($subject, $body, $project_leader->email, concatNameWithUserId($project_leader->user_id));
 
             $data = $cms_form->jsonSerialize();
             (new CMSFormModel(null))->updateForm($cms_form_id, $data);

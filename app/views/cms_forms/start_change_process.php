@@ -180,8 +180,7 @@ $user = getUserSession();
                                                     Change Type
                                                 </label>
                                                 <div class="col-sm-8">
-                                                    <select class=" replace-multiple-select form-control"
-                                                            id="change_type">
+                                                    <select class="replace-multiple-select form-control">
                                                         <option class="d-none"></option>
                                                     </select>
                                                     <select class="form-control bs-select multiple-hidden d-none"
@@ -190,8 +189,10 @@ $user = getUserSession();
                                                             aria-describedby="helpId" multiple="multiple"
                                                             data-size="8"
                                                             required>
-                                                        <option value="Staff/Labour">Staff/Labour</option>
-                                                        <option value="Procedural">Procedural</option>
+                                                        <option data-value="Staff/Labour" value="Staff/Labour">
+                                                            Staff/Labour
+                                                        </option>
+                                                        <option data-value="" value="Procedural">Procedural</option>
                                                         <option value="Equipment/Machinery">Equipment/Machinery</option>
                                                         <option value="Plant/Infrastructure">Plant/Infrastructure
                                                         </option>

@@ -6,7 +6,7 @@
         </strong>
     </div>
     <div class="float-right col-4 text-right">
-        <b>Version 1.0</b>
+        <b>Version 2.0</b>
     </div>
 </footer>
 </div>
