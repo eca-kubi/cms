@@ -74,13 +74,13 @@ class CMSForm implements \JsonSerializable
 
     public function fetchSingle(array $where_col_val)
     {
-        $db = Database::getDbh()->objectBuilder();
+        $db = Database::getDbh();
         if (!empty($where_col_val)) {
             foreach ($where_col_val as $col => $val) {
                 $db = $db->where($col, $val);
             }
         }
-        return $db->getOne(self::$table);
+        return $db->objectBuilder()->getOne(self::$table);
     }
 
     /**

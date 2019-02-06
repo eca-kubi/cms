@@ -5,6 +5,7 @@
 
 let URL_ROOT = '';
 let form_submit_count = 0;
+let CMS_FORM_ID = 0;
 //=============================================================
 // Daterangepicker Plugin
 /*let date_rangepicker_options = {
@@ -29,7 +30,9 @@ let form_submit_count = 0;
 // noinspection JSCheckFunctionSignatures
 // noinspection JSDeprecatedSymbols
 $(document).ready(function () {
-    $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
+    NAV_BAR_HEIGHT = $('.navbar-fixed').height();
+    $('.content-wrapper').css('margin-top', NAV_BAR_HEIGHT + 'px');
+    CMS_FORM_ID = $('#cms_form_id').val();
     URL_ROOT = $('#url_root').val();
     moment.modifyHolidays.add('Ghana');
 
@@ -164,23 +167,84 @@ $(document).ready(function () {
 
     // '/cms-forms/action-list'
     let dataSource = new kendo.data.DataSource({
+        pageSize: 5,
         transport: {
-            read: {
-                url: URL_ROOT + "/ActionLists/index/" + $('#cms_form_id').val(),
-                dataType: "json"
+            read: function (options) {
+                // make JSONP request to https://demos.telerik.com/kendo-ui/service/products
+                $.ajax({
+                    url: URL_ROOT + "/ActionLists/",
+                    data: {cms_form_id: CMS_FORM_ID},
+                    dataType: "jsonp", // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                    success: function (result) {
+                        // notify the data source that the request succeeded
+                        options.success(result.data);
+                    },
+                    error: function (result) {
+                        // notify the data source that the request failed
+                        options.error(result);
+                    }
+                });
             },
-            update: {
-                url: "/ActionLists/Update",
-                type: "POST",
-                dataType: "json"
+            update: function (options) {
+                let cms_action_list_id = options.data.cms_action_list_id;
+                $.ajax({
+                    url: URL_ROOT + "/ActionLists/Update/" + cms_action_list_id,
+                    dataType: "jsonp", // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                    // send the created data items as the "models" service parameter encoded in JSON
+                    data: {
+                        payload: kendo.stringify(options.data)
+                    },
+                    method: 'POST',
+                    success: function (result) {
+                        // notify the data source that the request succeeded
+                        options.success(result.data);
+                    },
+                    error: function (result) {
+                        // notify the data source that the request failed
+                        options.error(result);
+                    }
+                });
             },
-            destroy: {
-                url: "/ActionLists/Destroy",
-                type: "POST"
+            destroy: function (options) {
+                let cms_action_list_id = options.data.cms_action_list_id;
+                $.ajax({
+                    url: URL_ROOT + "/ActionLists/Destroy/" + cms_action_list_id,
+                    dataType: "jsonp", // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                    // send the created data items as the "models" service parameter encoded in JSON
+                    data: {
+                        payload: kendo.stringify(options.data)
+                    },
+                    method: 'POST',
+                    success: function (result) {
+                        // notify the data source that the request succeeded
+                        options.success(result.data);
+                    },
+                    error: function (result) {
+                        // notify the data source that the request failed
+                        options.error(result);
+                    }
+                });
             },
-            create: {
-                url: "/ActionLists/Create",
-                type: "POST"
+            create: function (options) {
+                // make JSONP request to https://demos.telerik.com/kendo-ui/service/products/create
+                options.data.cms_form_id = CMS_FORM_ID;
+                $.ajax({
+                    url: URL_ROOT + "/ActionLists/Create",
+                    method: 'POST',
+                    dataType: "jsonp", // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                    // send the created data items as the "models" service parameter encoded in JSON
+                    data: {
+                        payload: kendo.stringify(options.data)
+                    },
+                    success: function (result) {
+                        // notify the data source that the request succeeded
+                        options.success(result.data);
+                    },
+                    error: function (result) {
+                        // notify the data source that the request failed
+                        options.error(result);
+                    }
+                });
             },
             parameterMap: function (options, operation) {
                 if (operation !== "read" && options.models) {
@@ -192,9 +256,6 @@ $(document).ready(function () {
             model: {
                 id: "cms_action_list_id",
                 fields: {
-                    no: {
-                        editable: false,
-                    },
                     action: {
                         type: 'string',
                         validation: { //set validation rules
@@ -213,6 +274,9 @@ $(document).ready(function () {
                     date: {
                         type: 'date'
                     },
+                    cms_form_id: {
+                        type: 'number'
+                    },
                     cms_action_list_id: {
                         //this field will not be editable (default value is true)
                         type: 'number',
@@ -225,13 +289,22 @@ $(document).ready(function () {
     });
     $('#action_list').kendoGrid({
         mobile: true,
+        noRecords: true,
         navigatable: true,
+        toolbar: ["create"],
+        editable: 'popup',
+        filterable: true,
+        columnMenu: true,
+        sortable: true,
+        groupable: true,
+        height: 500,
+        resizable: true,
+        pageable: {
+            alwaysVisible: false,
+            pageSizes: [5, 10, 15, 20],
+            buttonCount: 5
+        },
         columns: [
-            {
-                field: 'no',
-                title: 'No.',
-                editable: false,
-            },
             {
                 field: 'action',
                 title: 'Action to be Taken'
@@ -250,18 +323,53 @@ $(document).ready(function () {
             {
                 field: 'date',
                 title: 'Date',
-                template: kendo.template("#= dateTemplate(data.date) #")
+                template: "#= dateTemplate(data.date) #"
             },
-            {
-                command: "destroy"
-            }
+            {command: ["edit", "destroy"], title: "&nbsp;", width: "220px"}
         ],
         dataSource: dataSource,
         dataBinding: function () {
             //let no = (this.dataSource.page() - 1) * this.dataSource.pageSize();
+        }
+    });
+
+    $('#action-list-read-only').kendoGrid({
+        mobile: true,
+        navigatable: true,
+        filterable: true,
+        columnMenu: true,
+        sortable: true,
+        noRecords: true,
+        height: 500,
+        resizable: true,
+        pageable: {
+            alwaysVisible: false,
+            pageSizes: [5, 10, 15, 20],
+            buttonCount: 5
         },
-        toolbar: ["create", "save", "cancel"],
-        editable: true
+        columns: [
+            {
+                field: 'action',
+                title: 'Action to be Taken'
+            },
+            {
+                field: 'person_responsible',
+                title: 'Responsible Person'
+            },
+            {
+                field: 'completed',
+                title: 'Completed?',
+                type: 'boolean',
+                template: kendo.template("#= completed? 'Yes'   : 'No' #"),
+                //editor: customBoolEditor
+            },
+            {
+                field: 'date',
+                title: 'Date',
+                template: "#= dateTemplate(data.date) #"
+            },
+        ],
+        dataSource: dataSource
     });
 
     // '/cms-forms/pl-closure'
@@ -284,6 +392,16 @@ window.addEventListener("load", function () {
         }, 1000);
     }, 500);
 
+    let prevScrollpos = window.pageYOffset;
+    window.onscroll = function () {
+        let currentScrollPos = window.pageYOffset;
+        if (prevScrollpos > currentScrollPos) {
+            $(".navbar-fixed").prop('style').top = "0";
+        } else {
+            $(".navbar-fixed").prop('style').top = "-55px";
+        }
+        prevScrollpos = currentScrollPos;
+    };
     console.log("All resources finished loading!");
 });
 
@@ -376,7 +494,7 @@ function customBoolEditor(container, options) {
 
 
 function dateTemplate(date) {
-    let m = moment(date);
-    m = moment(m.format("DD-MM-YYYY"), "DD-MM-YYYY");
-    return m.isValid() ? (m.calendar().split(" at"))[0] : '';
+    let m = new moment(date);
+    return m.isValid() ? m.format("ddd, MMM D YYYY") : '';
+    //return m.isValid() ? (m.calendar().split(" at"))[0] : '';
 }

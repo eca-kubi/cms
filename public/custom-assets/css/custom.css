@@ -17,7 +17,7 @@ html {
 }
 
 ::-webkit-scrollbar {
-    width: 0px;
+    width: 0;
     /* remove scrollbar space */
     background: transparent;
     /* optional: just make scrollbar invisible */
@@ -68,19 +68,19 @@ input:not([type="hidden"]):not([type="submit"]):not([type="reset"]):not(button),
 /* Font classes*/
 
 .font-cinzel {
-    font-family: 'Cinzel Decorative'
+    font-family: 'Cinzel Decorative', serif
 }
 
 .font-raleway {
-    font-family: Raleway;
+    font-family: Raleway, serif;
 }
 
 .font-mulli {
-    font-family: Muli;
+    font-family: Muli, serif;
 }
 
 .font-passion-one {
-    font-family: 'Passion One';
+    font-family: 'Passion One', serif;
 }
 
 
@@ -129,7 +129,7 @@ td.action > span {
 .select2-selection__choice {
     font-size: 1.05rem;
     line-height: 1.7;
-    font-family: Raleway;
+    font-family: Raleway, serif;
 }
 
 .select2-selection__choice__remove {
@@ -181,7 +181,7 @@ td.action > span {
     outline-offset: -10px;
     -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
     transition: outline-offset .15s ease-in-out, background-color .15s linear;
-    padding: 120px 0px 85px 20%;
+    padding: 120px 0 85px 20%;
     text-align: center !important;
     margin: 0;
     width: 100% !important;
@@ -245,6 +245,38 @@ td.action > span {
         width: auto;
     }
 }
+
+/* Grid columns with no width are collapsed if the space is not enough, thus min-width on the tables is needed */
+.k-grid table {
+    min-width: 600px;
+}
+
+/* Android's default browser doesn't support properly min-width on tables */
+@media screen and (max-width: 699px) {
+    .km-phone .km-android .k-grid table {
+        width: 600px;
+    }
+}
+
+/*
+.k-edit-field > input[type=text] {
+    width: 100% !important;
+    padding-left: 1rem !important;
+    position: relative !important;
+}
+
+.k-edit-label {
+    position: relative !important;
+}
+
+.k-edit-label.k-check {
+    position: absolute !important;
+}*/
+
+/*noinspection CssInvalidPropertyValue*/
+/*#section_6 {
+    height: -webkit-fill-available
+}*/
 
 
 /* Backgrounds patterns */
@@ -314,7 +346,15 @@ select[multiple='multiple'] {
     content: ':'
 }
 
-#action_list tr:not(.child) {
+.km-actionsheet .k-grid-delete {
+    background-color: #dc3545 !important;
+}
+
+html {
+    -ms-overflow-style: none;
+}
+
+/*#action_list tr:not(.child) {
     counter-increment: rowNumber;
 }
 
@@ -323,7 +363,7 @@ select[multiple='multiple'] {
     min-width: 1em;
     margin-right: 0.5em;
     margin-left: 0.5em;
-}
+}*/
 
 /* plugin fixes */
 .bs-select a.dropdown-item.active {
@@ -333,6 +373,7 @@ select[multiple='multiple'] {
 .completed {
     color: #000;
 }
+
 /* shim */
 
 /* Portrait phones and smaller */

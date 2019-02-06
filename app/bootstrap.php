@@ -30,3 +30,4 @@ require_once 'helpers/file_helper.php';
 require_once 'helpers/validation_helper.php';
 require_once 'helpers/sms.php';
 require_once 'helpers/phpmailer.php';
+require_once '../vendor/alexistm/simple-json-php/includes/json.php';

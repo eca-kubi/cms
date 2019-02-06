@@ -650,12 +650,16 @@ function echoDate(string $date, $return = false)
     return '';
 }
 
-function returnDate($date)
+function returnDate($date, $official = false)
 {
     try {
-        $d = (new \Moment\Moment($date))->calendar(false);
-        $t = (new \Moment\Moment($date))->format('hh:mm a', new \Moment\CustomFormats\MomentJs());
-        return $d . ' at ' . $t;
+        if (!$official) {
+            $d = (new \Moment\Moment($date))->calendar(false);
+            $t = (new \Moment\Moment($date))->format('hh:mm a', new \Moment\CustomFormats\MomentJs());
+            return $d . ' at ' . $t;
+        } else {
+            return $d = (new \Moment\Moment($date))->format('ddd, MMM D YYYY hh:mm a', new \Moment\CustomFormats\MomentJs());
+        }
     } catch (\Moment\MomentException $e) {
     }
     return '';

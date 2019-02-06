@@ -85,6 +85,13 @@ class ComposerStaticInit99f203d20b84ea527760ef3459054891
     );
 
     public static $prefixesPsr0 = array (
+        '\\' => 
+        array (
+            '\\Simple' => 
+            array (
+                0 => __DIR__ . '/..' . '/alexistm/simple-json-php/includes/json.php',
+            ),
+        ),
         'E' => 
         array (
             'Evenement' => 

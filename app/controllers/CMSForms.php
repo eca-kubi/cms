@@ -499,17 +499,25 @@ class CMSForms extends Controller
 
     public function ProjectLeaderClosure(int $cms_form_id = -1)
     {
-
+        $cms_form = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+        $cms_form->updateForm($cms_form_id, ['project_leader_close_change' => now()]);
+        completeSection($cms_form_id, SECTION_ACTION_LIST);
+        redirect("cms-forms/view-change-process/$cms_form_id");
     }
 
     public function OriginatorClosure(int $cms_form_id = -1)
     {
-
+        $cms_form = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+        $cms_form->updateForm($cms_form_id, ['originator_close_change' => now()]);
+        redirect("cms-forms/view-change-process/$cms_form_id");
     }
 
     public function HODClosure(int $cms_form_id = -1)
     {
-
+        $cms_form = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+        $cms_form->updateForm($cms_form_id, ['hod_close_change' => now()]);
+        completeSection($cms_form_id, SECTION_PROCESS_CLOSURE);
+        redirect("cms-forms/view-change-process/$cms_form_id");
     }
 
     public function ProcessClosed(int $cms_form_id = -1)
@@ -600,6 +608,19 @@ class CMSForms extends Controller
             completeSection($cms_form_id, SECTION_IMPACT_ASSESSMENT);
         }
         redirect('cms-forms/view-change-process/' . $cms_form_id);
+    }
+
+    public function completedForm($cms_form_id)
+    {
+        $payload = [];
+        $db = Database::getDbh();
+        $form = $db->where('cms_form_id', $cms_form_id)
+            ->objectBuilder()
+            ->getOne('cms_form');
+        $payload['cms_form_id'] = $cms_form_id;
+        $payload['form'] = $form;
+        flash('completed_form', 'Under Construction. Will be ready in a bit!', 'alert text-warning');
+        $this->view('cms_forms/completed_form', $payload);
     }
 
 }

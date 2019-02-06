@@ -208,9 +208,12 @@ function uploadAdditionalInfo($file, $cms_form_id)
 function download_file($file)
 {
     if (file_exists($file)) {
+        $arr = explode('.', basename($file));
+        $ext = end($arr);
+        $file_name = $arr[0];
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename=' . basename($file));
+        header('Content-Disposition: attachment; filename=' . 'Risk Assessment Document[' . $file_name . "].$ext");
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');

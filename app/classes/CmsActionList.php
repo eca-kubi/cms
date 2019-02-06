@@ -34,15 +34,21 @@ class CmsActionList implements \JsonSerializable
         }
     }
 
-    public function fetchSingle(array $where_col_val)
+    public function fetchSingle($cms_action_list_id)
     {
-        $db = Database::getDbh()->objectBuilder();
-        if (!empty($where_col_val)) {
-            foreach ($where_col_val as $col => $val) {
-                $db = $db->where($col, $val);
-            }
+        $db = Database::getDbh()
+            ->objectBuilder()
+            ->where('cms_action_list_id', $cms_action_list_id)
+            ->get(self::$table);
+        return $db;
+    }
+
+    public function initialize($col_val)
+    {
+        foreach ($col_val as $col => $value) {
+            $this->$col = $value;
         }
-        return $db->getOne(self::$table);
+        return $this;
     }
 
     /**
@@ -66,7 +72,8 @@ class CmsActionList implements \JsonSerializable
         $db = Database::getDbh();
         $ret = $db->insert(self::$table, $this->jsonSerialize());
         if ($ret) {
-            return $db->getInsertId();
+            $this->cms_form_id = $db->getInsertId();
+            return $this->cms_form_id;
         }
         return null;
     }
@@ -74,6 +81,7 @@ class CmsActionList implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
+            'action' => $this->action,
             'cms_form_id' => $this->cms_form_id,
             'date' => $this->getDate(),
             'completed' => $this->getCompleted(),
@@ -145,5 +153,20 @@ class CmsActionList implements \JsonSerializable
     {
         $this->cms_form_id = $cms_form_id;
         return $this;
+    }
+
+    public function update($cms_action_list_id, array $col_vals)
+    {
+        $db = Database::getDbh();
+        $ret = $db->where('cms_action_list_id', $cms_action_list_id)
+            ->update(self::$table, $col_vals);
+        return $ret;
+    }
+
+    public function destroy($cms_action_list_id)
+    {
+        $db = Database::getDbh();
+        return $db->where('cms_action_list_id', $cms_action_list_id)
+            ->delete(self::$table);
     }
 }

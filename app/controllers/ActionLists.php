@@ -1,4 +1,6 @@
-<?php
+<?php /** @noinspection ALL */
+
+use Simple\json;
 
 class ActionLists extends Controller
 {
@@ -13,150 +15,74 @@ class ActionLists extends Controller
         }
     }
 
-    public function index($cms_form_id)
+    public function index()
     {
         // Get posts
+        $cms_form_id = -1;
+        if (isset($_GET['cms_form_id'])) {
+            $cms_form_id = $_GET['cms_form_id'];
+        }
         $db = Database::getDbh();
         $ret = $db->where('cms_form_id', $cms_form_id)
             ->objectBuilder()
             ->get('cms_action_list');
-        echo json_encode($ret);
+        $json = new json();
+        $json->data = $ret;
+        isset($_GET['callback']) ? $json->send_callback($_GET['callback']) : $json->send();
     }
 
-    public function add()
+    public function Create()
+    {
+        //$_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
+        $json = new json();
+        $payload = json_decode($_POST['payload']);
+        $payload->date = (new \Moment\Moment($payload->date))->format(\Moment\Moment::NO_TZ_MYSQL);
+        unset($payload->cms_action_list_id);
+        unset($payload->no);
+        $action = (new CmsActionList());
+        $insert_id = $action->initialize((array)$payload)->insert();
+        $ret = $action->fetchSingle($insert_id);
+        $json->data = $ret;
+        isset($_GET['callback']) ? $json->send_callback($_GET['callback']) : $json->send();
+    }
+
+    /**
+     * @param $cms_action_list_id
+     */
+    public function Update($cms_action_list_id)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Sanitize POST array
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
-            $payload = [
-                'title' => trim($_POST['title']),
-                'body' => trim($_POST['body']),
-                'user_id' => $_SESSION['user_id'],
-                'title_err' => '',
-                'body_err' => ''
-            ];
-
-            // Validate data
-            if (empty($payload['title'])) {
-                $payload['title_err'] = 'Please enter title';
-            }
-            if (empty($payload['body'])) {
-                $payload['body_err'] = 'Please enter body text';
-            }
-
-            // Make sure no errors
-            if (empty($payload['title_err']) && empty($payload['body_err'])) {
-                // Validated
-                if ($this->postModel->addPost($payload)) {
-                    flash('post_message', 'Post Added');
-                    redirect('posts');
-                } else {
-                    die('Something went wrong');
-                }
-            } else {
-                // Load view with errors
-                $this->view('posts/add', $payload);
-            }
-
-        } else {
-            $payload = [
-                'title' => '',
-                'body' => ''
-            ];
-
-            $this->view('posts/add', $payload);
-        }
-    }
-
-    public function edit($id)
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Sanitize POST array
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
-            $payload = [
-                'id' => $id,
-                'title' => trim($_POST['title']),
-                'body' => trim($_POST['body']),
-                'user_id' => $_SESSION['user_id'],
-                'title_err' => '',
-                'body_err' => ''
-            ];
-
-            // Validate data
-            if (empty($payload['title'])) {
-                $payload['title_err'] = 'Please enter title';
-            }
-            if (empty($payload['body'])) {
-                $payload['body_err'] = 'Please enter body text';
-            }
-
-            // Make sure no errors
-            if (empty($payload['title_err']) && empty($payload['body_err'])) {
-                // Validated
-                if ($this->postModel->updatePost($payload)) {
-                    flash('post_message', 'Post Updated');
-                    redirect('posts');
-                } else {
-                    die('Something went wrong');
-                }
-            } else {
-                // Load view with errors
-                $this->view('posts/edit', $payload);
-            }
-
+            //$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $json = new json();
+            $payload = json_decode($_POST['payload']);
+            $payload->date = (new \Moment\Moment($payload->date))->format(\Moment\Moment::NO_TZ_MYSQL);
+            unset($payload->no);
+            $action = (new CmsActionList());
+            $action->update($cms_action_list_id, (array)$payload);
+            $ret = $action->fetchSingle($cms_action_list_id);
+            $json->data = $ret;
+            isset($_GET['callback']) ? $json->send_callback($_GET['callback']) : $json->send();
         } else {
             // Get existing post from model
-            $post = $this->postModel->getPostById($id);
-
-            // Check for owner
-            if ($post->user_id != $_SESSION['user_id']) {
-                redirect('posts');
+            $action = (new CmsActionList(['cms_action_list_id' => $cms_action_list_id]));
+            if ($action) {
+                $json = new \Simple\json();
+                /** @noinspection PhpUndefinedFieldInspection */
+                $json->data = $action;
+                isset($_GET['callback']) ? $json->send_callback($_GET['callback']) : $json->send();
             }
-
-            $payload = [
-                'id' => $id,
-                'title' => $post->title,
-                'body' => $post->body
-            ];
-
-            $this->view('posts/edit', $payload);
         }
     }
 
-    public function show($id)
+    public function Destroy($cms_action_list_id)
     {
-        $post = $this->postModel->getPostById($id);
-        $user = $this->userModel->getUserById($post->user_id);
-
-        $payload = [
-            'post' => $post,
-            'user' => $user
-        ];
-
-        $this->view('posts/show', $payload);
-    }
-
-    public function delete($id)
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Get existing post from model
-            $post = $this->postModel->getPostById($id);
-
-            // Check for owner
-            if ($post->user_id != $_SESSION['user_id']) {
-                redirect('posts');
-            }
-
-            if ($this->postModel->deletePost($id)) {
-                flash('post_message', 'Post Removed');
-                redirect('posts');
-            } else {
-                die('Something went wrong');
-            }
-        } else {
-            redirect('posts');
-        }
+        $json = new json();
+        $action = (new CmsActionList());
+        $payload = json_decode($_POST['payload']);
+        $ret = $action->destroy($cms_action_list_id);
+        //$ret = $action->fetchSingle($cms_action_list_id);
+        $json->data = $payload;
+        isset($_GET['callback']) ? $json->send_callback($_GET['callback']) : $json->send();
     }
 }

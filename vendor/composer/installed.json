@@ -1,5 +1,46 @@
 [
     {
+        "name": "alexistm/simple-json-php",
+        "version": "5.0.0",
+        "version_normalized": "5.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/AlexisTM/Simple-Json-PHP.git",
+            "reference": "d4c6fac82052478b1f05c39536c5e1963315b3f6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/AlexisTM/Simple-Json-PHP/zipball/d4c6fac82052478b1f05c39536c5e1963315b3f6",
+            "reference": "d4c6fac82052478b1f05c39536c5e1963315b3f6",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2018-04-04T06:57:39+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "\\Simple": "includes/json.php"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "include-path": [
+            "/includes"
+        ],
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Alexis Paques",
+                "email": "alexis.paques@gmail.com"
+            }
+        ],
+        "description": "Simple JSON for PHP makes you able to construct JSON and send the headers easily. The main purposes are speed and ease to use."
+    },
+    {
         "name": "evenement/evenement",
         "version": "v3.0.1",
         "version_normalized": "3.0.1.0",
@@ -204,17 +245,17 @@
     },
     {
         "name": "phpmailer/phpmailer",
-        "version": "v6.0.6",
-        "version_normalized": "6.0.6.0",
+        "version": "v6.0.7",
+        "version_normalized": "6.0.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/PHPMailer/PHPMailer.git",
-            "reference": "8190d73eb5def11a43cfb020b7f36db65330698c"
+            "reference": "0c41a36d4508d470e376498c1c0c527aa36a2d59"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/8190d73eb5def11a43cfb020b7f36db65330698c",
-            "reference": "8190d73eb5def11a43cfb020b7f36db65330698c",
+            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/0c41a36d4508d470e376498c1c0c527aa36a2d59",
+            "reference": "0c41a36d4508d470e376498c1c0c527aa36a2d59",
             "shasum": ""
         },
         "require": {
@@ -239,7 +280,7 @@
             "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
             "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
         },
-        "time": "2018-11-16T00:41:32+00:00",
+        "time": "2019-02-01T15:04:28+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
