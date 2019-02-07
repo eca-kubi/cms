@@ -485,9 +485,11 @@ function populateImpactResponse(array $affected_depts, $cms_form_id)
             ];
             $response_model->add($insert_data);
         }
-        (new ImpactAssStatusModel())->setCmsFormId($cms_form_id)
+        (new ImpactAssStatusModel())
+            ->setCmsFormId($cms_form_id)
             ->setStatus(STATUS_IMPACT_ASSESSMENT_RESPONSE_PENDING)
-            ->setDepartmentId($dept_id)->insert();
+            ->setDepartmentId($dept_id)
+            ->insert();
     }
 }
 
@@ -542,13 +544,13 @@ function sectionCompleted($cms_form_id, $section)
 function completeSection($cms_form_id, $section)
 {
     $db = Database::getDbh();
-    $s = $db->where('cms_form_id', $cms_form_id)->
-    getValue('cms_form', 'section_completed');
+    $s = $db->where('cms_form_id', $cms_form_id)
+        ->getValue('cms_form', 'section_completed');
     if (!strpos($s, $section)) {
         $section = trim($section . ',' . $s, ',');
     }
-    $db->where('cms_form_id', $cms_form_id)->
-    update('cms_form', ['section_completed' => $section]);
+    $db->where('cms_form_id', $cms_form_id)
+        ->update('cms_form', ['section_completed' => $section]);
 }
 
 /**
@@ -560,9 +562,13 @@ function completeSection($cms_form_id, $section)
 function updateImpactAssessmentCompleteList($cms_form_id, $department_id)
 {
     $db = Database::getDbh();
-    $list = (new CMSForm())->getImpactAssCompletedDept();
+    $list = (new CMSForm(['cms_form_id' => $cms_form_id]))->getImpactAssCompletedDept();
+    $arr = explode(",", $list . "");
+    if (!in_array($department_id, $arr)) {
+        $list = trim($department_id . ',' . $list, ',');
     $db->where('cms_form_id', $cms_form_id)
-        ->update('cms_form', ['impact_ass_completed_dept' => trim($department_id . ',' . $list, ', ')]);
+        ->update('cms_form', ['impact_ass_completed_dept' => $list]);
+    }
 }
 
 /**
@@ -627,12 +633,13 @@ function concatNameWithUserId($user_id)
     return ucwords($u->first_name . ' ' . $u->last_name, '- .');
 }
 
-function actionLog($cms_form_id, $action, $performed_by, $department_affected = null)
+function actionLog($cms_form_id, $action, $performed_by, $department_affected = null, $section_affected = null)
 {
     return $log_id = (new CmsActionLogModel())->setAction($action)
         ->setPerformedBy($performed_by)
         ->setCmsFormId($cms_form_id)
         ->setDepartmentAffected($department_affected)
+        ->setSectionAffected($section_affected)
         ->insert();
 }
 
@@ -680,8 +687,8 @@ function getDepartmentHods($department_id)
 {
     $db = Database::getDbh();
     return $db->where('role', ROLE_MANAGER)
-        ->where('role', ROLE_SUPERINTENDENT)
         ->where('department_id', $department_id)
+        ->orWhere('role', ROLE_SUPERINTENDENT)
         ->objectBuilder()
         ->get('users');
 }
@@ -812,4 +819,10 @@ function now()
         return (new DateTime())->format(DFB_DT);
     } catch (Exception $e) {
     }
+}
+
+function inDelimiteredString($needle, $delimiter, $delimetered_string)
+{
+    $arr = explode($delimiter, $delimetered_string . "");
+    return in_array($needle, $arr);
 }

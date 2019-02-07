@@ -25,7 +25,7 @@ $user_session = getUserSession();
         echo $payload['cms_form_id']; ?></title>
 </head>
 <body>
-<?php echo flash('completed_form') ?>
+<?php flash('completed_form') ?>
 <!-- Optional JavaScript -->
 <!-- JavaScript Dependencies: jQuery, Popper.js, Bootstrap JS, Shards JS -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

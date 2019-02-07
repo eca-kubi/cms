@@ -275,7 +275,7 @@ class CMSForms extends Controller
                         'cms_form_id' => $cms_form_id
                     ]);
                 }
-                actionLog($cms_form_id, ACTION_IMPACT_ASSESSMENT_RESPONSE_COMPLETED, getUserSession()->user_id, $department->department_id);
+                actionLog($cms_form_id, ACTION_IMPACT_ASSESSMENT_RESPONSE_COMPLETED, getUserSession()->user_id, $department->department_id, SECTION_IMPACT_ASSESSMENT);
                 flash('flash_view_change_process', ' Impact Assessment ' . 'for ' . $department->department . ' Completed Successfully!', 'text-sm text-center text-success alert');
                 // Notify originator & hod
                 /* if ($payload['originator']->user_id !== getUserSession()->user_id) {
@@ -580,22 +580,19 @@ class CMSForms extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
             $impact_ass_status = new ImpactAssStatusModel(['department_id' => $department_id, 'cms_form_id' => $cms_form_id]);
-            $impact_ass_status->setHodComment($_POST['hod_comment']);
-            $impact_ass_status->setStatus(STATUS_IMPACT_ASSESSMENT_COMPLETED)
+            $impact_ass_status->setHodComment($_POST['hod_comment'])
+                ->setStatus(STATUS_IMPACT_ASSESSMENT_COMPLETED)
                 ->setApprovedBy(getUserSession()->user_id);
             try {
                 $impact_ass_status->setHodCommentDate((new DateTime())->format(DFB_DT));
             } catch (Exception $e) {
             }
-            updateImpactAssessmentCompleteList($cms_form_id, $department_id);
 
-            if (isAllImpactAssessmentComplete($cms_form_id)) {
-                $impact_ass_status->setStatus(STATUS_IMPACT_ASSESSMENT_COMPLETED);
-                // we can now notify GMCMSForm.phps then any of them would approve
-                notifyGms($cms_form_id);
-            }
             $data = $impact_ass_status->jsonSerialize();
-            $impact_ass_status->updateForm($cms_form_id, $data);
+            $impact_ass_status->updateForm([
+                'cms_form_id' => $cms_form_id,
+                'department_id' => $department_id
+            ], $data);
 
             // set action log
             (new CmsActionLogModel())->setAction(ACTION_IMPACT_ASSESSMENT_HOD_COMMENTED)
@@ -605,7 +602,14 @@ class CMSForms extends Controller
                 ->setDepartmentAffected($department_id)
                 ->insert();
 
-            completeSection($cms_form_id, SECTION_IMPACT_ASSESSMENT);
+            updateImpactAssessmentCompleteList($cms_form_id, $department_id);
+
+            if (isAllImpactAssessmentComplete($cms_form_id)) {
+                //$impact_ass_status->setStatus(STATUS_IMPACT_ASSESSMENT_COMPLETED);
+                // we can now notify GMCMSForm.phps then any of them would approve
+                notifyGms($cms_form_id);
+                completeSection($cms_form_id, SECTION_IMPACT_ASSESSMENT);
+            }
         }
         redirect('cms-forms/view-change-process/' . $cms_form_id);
     }

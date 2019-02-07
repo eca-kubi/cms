@@ -1,5 +1,5 @@
 <?php /** @var  array $payload */
-if (true) { ?>
+if (sectionCompleted($payload['form']->cms_form_id, SECTION_ACTION_LIST)) { ?>
     <div class="row p-2">
         <div class="w-100 row border ml-0 p-1">
             <h6 class="text-bold font-italic col m-1">
@@ -376,7 +376,7 @@ heredoc;
             echo <<<heredoc
 <div class="alert text-success container-fluid text-bold text-center">
 <p class="text-center tada">Process Complete!</p>
-<p><small><a class="text-bold " href="#" style="color: #007bff; animation-iteration-count: infinite;">Click here to download the complete form.</a></small></p>
+<p><small><a class="text-bold flash animated" href="#" style="color: #007bff; animation-iteration-count: infinite;">Click here to download the complete form.</a></small></p>
 </div>
 heredoc;
 

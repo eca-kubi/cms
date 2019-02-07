@@ -127,7 +127,7 @@ function uploadRiskAttachment($file, $cms_form_id)
     $result['success'] = false;
     $result['file'] = '';
     $result['reason'] = '';
-    $allowedExts = array('doc', 'docx', 'pdf', 'xlsx', 'xls', 'txt', 'pptx', 'ppt');
+    $allowedExts = array('doc', 'docx', 'pdf', 'xlsx', 'xls', 'txt', 'pptx', 'ppt', 'csv');
     if (isset($_FILES[$file])) {
         $temp = explode('.', $_FILES[$file]['name']);
         $extension = end($temp);

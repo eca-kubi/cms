@@ -249,9 +249,12 @@ class ImpactAssStatusModel extends Model implements \JsonSerializable
         return $this;
     }
 
-    public function updateForm($cms_form_id, array $data)
+    public function updateForm($where_col_val, array $data)
     {
-        return Database::getDbh()->where('cms_form_id', $cms_form_id)
-            ->update(self::$table, $data);
+        $db = Database::getDbh();
+        foreach ($where_col_val as $col => $val) {
+            $db->where($col, $val);
+        }
+        return $db->update(self::$table, $data);
     }
 }
