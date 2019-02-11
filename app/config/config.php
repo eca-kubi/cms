@@ -124,22 +124,12 @@ define('STATE', [
         ],
         [
             'name' => STATUS_CLOSED,
-            'color' => 'gray',
+            'color' => 'primary',
             'desc' => ''
         ],
         [
             'name' => STATUS_REJECTED,
             'color' => 'danger',
-            'desc' => ''
-        ],
-        [
-            'name' => STATUS_DELAYED,
-            'color' => 'primary',
-            'desc' => ''
-        ],
-        [
-            'name' => STATUS_STOPPED,
-            'color' => 'warning',
             'desc' => ''
         ]
     ]
@@ -156,8 +146,8 @@ const STATUS_LOW_RISK_LEVEL = 'Low';
 const STATUS_HIGH_BUDGET_LEVEL = 'High';
 const STATUS_MEDIUM_BUDGET_LEVEL = 'Medium';
 const STATUS_LOW_BUDGET_LEVEL = 'Low';
-
 const ICON_FA_PLUS = 'fa-plus-circle';
 const ICON_FA_MINUS = 'fa-minus-circle';
+
 $_GET['target'] = empty($_GET['target']) ? '' : $_GET['target'];
 $pending_sections = [];

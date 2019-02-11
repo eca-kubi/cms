@@ -1,5 +1,5 @@
 <?php /** @var  array $payload */
-if (sectionCompleted($payload['form']->cms_form_id, SECTION_ACTION_LIST)) { ?>
+if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION)) { ?>
     <div class="row p-2">
         <div class="w-100 row border ml-0 p-1">
             <h6 class="text-bold font-italic col m-1">

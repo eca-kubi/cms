@@ -34,8 +34,10 @@
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/kendo/kendo.bootstrap.min.css"/>
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/kendo/kendo.mobile.all.min.css"/>
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/kendo/kendo.default.min.css"/>
-    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/custom-assets/css/custom.css" />
+    <link rel="stylesheet" href="<?php echo URL_ROOT ?>/public/assets/css/shards.min.css">
+    <link rel="stylesheet"
+          href="<?php echo URL_ROOT; ?>/public/custom-assets/css/custom.css?<?php echo microtime(); ?>"/>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">
-    <div class="wrapper">
+<div class="wrapper" id="list-container">

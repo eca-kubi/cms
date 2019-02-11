@@ -826,3 +826,18 @@ function inDelimiteredString($needle, $delimiter, $delimetered_string)
     $arr = explode($delimiter, $delimetered_string . "");
     return in_array($needle, $arr);
 }
+
+function getDeptRef($department_id)
+{
+    $db = Database::getDbh();
+    $ret = $db->where('department_id', $department_id)
+        ->get('cms_form');
+    $department = new Department($department_id);
+    $short_name = $department->short_name;
+    return $short_name . '-' . (count($ret) + 1);
+}
+
+function site_url($url = '')
+{
+    return URL_ROOT . '/' . $url;
+}

@@ -3,6 +3,43 @@ class DepartmentModel extends Model implements \JsonSerializable
 {
     public $department;
     public $department_id;
+    public $short_name;
+
+    /**
+     * @return mixed
+     */
+    public function getDepartmentId()
+    {
+        return $this->department_id;
+    }
+
+    /**
+     * @param mixed $department_id
+     * @return DepartmentModel
+     */
+    public function setDepartmentId($department_id)
+    {
+        $this->department_id = $department_id;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getShortName()
+    {
+        return $this->short_name;
+    }
+
+    /**
+     * @param mixed $short_name
+     * @return DepartmentModel
+     */
+    public function setShortName($short_name)
+    {
+        $this->short_name = $short_name;
+        return $this;
+    }
     public static $table = 'departments';
 
     public function __construct()

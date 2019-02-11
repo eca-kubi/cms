@@ -80,51 +80,6 @@
                     <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
                 </div>
             </li>
-            <li class="nav-item dropdown d-none">
-                <a href="#" class="nav-link" data-toggle="dropdown">
-                    <i class="fa fa-bed"></i>
-                    <span class="badge badge-default navbar-badge">
-                        <i class="fa fa-dot-circle text-warning"></i>
-                    </span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <span class="dropdown-item fa pl-1 text-muted">
-                        <a href="#">...</a>
-                    </span>
-                    <span class="dropdown-item dropdown-header fa pl-1">
-                        <a href="#">...</a>
-                    </span>
-                    <div class="dropdown-divider"></div>
-                    <span class="dropdown-item fa pl-1">
-                        <a href="#">
-                            ...
-                        </a>
-                    </span>
-                </div>
-            </li>
-            <!-- Notifications Dropdown Menu -->
-            <li class="nav-item dropdown mr-5 d-none" id="nofication">
-                <a class="nav-link" data-toggle="dropdown" href="#">
-                    <i class="fa fa-bell-o"></i>
-                    <span class="badge badge-warning navbar-badge">1</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="font-family: 'Font Awesome 5 Free';left: -90px;">
-                    <span class="dropdown-item dropdown-header" id="header">1 Notification</span>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <i class="fa fa-users mr-2"></i>
-                        <span id="message">...</span>
-                        <span class="float-right text-muted text-sm" id="time">3 mins</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-                </div>
-            </li>
-            <li class="nav-item">
-                <!-- <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
-                  <i class="fa fa-th-large"></i>
-                </a> -->
-            </li>
             <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <?php
@@ -132,11 +87,12 @@
                     $initials = $user->first_name[0] .$user->last_name[0];
                     if ($user->profile_pic == DEFAULT_PROFILE_PIC) {
                         $name = $user->first_name .  ' ' .$user->last_name;
-                        $src = PROFILE_PIC_DIR.$user->profile_pic.'?='.rand();
-                        echo "<img avatar=\"$name\" src=\"$src\" class=\"user-image img-size-32 img-fluid img-circle d-inline-block\" avatar=\"$initials\" >";
+                        $src = PROFILE_PIC_DIR . $user->profile_pic . '?' . microtime();
+                        echo "<img  alt='<?php echo $initials ?>' avatar=\"$name\" src=\"$src\" class=\"user-image img-size-32 img-fluid img-circle d-inline-block\" >";
                     } else { ?>
-                    <img src="<?php echo PROFILE_PIC_DIR.$user->profile_pic.'?='.rand(); ?>" class="user-image img-size-32 img-fluid img-circle d-inline-block"
-                        alt="<?php echo $initials; ?>" /><?php } ?>
+                        <img src="<?php echo PROFILE_PIC_DIR . $user->profile_pic . '?' . microtime(); ?>"
+                             class="user-image img-size-32 img-fluid img-circle d-inline-block"
+                             alt="<?php echo $initials; ?>" /><?php } ?>
                     <span class="hidden-xs text-capitalize">
                         <?php echo ucwords($user->first_name . ' '. $user->last_name); ?>
                     </span>
@@ -151,10 +107,11 @@
                             if ($user->profile_pic == DEFAULT_PROFILE_PIC) {
                                 $initials = $user->first_name[0] .$user->last_name[0];
                                 $name = $user->first_name .  ' ' .$user->last_name;
-                                echo "<img data-name=\"$name\" class=\"user-image img-size-32 img-fluid img-circle d-inline-block \" avatar=\"$name\" >";
+                                echo "<img alt='<?php echo $initials ?>' class=\"user-image img-size-32 img-fluid img-circle d-inline-block \" avatar=\"$name\" >";
                             } else { ?>
-                            <img src="<?php echo PROFILE_PIC_DIR.$user->profile_pic.'?='.rand(); ?>" class="user-image img-size-32 img-fluid img-circle d-inline-block"
-                                alt="<?php echo $initials; ?>" /><?php } ?>
+                                <img src="<?php echo PROFILE_PIC_DIR . $user->profile_pic . '?' . microtime(); ?>"
+                                     class="user-image img-size-32 img-fluid img-circle d-inline-block"
+                                     alt="<?php echo $initials; ?>" /><?php } ?>
                             <p class="text-bold mb-1">
                                 <?php echo ucwords($user->first_name . ' '. $user->last_name, ' -'); ?>
                             </p>
@@ -168,34 +125,32 @@
                         <!-- /.row -->
                     </li>
                     <!-- Menu Footer-->
-                    <li class="user-footer glyphicon-arrow-downrow row px-2">
+                    <li class="user-footer glyphicon-arrow-down row px-2">
                         <div class="pull-left col">
-                            <a href="<?php echo URL_ROOT;?>/users/profile" class="btn btn-default btn-flat">Profile</a>
+                            <a href="<?php echo site_url('users/profile'); ?>"
+                               class="btn btn-default btn-flat">Profile</a>
                         </div>
                         <div class="pull-right">
-                            <a href="<?php echo URL_ROOT;?>/users/logout" class="btn btn-default btn-flat">Sign out</a>
+                            <a href="<?php echo site_url('users/logout'); ?>" class="btn btn-default btn-flat">Sign
+                                out</a>
                         </div>
                     </li>
                 </ul>
             </li>
         </ul>
     </nav>
-    <nav class="navbar navbar-expand-sm navbar-light main-header w3-amber" id="navbar2" style="z-index: 0">
-        <a class="navbar-brand d-none" href="<?php echo URL_ROOT; ?>">CMS</a>
-        <button class="navbar-toggler hidden-lg-up text-sm d-none" type="button" data-toggle="" data-target="#collapsibleNavId"
-            aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="" id="collapsibleNavId">
-            <ul class="navbar-nav mr-auto mt-2 mt-lg-0" style="flex-flow: wrap!important">
+    <nav class="navbar navbar-light w3-amber justify-content-between flex-nowrap flex-row" id="navbar2"
+         style="z-index: 0">
+        <div class="container-fluid">
+            <ul class="navbar-nav flex-row float-left">
                 <li class="nav-item d-none">
                     <a href="#" class="btn btn-default btn-lg w3-hover-text-grey btn-sm">
                         <i class="fa fa-angle-double-left  mr-1"></i>Go Back
                     </a>
                 </li>
                 <li class="nav-item ml-0 ml-sm-4 text-left pr-1 border-right fa">
-                    <a href="<?php echo URL_ROOT.'/cms-forms/dashboard' ?>"
-                        class="ajax-link nav-link btn border-0 text-bold flat text-left font-raleway">
+                    <a href="<?php echo site_url('cms-forms/dashboard'); ?>"
+                       class="ajax-link nav-link btn border-0 text-bold flat text-left font-raleway">
                         <i class="fa fa-home ml-4"></i> DASHBOARD
                     </a>
                 </li>
@@ -205,29 +160,40 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId" style="position:absolute">
                         <li>
-                            <a class="dropdown-item" href="<?php echo URL_ROOT; ?>/CMS-Forms/Start-Change-Process">
+                            <a class="dropdown-item" href="<?php echo site_url('cms-forms/start-change-process') ?>">
                                 New
                             </a>
                         </li>
                         <li class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item" href="<?php echo URL_ROOT; ?>/CMS-Forms/Dashboard/Active">
+                            <a class="dropdown-item" href="<?php echo site_url('cms-forms/dashboard/active'); ?>">
                                 Active
                             </a>
                         </li>
                         <li class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item" href="<?php echo URL_ROOT; ?>/CMS-Forms/Dashboard/Closed">
+                            <a class="dropdown-item" href="<?php echo site_url('cms-forms/dashboard/closed'); ?>">
                                 Closed
                             </a>
                         </li>
                     </ul>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0 d-none">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" />
+            <?php
+            /** @var array $payload */
+            $ref_num = null;
+            if (isset($payload['form'])) {
+                $ref_num = $payload['form']->hod_ref_num;
+            } elseif (isset($payload['ref_num'])) {
+                $ref_num = $payload['ref_num'];
+            }
+            if (!empty($ref_num)) echo "<span class=\"navbar-brand float-sm-right badge badge-outline-light w3-card flash infinite text-aqua\">Ref: $ref_num</span>"
+            ?>
+            <form class="form-inline d-none" id="search">
+                <input class="form-control mr-sm-2 search" type="text" placeholder="Search"/>
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
         </div>
+
     </nav>
 </div>

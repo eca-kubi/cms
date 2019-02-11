@@ -187,7 +187,7 @@ $user = getUserSession();
                                                             data-none-selected-text="Select Change Type"
                                                             name="change_type[]" id="change_type"
                                                             aria-describedby="helpId" multiple="multiple"
-                                                            data-size="8"
+                                                            data-size="6"
                                                             required>
                                                         <option data-value="Staff/Labour" value="Staff/Labour">
                                                             Staff/Labour
@@ -209,25 +209,30 @@ $user = getUserSession();
                                                 </div>
                                             </div>
                                         </div>
-                                        <!--
+
                                         <div class="col-sm-6">
-                                            <div class="form-row">
+                                            <div class="form-row multiple-form-group">
                                                 <label for="" class="col-sm-4 text-sm-right">
                                                     Additional Information
                                                 </label>
-                                                <div class="col-sm-8">
-                                                    <input type="file"
-                                                           class="form-control" name="additional_info"
-                                                           aria-describedby="helpId" placeholder=""
-                                                           accept="<?php echo DOC_FILE_TYPES; ?>"/>
+                                                <div class="col-sm-8 form-group">
+                                                    <div class="input-group input-group-seamless">
+                                                        <input type="file" multiple="multiple"
+                                                               class="form-control" name="additional_info[]"
+                                                               aria-describedby="helpId" placeholder=""
+                                                               accept="<?php echo DOC_FILE_TYPES; ?>"/>
+                                                        <span class="input-group-append cursor-pointer"
+                                                              title="Click to add more files."><span
+                                                                    class="input-group-text"><i
+                                                                        class="fa fa-plus-square text-success add-input"></i></span></span>
+                                                    </div>
                                                     <small class="help-block text-muted">Hint: Attach any additional
-                                                        information
+                                                        documents
                                                     </small>
                                                     <small id="helpId" class="form-text with-errors help-block"></small>
                                                 </div>
                                             </div>
                                         </div>
-                                        -->
                                         <div class="col-sm-6 d-none" id="other_type">
                                             <div class="form-group form-row">
                                                 <label for="" class="col-sm-4 text-sm-right">
@@ -337,7 +342,7 @@ $user = getUserSession();
                                             </div>
                                         </div>
 
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-6 pl-sm-5">
                                             <div class="form-group form-row">
                                                 <div class="checkbox ml-md-2 pl-1 pl-md-4">
                                                     <label>
@@ -350,8 +355,8 @@ $user = getUserSession();
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-6 " id="button_container">
-                                            <div class="float-right">
+                                        <div class="col-sm-6" id="button_container">
+                                            <div class="float-right pr-sm-2">
                                                 <a href="javascript: window.history.back();"
                                                    class="btn bg-danger w3-btn">Cancel</a>
 

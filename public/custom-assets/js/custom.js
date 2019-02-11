@@ -6,6 +6,7 @@
 let URL_ROOT = '';
 let form_submit_count = 0;
 let CMS_FORM_ID = 0;
+let lists = [];
 //=============================================================
 // Daterangepicker Plugin
 /*let date_rangepicker_options = {
@@ -30,7 +31,7 @@ let CMS_FORM_ID = 0;
 // noinspection JSCheckFunctionSignatures
 // noinspection JSDeprecatedSymbols
 $(document).ready(function () {
-    NAV_BAR_HEIGHT = $('.navbar-fixed').height();
+    let NAV_BAR_HEIGHT = $('.navbar-fixed').height();
     $('.content-wrapper').css('margin-top', NAV_BAR_HEIGHT + 'px');
     CMS_FORM_ID = $('#cms_form_id').val();
     URL_ROOT = $('#url_root').val();
@@ -44,6 +45,10 @@ $(document).ready(function () {
     $(window).resize(function () {
         $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
     });
+
+    initList('active');
+    initList('closed');
+    initList('rejected');
     //$(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
 
     $('form').submit(function () {
@@ -383,10 +388,9 @@ window.addEventListener("load", function () {
     setTimeout(() => {
         $('.content').removeClass('d-none invisible');
         $('footer').removeClass('d-none');
-
         setTimeout(function () {
             $.unblockUI();
-            $('.blockable').unblock({message: null});
+            $(`.blockable`).unblock({message: null});
             $('body').scrollTo('.box', 1000, {offset: -150})
                 .scrollTo('#box', 1000, {offset: -150});
         }, 1000);
@@ -394,11 +398,12 @@ window.addEventListener("load", function () {
 
     let prevScrollpos = window.pageYOffset;
     window.onscroll = function () {
+        let navbar = $('.navbar-fixed');
         let currentScrollPos = window.pageYOffset;
         if (prevScrollpos > currentScrollPos) {
-            $(".navbar-fixed").prop('style').top = "0";
+            navbar.prop('style').top = "0";
         } else {
-            $(".navbar-fixed").prop('style').top = "-55px";
+            navbar.prop('style').top = "-60px";
         }
         prevScrollpos = currentScrollPos;
     };
@@ -498,3 +503,82 @@ function dateTemplate(date) {
     return m.isValid() ? m.format("ddd, MMM D YYYY") : '';
     //return m.isValid() ? (m.calendar().split(" at"))[0] : '';
 }
+
+function initList(id) {
+    let options = {
+        valueNames: ['ref_num', 'originator', 'date', 'change_type'],
+        searchClass: 'search',
+        item: `<div class="col-sm-5 mx-sm-5">
+        <dl>
+            <dt></dt><dd class="ref_num"></dd>
+            <dt></dt><dd class="originator"></dd>
+            <dt></dt><dd class="date"></dd>
+            <dt></dt><dd class="change_type"></dd>
+            <dt></dt><dd></dd>
+        </dl>
+        </div>`
+    };
+
+    lists['list_' + id] = new List('list_container_' + id, options);
+}
+
+function searchList(element) {
+    let $this = $(element);
+    let list = lists[$this.attr('data-list-id')];
+    let keyword = $this.val();
+    list.search(keyword);
+}
+
+var addFormGroup = function (event) {
+    event.preventDefault();
+
+    var $formGroup = $(this).closest('.form-group');
+    var $multipleFormGroup = $formGroup.closest('.multiple-form-group');
+    var $formGroupClone = $formGroup.clone();
+
+    $(this)
+        .toggleClass('fa-plus-square text-success')
+        .html('–');
+
+    $formGroupClone.find('input').val('');
+    //$formGroupClone.find('.concept').text('Phone');
+    $formGroupClone.insertAfter($formGroup);
+
+    /*var $lastFormGroupLast = $multipleFormGroup.find('.form-group:last');
+    if ($multipleFormGroup.data('max') <= countFormGroup($multipleFormGroup)) {
+        $lastFormGroupLast.find('.btn-add').attr('disabled', true);
+    }*/
+};
+
+var removeFormGroup = function (event) {
+    event.preventDefault();
+
+    var $formGroup = $(this).closest('.form-group');
+    var $multipleFormGroup = $formGroup.closest('.multiple-form-group');
+
+    /* var $lastFormGroupLast = $multipleFormGroup.find('.form-group:last');
+     if ($multipleFormGroup.data('max') >= countFormGroup($multipleFormGroup)) {
+         $lastFormGroupLast.find('.btn-add').attr('disabled', false);
+     }
+ */
+    $formGroup.remove();
+};
+
+var selectFormGroup = function (event) {
+    event.preventDefault();
+
+    var $selectGroup = $(this).closest('.input-group-select');
+    var param = $(this).attr("href").replace("#", "");
+    var concept = $(this).text();
+
+    $selectGroup.find('.concept').text(concept);
+    $selectGroup.find('.input-group-select-val').val(param);
+
+};
+
+var countFormGroup = function ($form) {
+    return $form.find('.form-group').length;
+};
+
+$(document).on('click', '.add-input', addFormGroup);
+$(document).on('click', '.remove-input', removeFormGroup);

@@ -53,16 +53,27 @@
                                         <h3 class="box-title cursor-pointer"
                                             onclick="$('#btn_collapse_<?php echo $state['name'] ?>').click();">
                                             <b class="text-<?php echo $state['color'] ?>"><?php echo ucwords($state['name']) ?></b>
-                                            CMS Forms
+                                            Change
                                         </h3>
                                         <div class="box-tools pull-right">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-box-tool dropdown-toggle p-1"
+                                                        onclick="$(this).parents('.box').boxWidget('expand')"
+                                                        data-toggle="dropdown" aria-expanded="true">
+                                                    <i class="fas fa-search"></i></button>
+                                                <ul class="dropdown-menu px-2" role="menu">
+                                                    <li>
+                                                        <input type="text" class="form-control"
+                                                               data-list-id="list_<?php echo $state['name']; ?>"
+                                                               placeholder="Search..."
+                                                               onchange="searchList(this);">
+                                                    </li>
+                                                </ul>
+                                            </div>
                                             <button type="button" id="btn_collapse_<?php echo $state['name'] ?>"
                                                     class="btn btn-box-tool"
                                                     data-widget="collapse">
                                                 <i class="fa fa-plus"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-box-tool d-none" data-widget="remove">
-                                                <i class="fa fa-times"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -70,66 +81,66 @@
                                     <div class="box-body">
                                         <?php
                                         if (!empty($payload[$state['name']])) { ?>
-                                            <div class="products-list product-list-in-box row">
-                                                <?php
-                                                $count = 1;
-                                                foreach ($payload[$state['name']] as $val) {
-                                                    $cms_form = new CMSForm(['cms_form_id' => $val->cms_form_id]);
-                                                    $originator = new User($cms_form->originator_id); ?>
-                                                    <div class="item cms-list-item col-sm-5 <?php echo $count % 2 > 0 ? 'mx-sm-5' : '';
-                                                    $count++; ?>" data-target=""
-                                                         style="cursor:pointer"
-                                                         onclick="window.location.href = '<?php echo URL_ROOT . "/cms-forms/view-change-process/" . $cms_form->cms_form_id; ?>'">
-                                                        <dl class="row callout">
-                                                            <dt class="invisible">Id</dt>
-                                                            <dd class="col-sm-8 product-description"><span
-                                                                        class="badge">#<?php echo $cms_form->cms_form_id ?></span>
-                                                            </dd>
-                                                            <dt class="col-sm-4 text-sm-right">Originator</dt>
-                                                            <dd class="col-sm-8 product-description"><?php echo its_logged_in_user($originator->user_id) ? ' You' : ucwords($originator->first_name . ' ' . $originator->last_name); ?>
-                                                                (<?php echo $originator->job_title; ?>)
-                                                                @ <?php echo $originator->department->department; ?></dd>
-                                                            <dt class="col-sm-4 text-sm-right d-none">Ref</dt>
-                                                            <dd class="col-sm-8 product-description d-none">
-                                                                NGM/MW/2.01F1
-                                                            </dd>
-                                                            <dt class="col-sm-4 text-sm-right">Date</dt>
-                                                            <dd class="col-sm-8 product-description">
-                                                                <?php //echo formatDate($cms_form->date_raised, DFB_DT, DFF_DT);  ?>
-                                                                <?php echoDate($cms_form->date_raised); ?>
-                                                            </dd>
-                                                            <dt class="col-sm-4 text-sm-right">Description</dt>
-                                                            <dd class="col-sm-8 product-description">
-                                                                <?php echo $cms_form->change_description; ?>
-                                                            </dd>
-                                                            <dt class="col-sm-4 invisible d-sm-block d-none">..</dt>
-                                                            <dd class="col-sm-8">
-                                                                <a href="<?php echo URL_ROOT . '/cms-forms/view-change-process/' . $cms_form->cms_form_id; ?>"
-                                                                   title="View Change Process"
-                                                                   class="btn w3-btn badge badge-info">
-                                                                    <i class=" badge small"> Details</i>
-                                                                </a>
-                                                                <a href="<?php echo URL_ROOT; ?>/cms-forms/download-change-process/<?php echo $cms_form->cms_form_id; ?>"
-                                                                   title="Download Change Process"
-                                                                   class="btn w3-btn badge bg-aqua-gradient">
-                                                                    <i class="badge small">Download</i>
-                                                                </a>
-                                                                <?php
-                                                                if (isHOD($cms_form->cms_form_id, getUserSession()->user_id) || isOriginator($cms_form->cms_form_id, getUserSession()->user_id)) { ?>
-                                                                    <a href="<?php echo URL_ROOT; ?>/cms-forms/stop-change-process/<?php echo $cms_form->cms_form_id; ?>"
-                                                                       title="Stop Change Process"
-                                                                       class="btn w3-btn badge bg-danger-gradient">
-                                                                        <i class="badge small">Stop</i>
+                                            <div id="list_container_<?php echo $state['name'] ?>">
+                                                <input class="search d-none" id="search_<?php echo $state['name']; ?>"/>
+                                                <div class="products-list product-list-in-box row list">
+                                                    <?php
+                                                    $count = 1;
+                                                    foreach ($payload[$state['name']] as $val) {
+                                                        $cms_form = new CMSForm(['cms_form_id' => $val->cms_form_id]);
+                                                        $originator = new User($cms_form->originator_id); ?>
+                                                        <div class="item cms-list-item col-sm-5  <?php echo $count % 2 > 0 ? 'mx-sm-5' : '';
+                                                        $count++; ?>" data-target=""
+                                                             onclick="window.location.href = '<?php echo site_url("cms-forms/view-change-process/$cms_form->cms_form_id"); ?>'"
+                                                             style="cursor:pointer">
+                                                            <dl class="row callout">
+                                                                <dt class="invisible">Id</dt>
+                                                                <dd class="col-sm-8 product-description ref_num"><span
+                                                                            class="badge">#<?php echo $cms_form->getHodRefNum(); ?></span>
+                                                                </dd>
+                                                                <dt class="col-sm-4 text-sm-right">Originator</dt>
+                                                                <dd class="col-sm-8 product-description originator"><?php echo its_logged_in_user($originator->user_id) ? ' You' : ucwords($originator->first_name . ' ' . $originator->last_name); ?>
+                                                                    (<?php echo $originator->job_title; ?>)
+                                                                    @ <?php echo $originator->department->department; ?></dd>
+                                                                <dt class="col-sm-4 text-sm-right">Date</dt>
+                                                                <dd class="col-sm-8 product-description date">
+                                                                    <?php //echo formatDate($cms_form->date_raised, DFB_DT, DFF_DT);  ?>
+                                                                    <?php echoDate($cms_form->date_raised); ?>
+                                                                </dd>
+                                                                <dt class="col-sm-4 text-sm-right">Change Type</dt>
+                                                                <dd class="col-sm-8 product-description change_type">
+                                                                    <?php echo $cms_form->getChangeType(); ?>
+                                                                </dd>
+                                                                <dt class="col-sm-4 invisible d-sm-block d-none">..</dt>
+                                                                <dd class="col-sm-8">
+                                                                    <a href="<?php echo site_url("/cms-forms/view-change-process/$cms_form->cms_form_id"); ?>"
+                                                                       title="View Change Process"
+                                                                       class="btn w3-btn badge badge-info">
+                                                                        <i class=" badge small"> Details</i>
                                                                     </a>
-                                                                <?php }
-                                                                ?>
-                                                            </dd>
-                                                        </dl>
-                                                    </div>
-                                                <?php }
-                                                ?>
-                                                <!-- /.item -->
+                                                                    <a href="<?php echo site_url("/cms-forms/download-change-process/$cms_form->cms_form_id"); ?>"
+                                                                       title="Download Change Process"
+                                                                       class="btn w3-btn badge bg-aqua-gradient">
+                                                                        <i class="badge small">Download</i>
+                                                                    </a>
+                                                                    <?php
+                                                                    if (isHOD($cms_form->cms_form_id, getUserSession()->user_id) || isOriginator($cms_form->cms_form_id, getUserSession()->user_id)) { ?>
+                                                                        <a href="<?php echo site_url("/cms-forms/stop-change-process/$cms_form->cms_form_id"); ?>"
+                                                                           title="Stop Change Process"
+                                                                           class="btn w3-btn badge bg-danger-gradient">
+                                                                            <i class="badge small">Stop</i>
+                                                                        </a>
+                                                                    <?php }
+                                                                    ?>
+                                                                </dd>
+                                                            </dl>
+                                                        </div>
+                                                    <?php }
+                                                    ?>
+                                                    <!-- /.item -->
+                                                </div>
                                             </div>
+
                                         <?php } else { ?>
                                             <p class="text-center text-muted">No <?php echo ucwords($state['name']) ?>
                                                 Change
@@ -139,6 +150,7 @@
                                         ?>
                                     </div>
                                     <!-- /.box-body -->
+
                                     <div class="box-footer text-center d-none">
                                     </div>
                                     <!-- /.box-footer -->

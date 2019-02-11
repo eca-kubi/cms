@@ -10,5 +10,5 @@ ErrorDocument 500 /errors/error/500
   RewriteRule ^$ public/ [L,QSA]
   RewriteRule ^(.*)$ public/$1 [L,QSA]
 </IfModule>
-php_flag display_errors Off
+php_flag display_errors On
 php_value data.timezone 'Africa/Accra'

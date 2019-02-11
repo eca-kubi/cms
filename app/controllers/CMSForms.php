@@ -37,8 +37,9 @@ class CMSForms extends Controller
         $payload['active'] = CMSFormModel::getActive();
         $payload['closed'] = CMSFormModel::getClosed();
         $payload['rejected'] = CMSFormModel::getRejected();
-        $payload['delayed'] = CMSFormModel::getDelayed();
-        $payload['stopped'] = CMSFormModel::getStopped();
+        $payload['show_search'] = true;
+        // $payload['delayed'] = CMSFormModel::getDelayed();
+        //$payload['stopped'] = CMSFormModel::getStopped();
         $this->view('cms_forms/dashboard', $payload);
     }
 
@@ -48,12 +49,17 @@ class CMSForms extends Controller
             redirect('users/login');
         }
         $payload = array();
+        $department_id = getUserSession()->department_id;
+        $user_id = getUserSession()->user_id;
         $payload['title'] = 'New Change Proposal Form';
+        $payload['ref_num'] = getDeptRef($department_id);
         $payload['hod'] = Database::getDbh()
             ->objectBuilder()
             ->where('role', 'Manager')
+            ->where('department_id', $department_id)
             ->orWhere('role', 'Superintendent')
             ->get('users', null, '*');
+        $payload['reference'] = getDeptRef($department_id);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
             $form = new CMSFormModel();
@@ -62,9 +68,11 @@ class CMSForms extends Controller
             $form->alternatives = $_POST['alternatives'];
             $form->area_affected = $_POST['area_affected'];
             $form->change_type = concatWith(', ', ' & ', $_POST['change_type']);
-            $form->originator_id = getUserSession()->user_id;
+            $form->originator_id = $user_id;
             $form->certify_details = $_POST['certify_details'];
             $form->setState(STATUS_ACTIVE);
+            $form->setHodRefNum(getDeptRef($department_id));
+            $form->setDepartmentId($department_id);
             //$form->risk_level = $_POST['risk_level'];
             //$form->budget_level = $_POST['budget_level'];
             if (isset($_POST['other_type'])) {
@@ -515,7 +523,10 @@ class CMSForms extends Controller
     public function HODClosure(int $cms_form_id = -1)
     {
         $cms_form = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-        $cms_form->updateForm($cms_form_id, ['hod_close_change' => now()]);
+        $cms_form->updateForm($cms_form_id, [
+            'hod_close_change' => now(),
+            'state' => STATUS_CLOSED
+        ]);
         completeSection($cms_form_id, SECTION_PROCESS_CLOSURE);
         redirect("cms-forms/view-change-process/$cms_form_id");
     }
