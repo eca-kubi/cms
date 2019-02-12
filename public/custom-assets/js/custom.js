@@ -7,6 +7,7 @@ let URL_ROOT = '';
 let form_submit_count = 0;
 let CMS_FORM_ID = 0;
 let lists = [];
+let ANIMATE_FLASH = 'animated flash card infinite';
 //=============================================================
 // Daterangepicker Plugin
 /*let date_rangepicker_options = {
@@ -382,6 +383,10 @@ $(document).ready(function () {
     $('.dataTables_length').addClass('d-inline-block mx-3');
     //proxyEmail();
     $('.bs-searchbox >input').attr('data-validate', false);
+
+    /*  setTimeout(()=>{
+          $('.box-header').toggleClass(ANIMATE_FLASH, false);
+      }, 5000)*/
 });
 
 window.addEventListener("load", function () {
@@ -397,6 +402,14 @@ window.addEventListener("load", function () {
     }, 500);
 
     let prevScrollpos = window.pageYOffset;
+    $(document).on('click', '.add-input', addFormGroup);
+    $(document).on('click', '.remove-input', removeFormGroup);
+    $(document).on('show.bs.modal', '#stopProcess', (e) => {
+        let href = $(e.relatedTarget).attr('data-href');
+        $('#stopProcess .btn-primary').attr('data-href', href);
+    });
+    $(document).on('click', '#stopProcess .btn-primary', stopChangeProcess);
+
     window.onscroll = function () {
         let navbar = $('.navbar-fixed');
         let currentScrollPos = window.pageYOffset;
@@ -564,21 +577,23 @@ var removeFormGroup = function (event) {
     $formGroup.remove();
 };
 
-var selectFormGroup = function (event) {
+let selectFormGroup = function (event) {
     event.preventDefault();
 
-    var $selectGroup = $(this).closest('.input-group-select');
-    var param = $(this).attr("href").replace("#", "");
-    var concept = $(this).text();
+    let $selectGroup = $(this).closest('.input-group-select');
+    let param = $(this).attr("href").replace("#", "");
+    let concept = $(this).text();
 
     $selectGroup.find('.concept').text(concept);
     $selectGroup.find('.input-group-select-val').val(param);
 
 };
 
-var countFormGroup = function ($form) {
+let countFormGroup = function ($form) {
     return $form.find('.form-group').length;
 };
 
-$(document).on('click', '.add-input', addFormGroup);
-$(document).on('click', '.remove-input', removeFormGroup);
+let stopChangeProcess = function (e) {
+    let redirect = window.location.href;
+    window.location.href = $(this).attr('data-href') + '?redirect=' + redirect;
+};

@@ -28,7 +28,7 @@ class CMSForms extends Controller
         redirect('cms-forms/dashboard');
     }
 
-    public function Dashboard()
+    public function Dashboard($filter = '')
     {
         if (!isLoggedIn()) {
             redirect('users/login');
@@ -37,10 +37,17 @@ class CMSForms extends Controller
         $payload['active'] = CMSFormModel::getActive();
         $payload['closed'] = CMSFormModel::getClosed();
         $payload['rejected'] = CMSFormModel::getRejected();
-        $payload['show_search'] = true;
+        if (!empty($filter)) {
+            $payload['filter'] = $filter;
+        }
+        //$payload['show_search'] = true;
         // $payload['delayed'] = CMSFormModel::getDelayed();
         //$payload['stopped'] = CMSFormModel::getStopped();
-        $this->view('cms_forms/dashboard', $payload);
+        if (!empty($filter)) {
+            $this->view('cms_forms/dashboard_filter', $payload);
+        } else {
+            $this->view('cms_forms/dashboard', $payload);
+        }
     }
 
     public function StartChangeProcess()
@@ -142,7 +149,7 @@ class CMSForms extends Controller
             }
             $form->hod_approval = $_POST['hod_approval'];
             $form->hod_reasons = $_POST['hod_reasons'];
-            $form->hod_ref_num = $_POST['hod_ref_num'];
+            //$form->hod_ref_num = $_POST['hod_ref_num'];
             try {
                 $form->hod_approval_date = (new DateTime())->format(DFB_DT);
             } catch (Exception $e) {
@@ -165,13 +172,13 @@ class CMSForms extends Controller
                 /** if (!empty($_POST['gm_id'])) {
                  * notifyGm($cms_form_id, $form);
                  * } */
-            } else {
+            } /*else {
                 $body = "Hi, " . ucwords($originator->first_name . ' ' . $originator->last_name, '-. ') . HTML_NEW_LINE .
                     "Your Change Proposal has been <u>delayed</u> by your HoD, " . ucwords($hod->first_name . ' ' . $hod->last_name) . '.' . HTML_NEW_LINE .
                     "Click this link for more details " . '<a href="' . $link . '" />' . $link . '</a>';
                 $form->state = STATUS_DELAYED;
                 insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
-            }
+            }*/
             $data = $form->jsonSerialize();
             (new CMSFormModel(null))->updateForm($cms_form_id, $data);
 
@@ -508,7 +515,9 @@ class CMSForms extends Controller
     public function ProjectLeaderClosure(int $cms_form_id = -1)
     {
         $cms_form = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-        $cms_form->updateForm($cms_form_id, ['project_leader_close_change' => now()]);
+        $cms_form->updateForm($cms_form_id, [
+            'project_leader_close_change' => now()
+        ]);
         completeSection($cms_form_id, SECTION_ACTION_LIST);
         redirect("cms-forms/view-change-process/$cms_form_id");
     }
@@ -561,9 +570,19 @@ class CMSForms extends Controller
         //redirect('cms-forms/' . $payload['form']->next_action . '/' . $cms_form_id);
     }
 
-    public function StopChangeProcess()
+    public function StopChangeProcess($cms_form_id)
     {
-        //$payload = array();
+        $db = Database::getDbh();
+        $db->where('cms_form_id', $cms_form_id)
+            ->update('cms_form', array(
+                'state' => STATUS_REJECTED
+            ));
+        if (isset($_GET['redirect'])) {
+            header('location: ' . $_GET['redirect']);
+            exit;
+        } else {
+            redirect('cms-forms/view-change-process');
+        }
     }
 
     public function test()

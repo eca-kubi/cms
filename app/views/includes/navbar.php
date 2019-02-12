@@ -176,6 +176,12 @@
                                 Closed
                             </a>
                         </li>
+                        <li class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="<?php echo site_url('cms-forms/dashboard/rejected'); ?>">
+                                Rejected
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

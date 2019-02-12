@@ -9,6 +9,17 @@ body {
     min-height: 100%;
 }
 
+.hop-outer {
+}
+
+.hop-outer {
+    -webkit-transition: .2s linear all;
+    -moz-transition: .2s linear all;
+    -ms-transition: .2s linear all;
+    -o-transition: .2s linear all;
+    transition: .2s linear all;
+}
+
 html {
     /* overflow: scroll;
    overflow-x: hidden; */

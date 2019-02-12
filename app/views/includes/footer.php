@@ -2,13 +2,34 @@
     <div class="col-8 float-left text-left">
         <strong>
             &copy; 2018 -
-            <a href="<?php echo URL_ROOT; ?>/about">Developed By Adamus IT</a>.
+            <a href="<?php echo site_url('about'); ?>">Developed By Adamus IT</a>.
         </strong>
     </div>
     <div class="float-right col-4 text-right">
         <b>Version 2.0</b>
     </div>
 </footer>
+<!-- Modal -->
+<div class="modal fade" id="stopProcess" tabindex="-1" role="dialog" aria-labelledby="stopProcessLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="stopProcessLabel">Are you sure?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>This will cancel the Change Process!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 <!-- ./wrapper -->
 <input type="hidden" value="<?php echo URL_ROOT ?>" id="url_root"/>
@@ -73,8 +94,9 @@
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/bootstrap-select.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/pignose.calendar.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/list.js"></script>
+<script src="<?php echo URL_ROOT; ?>/public/assets/js/hop.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/shards.min.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/kendo/kendo.all.min.js"></script>
-<script src="<?php echo URL_ROOT; ?>/public/custom-assets/js/custom.js?<?php //echo microtime();?>"></script>
+<script src="<?php echo URL_ROOT; ?>/public/custom-assets/js/custom.js?<?php echo microtime(); ?>"></script>
 </body>
 </html>
