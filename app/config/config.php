@@ -46,9 +46,8 @@ const MEDIA_FILE_TYPES = 'image/*,  video/*, audio/*';
 const PHOTO_FILE_TYPES = 'image/*';
 const VIDEO_FILE_TYPES = 'video/*';
 const AUDIO_FILE_TYPES = 'audio/*';
-const DOC_FILE_TYPES = '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .pdf, text/plain, text/html';
+const DOC_FILE_TYPES = '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/msword, application/pdf, text/plain, text/html, application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 const HTML_NEW_LINE = '<br/>';
-
 const ACTION_START_CHANGE_PROCESS = 'start_change_process';
 const ACTION_IMPACT_ASSESSMENT_RESPONSE_COMPLETED = 'impact_assessment_response_complete';
 const ACTION_START_CHANGE_PROCESS_COMPLETED = 'start_change_process_completed';
@@ -117,17 +116,17 @@ const ROLE_MANAGER = 'Manager';
 const ROLE_SUPERINTENDENT = 'Superintendent';
 
 define('STATE', [
-        [
+        'active' => [
             'name' => STATUS_ACTIVE,
             'color' => 'success',
             'desc' => ''
         ],
-        [
+        'closed' => [
             'name' => STATUS_CLOSED,
             'color' => 'primary',
             'desc' => ''
         ],
-        [
+        'rejected' => [
             'name' => STATUS_REJECTED,
             'color' => 'danger',
             'desc' => ''
@@ -148,6 +147,7 @@ const STATUS_MEDIUM_BUDGET_LEVEL = 'Medium';
 const STATUS_LOW_BUDGET_LEVEL = 'Low';
 const ICON_FA_PLUS = 'fa-plus-circle';
 const ICON_FA_MINUS = 'fa-minus-circle';
+const ANIMATE_FLASH = 'animated flash card infinite';
 
 $_GET['target'] = empty($_GET['target']) ? '' : $_GET['target'];
 $pending_sections = [];

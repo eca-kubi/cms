@@ -45,7 +45,7 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
-                        <?php
+                        <?php /** @var array $payload */
                         foreach (STATE as $state) { ?>
                             <div class="col-12">
                                 <div class="box box-<?php echo $state['color'] ?> collapsed-box">
@@ -66,7 +66,7 @@
                                                         <input type="text" class="form-control"
                                                                data-list-id="list_<?php echo $state['name']; ?>"
                                                                placeholder="Search..."
-                                                               onchange="searchList(this);">
+                                                               onkeydown="searchList(this);">
                                                     </li>
                                                 </ul>
                                             </div>
@@ -90,16 +90,15 @@
                                                         $cms_form = new CMSForm(['cms_form_id' => $val->cms_form_id]);
                                                         $originator = new User($cms_form->originator_id); ?>
                                                         <div class="item cms-list-item col-sm-5  <?php echo $count % 2 > 0 ? 'mx-sm-5' : '';
-                                                        $count++; ?>" data-target=""
-                                                             onclick="window.location.href = '<?php echo site_url("cms-forms/view-change-process/$cms_form->cms_form_id"); ?>'"
-                                                             style="cursor:pointer">
+                                                        $count++; ?>"
+                                                             onclick="//window.location.href = '<?php echo site_url("cms-forms/view-change-process/$cms_form->cms_form_id"); ?>'">
                                                             <dl class="row callout">
-                                                                <dt class="invisible">Id</dt>
+                                                                <dt class="invisible">Ref:</dt>
                                                                 <dd class="col-sm-8 product-description ref_num"><span
-                                                                            class="badge">#<?php echo $cms_form->getHodRefNum(); ?></span>
+                                                                            class="badge badge-outline-<?php echo $state['color']; ?>"><?php echo $cms_form->getHodRefNum(); ?></span>
                                                                 </dd>
                                                                 <dt class="col-sm-4 text-sm-right">Originator</dt>
-                                                                <dd class="col-sm-8 product-description originator"><?php echo its_logged_in_user($originator->user_id) ? ' You' : ucwords($originator->first_name . ' ' . $originator->last_name); ?>
+                                                                <dd class="col-sm-8 product-description originator"><?php echo ucwords($originator->first_name . ' ' . $originator->last_name); ?>
                                                                     (<?php echo $originator->job_title; ?>)
                                                                     @ <?php echo $originator->department->department; ?></dd>
                                                                 <dt class="col-sm-4 text-sm-right">Date</dt>
@@ -113,20 +112,23 @@
                                                                 </dd>
                                                                 <dt class="col-sm-4 invisible d-sm-block d-none">..</dt>
                                                                 <dd class="col-sm-8">
-                                                                    <a href="<?php echo site_url("/cms-forms/view-change-process/$cms_form->cms_form_id"); ?>"
+                                                                    <a href="<?php echo site_url("cms-forms/view-change-process/$cms_form->cms_form_id"); ?>"
                                                                        title="View Change Process"
                                                                        class="btn w3-btn badge badge-info">
                                                                         <i class=" badge small"> Details</i>
                                                                     </a>
-                                                                    <a href="<?php echo site_url("/cms-forms/download-change-process/$cms_form->cms_form_id"); ?>"
-                                                                       title="Download Change Process"
-                                                                       class="btn w3-btn badge bg-aqua-gradient">
-                                                                        <i class="badge small">Download</i>
-                                                                    </a>
+                                                                    <?php if ($cms_form->state === STATUS_CLOSED) { ?>
+                                                                        <a href="<?php echo site_url("cms-forms/download-change-process/$cms_form->cms_form_id"); ?>"
+                                                                           title="Download Change Process"
+                                                                           class="btn w3-btn badge bg-aqua-gradient">
+                                                                            <i class="badge small">Download</i>
+                                                                        </a>
+                                                                    <?php } ?>
                                                                     <?php
-                                                                    if (isHOD($cms_form->cms_form_id, getUserSession()->user_id) || isOriginator($cms_form->cms_form_id, getUserSession()->user_id)) { ?>
-                                                                        <a href="<?php echo site_url("/cms-forms/stop-change-process/$cms_form->cms_form_id"); ?>"
+                                                                    if (isDepartmentManager(getUserSession()->user_id, $cms_form->cms_form_id) || isOriginator($cms_form->cms_form_id, getUserSession()->user_id)) { ?>
+                                                                        <a href="<?php echo site_url("cms-forms/stop-change-process/$cms_form->cms_form_id"); ?>"
                                                                            title="Stop Change Process"
+                                                                           data-href="<?php echo site_url('cms-forms/stop-change-process/' . $cms_form->cms_form_id); ?>"
                                                                            class="btn w3-btn badge bg-danger-gradient">
                                                                             <i class="badge small">Stop</i>
                                                                         </a>

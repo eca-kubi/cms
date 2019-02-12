@@ -35,11 +35,11 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                                            value="<?php echo STATUS_REJECTED ?>" required/>
                                     <label class="form-check-label" for="rejected">Reject</label>
                                 </div>
-                                <div class="form-check form-check-inline">
+                                <!--<div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="hod_approval" id="delayed"
-                                           value="<?php echo STATUS_DELAYED ?>" required/>
+                                           value="<?php /*echo STATUS_DELAYED */ ?>" required/>
                                     <label class="form-check-label" for="delayed">Delay</label>
-                                </div>
+                                </div>-->
                                 <small class="help-block with-errors"></small>
                             </div>
                         </div>
@@ -54,7 +54,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-12">
+                            <!--<div class="col-sm-12">
                                 <div class="form-group form-row d-none" id="hod_ref_num">
                                     <label for="" class="col-sm-12">
                                         Reference Number
@@ -67,7 +67,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                                         <small id="helpId" class="form-text with-errors help-block"></small>
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                             <?php /*  <div class="col-sm-12 d-none">
                                 <div class="form-group form-row gm">
                                     <label for="gm_id" class="col-sm-12">
@@ -119,9 +119,9 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
                 </a>
                 <?php if ($payload['form']->hod_approval == STATUS_REJECTED) {
                     echo "<i class='text-danger text-bold mx-2'>--Change application rejected</i> ";
-                } elseif ($payload['form']->hod_approval == STATUS_DELAYED) {
+                } /*elseif ($payload['form']->hod_approval == STATUS_DELAYED) {
                     echo "<i class='text-danger text-bold mx-2'>--Change application delayed</i> ";
-                } ?>
+                } */ ?>
             </h6>
             <span class="text-right float-right invisible"><?php if (isHod($payload['form']->cms_form_id, getUserSession()->user_id)) { ?>
                     <a href="#" title="Edit this section">

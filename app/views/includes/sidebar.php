@@ -62,6 +62,12 @@
                                 <p>Closed</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="<?php echo site_url('cms-forms/dashboard/rejected'); ?>" class="nav-link">
+                                <i class="fas fa-circle-notch animated rotateIn nav-icon"></i>
+                                <p>Rejected</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

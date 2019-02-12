@@ -51,7 +51,7 @@ $user = getUserSession();
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body pt-0">
-                    <form action="" method="post" data-toggle="validator" id="add_cms_form"
+                    <form action="" method="POST" data-toggle="validator" id="add_cms_form"
                           enctype="multipart/form-data">
                         <div class="row p-2 border">
                             <fieldset class="w-100">
@@ -124,9 +124,9 @@ $user = getUserSession();
                                                     Description of Change
                                                 </label>
                                                 <div class="col-sm-8">
-                                                <textarea type="text"
-                                                          class="form-control" name="change_description"
-                                                          aria-describedby="helpId" placeholder="" required></textarea>
+                                          <textarea type="text"
+                                                    class="form-control" name="change_description"
+                                                    aria-describedby="helpId" placeholder="" required></textarea>
                                                     <small id="helpId" class="form-text with-errors help-block"></small>
                                                 </div>
                                             </div>
@@ -217,11 +217,9 @@ $user = getUserSession();
                                                 </label>
                                                 <div class="col-sm-8 form-group">
                                                     <div class="input-group input-group-seamless">
-                                                        <input type="file" multiple="multiple"
-                                                               class="form-control" name="additional_info[]"
-                                                               aria-describedby="helpId" placeholder=""
+                                                        <input type="file" class="form-control" name="additional_info[]"
                                                                accept="<?php echo DOC_FILE_TYPES; ?>"/>
-                                                        <span class="input-group-append cursor-pointer"
+                                                        <span class="input-group-append cursor-pointer d-none"
                                                               title="Click to add more files."><span
                                                                     class="input-group-text"><i
                                                                         class="fa fa-plus-square text-success add-input"></i></span></span>

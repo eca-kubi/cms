@@ -84,9 +84,13 @@ class CMSFormModel extends Model implements \JsonSerializable
 
     public static function getActive()
     {
-        return Database::getDbh()->where('state', STATUS_ACTIVE)->
-        objectBuilder()->
-        get('cms_form');
+        try {
+            return Database::getDbh()->where('state', STATUS_ACTIVE)
+                ->objectBuilder()
+                ->orderBy('date_raised')
+                ->get('cms_form');
+        } catch (Exception $e) {
+        }
     }
 
     /**
@@ -96,9 +100,13 @@ class CMSFormModel extends Model implements \JsonSerializable
      */
     public static function getClosed()
     {
-        return Database::getDbh()->where('state', STATUS_CLOSED)->
-        objectBuilder()->
-        get('cms_form');
+        try {
+            return Database::getDbh()->where('state', STATUS_CLOSED)
+                ->objectBuilder()
+                ->orderBy('date_raised')
+                ->get('cms_form');
+        } catch (Exception $e) {
+        }
     }
 
     public static function getStopped()
@@ -117,9 +125,13 @@ class CMSFormModel extends Model implements \JsonSerializable
 
     public static function getRejected()
     {
-        return Database::getDbh()->where('state', STATUS_REJECTED)->
-        objectBuilder()->
-        get('cms_form');
+        try {
+            return Database::getDbh()->where('state', STATUS_REJECTED)
+                ->objectBuilder()
+                ->orderBy('date_raised')
+                ->get('cms_form');
+        } catch (Exception $e) {
+        }
     }
 
     public static function has($column, $value)
