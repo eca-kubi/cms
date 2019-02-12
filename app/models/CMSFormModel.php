@@ -873,6 +873,7 @@ class CMSFormModel extends Model implements \JsonSerializable
             'cms_form_id' => $this->cms_form_id,
             'originator_id' => $this->originator_id,
             'date_raised' => $this->date_raised,
+            'department_id' => $this->department_id,
             'change_type' => $this->change_type,
             'change_description' => $this->change_description,
             'advantages' => $this->advantages,

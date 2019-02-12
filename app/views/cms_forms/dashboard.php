@@ -58,12 +58,14 @@
                                         <div class="box-tools pull-right">
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-box-tool dropdown-toggle p-1"
-                                                        onclick="$(this).parents('.box').boxWidget('expand')"
+                                                    <?php $state_name = $state['name']; ?>
+                                                        onclick="$(this).parents('.box').boxWidget('expand'); $('#list_search_<?php echo $state_name; ?>').focus()"
                                                         data-toggle="dropdown" aria-expanded="true">
                                                     <i class="fas fa-search"></i></button>
                                                 <ul class="dropdown-menu px-2" role="menu">
                                                     <li>
                                                         <input type="text" class="form-control"
+                                                               id="list_search_<?php echo $state['name']; ?>"
                                                                data-list-id="list_<?php echo $state['name']; ?>"
                                                                placeholder="Search..."
                                                                onkeydown="searchList(this);">
