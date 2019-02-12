@@ -49,6 +49,7 @@ HoDs should add their comments under their respective departments.">
                         <div class="w-100 section collapse" id="<?php echo strtolower($department->department); ?>"
                              data-parent="#poss_imp">
                             <form action="<?php echo URL_ROOT . '/cms-forms/Impact-Response/' . $payload['form']->cms_form_id . '/' . $department->department_id; ?>"
+                                  id="impact_assessment"
                                   method="post" role="form">
                                 <fieldset <?php //echo !$can_assess_impact_for_dept ? 'disabled="disabled"' : ''; ?>>
                                     <table class="table table-bordered table-user-information font-raleway table-striped mb-0">
@@ -106,7 +107,7 @@ HoDs should add their comments under their respective departments.">
                                     <?php
                                     if ($can_assess_impact_for_dept && $impact_ass_status->getStatus() === STATUS_IMPACT_ASSESSMENT_RESPONSE_PENDING) {
                                         ?>
-                                        <div class="row mt-1">
+                                        <!--<div class="row mt-1">
                                             <div class="col-sm-6">
                                                 <div class="form-group form-row pl-1">
                                                     <div class="checkbox">
@@ -130,7 +131,7 @@ HoDs should add their comments under their respective departments.">
                                                     </button>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>-->
                                     <?php }
                                     ?>
                                 </fieldset>
@@ -269,10 +270,56 @@ HoDs should add their comments under their respective departments.">
                                     </table>
                                 </div>
                             <?php }
-                            if ($impact_ass_status->getStatus() == STATUS_IMPACT_ASSESSMENT_HOD_COMMENT_PENDING && empty($impact_ass_status->getHodComment())
-                                && isDepartmentManager(getUserSession()->user_id, $department->department_id)) { ?>
-                                <form class="border p-3 table-active" method="post"
-                                      action="<?php echo URL_ROOT . '/cms-forms/hod-comment/' . $payload['form']->cms_form_id . '/' . $department->department_id; ?>"
+                            //$impact_ass_status->getStatus() == STATUS_IMPACT_ASSESSMENT_HOD_COMMENT_PENDING && empty($impact_ass_status->getHodComment())
+                            //                                && isDepartmentManager(getUserSession()->user_id, $department->department_id)
+                            if (true) { ?>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-row mb-2">
+                                            <label class="col-sm-2 text-sm-right" for="hod_comment">
+                                                HoD Comment
+                                            </label>
+                                            <div class="col-sm-10">
+                                                    <textarea class="form-control" name="hod_comment"
+                                                              id="hod_comment" placeholder="Write your comment here."
+                                                              form="impact_assessment"
+                                                              required></textarea>
+                                                <small id="helpId" class="with-errors help-block"></small>
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-row mb-0">
+                                            <label class="invisible col-sm-2"></label>
+                                            <div class="col-sm-10">
+                                                <div class="form-group form-row mb-0">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" name="certify_details"
+                                                                   form="impact_assessment" required>
+                                                            <small class="text-bold">I hereby certify that the
+                                                                information
+                                                                provided above is true, complete and accurate.
+                                                            </small>
+                                                        </label>
+                                                        <small id="helpId" class="with-errors help-block"></small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <label class="invisible col-sm-2"></label>
+                                            <div class="col-sm-10 text-sm-right">
+                                                <a href="javascript: window.history.back();"
+                                                   class="btn bg-danger w3-btn d-none">Cancel</a>
+                                                <button type="submit" form="impact_assessment"
+                                                        class="btn bg-success w3-btn">
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <form class="border p-3 table-active d-none" method="post"
+                                      action="<?php /*echo URL_ROOT . '/cms-forms/hod-comment/' . $payload['form']->cms_form_id . '/' . $department->department_id; */ ?>"
                                       role="form" data-toggle="validator">
                                     <div class="row">
                                         <div class="col-sm-12">
@@ -316,7 +363,7 @@ HoDs should add their comments under their respective departments.">
                                             </div>
                                         </div>
                                     </div>
-                                </form>
+                                </form>-->
                             <?php }
                             ?>
                         </div>
