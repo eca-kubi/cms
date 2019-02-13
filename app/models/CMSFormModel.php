@@ -45,6 +45,7 @@ class CMSFormModel extends Model implements \JsonSerializable
      * @var array
      */
     private $where_col_val;
+    public $gm_reasons;
 
     public function __construct(array $where_col_val = null)
     {
