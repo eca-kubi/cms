@@ -97,7 +97,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                     <h6 class="text-bold font-italic col m-1">
                         <a href="#section_3" data-toggle="collapse">
                             <i class="fa <?php echo ICON_FA_PLUS ?>"></i> Section 3 - Risk Assessment
-                            <?php echo isAllImpactAssessmentComplete($payload['form']->cms_form_id) ? echoCompleted() : echoInComplete(); ?>
+                            <?php echo isAllImpactAssessmentComplete($payload['form']->cms_form_id) ? echoCompleted() : echoInComplete(" -- Impact assessment pending"); ?>
                         </a>
                         <?php if (isAllImpactAssessmentComplete($payload['form']->cms_form_id) && !empty($payload['form']->risk_attachment)) {
                             ?>

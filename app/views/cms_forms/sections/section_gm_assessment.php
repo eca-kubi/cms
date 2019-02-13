@@ -38,11 +38,11 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_IMPACT_ASSESSMENT)) 
                                                value="<?php echo STATUS_REJECTED ?>" required>
                                         <label class="form-check-label" for="rejected">Reject</label>
                                     </div>
-                                    <div class="form-check form-check-inline">
+                                    <!-- <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="gm_approval" id="delayed"
-                                               value="<?php echo STATUS_DELAYED ?>" required>
+                                               value="<?php /*echo STATUS_DELAYED */ ?>" required>
                                         <label class="form-check-label" for="delayed">Delay</label>
-                                    </div>
+                                    </div>-->
                                     <small class="help-block with-errors"></small>
                                 </div>
                             </div>

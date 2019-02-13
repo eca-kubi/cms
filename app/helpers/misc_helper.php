@@ -718,9 +718,9 @@ function echoCompleted()
                             class=\"fa fa-check fa-1x completed d-none animated\"></i></span>";
 }
 
-function echoInComplete()
+function echoInComplete($append = '')
 {
-    return "<span class=\"font-italic \"> <span class=\"text-dark small animated incomplete ml-1\">[Incomplete]</span> </span>";
+    return "<span class=\"font-italic \"> <span class=\"text-dark small animated incomplete ml-1\">[Incomplete] $append</span> </span> ";
 }
 
 function insertEmail($subject, $body, $recipient_address, $recipient_name)

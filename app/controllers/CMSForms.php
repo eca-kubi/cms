@@ -385,9 +385,9 @@ class CMSForms extends Controller
 
             if ($cms_form->gm_approval == STATUS_REJECTED) {
                 $cms_form->state = STATUS_REJECTED;
-            } elseif ($cms_form->gm_approval == STATUS_DELAYED) {
+            } /*elseif ($cms_form->gm_approval == STATUS_DELAYED) {
                 $cms_form->state = STATUS_DELAYED;
-            }
+            }*/
             // update CMS form
             $data = $cms_form->jsonSerialize();
             (new CMSFormModel(null))->updateForm($cms_form_id, $data);

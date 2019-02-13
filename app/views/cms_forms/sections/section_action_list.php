@@ -1,5 +1,6 @@
 <?php /** @var  array $payload */
-if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION) && !empty($payload['form']->project_leader_acceptance)) { ?>
+//sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION) && !empty($payload['form']->project_leader_acceptance
+if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION)) { ?>
     <div class="row p-2">
         <div class="w-100 row border ml-0 p-1">
             <h6 class="text-bold font-italic col m-1">
@@ -26,19 +27,22 @@ heredoc;
         <div id="section_6" class="collapse section border table-active"
              style="position:relative; min-height: 520px;min-width: 100%">
             <?php
-            if (isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id) && !sectionCompleted($payload['form']->cms_form_id, SECTION_ACTION_LIST)) { ?>
+            if (isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id) && !empty($payload['form']->project_leader_acceptance) && !sectionCompleted($payload['form']->cms_form_id, SECTION_ACTION_LIST)) { ?>
                 <div id="action_list"></div>
-            <?php } else { ?>
+            <?php } else {
+                ?>
                 <div id="action-list-read-only"></div>
                 <div>
                     <table class="table-striped table-active table table-bordered table-user-information font-raleway mb-0">
-                        <tr>
-                            <td>
-                                Completed
-                                by <?php echo getNameJobTitleAndDepartment($payload['form']->project_leader_id); ?>
-                                on <?php echo returnDate($payload['form']->project_leader_close_change, true) ?>
-                            </td>
-                        </tr>
+                        <?php if (!empty($payload['form']->project_leader_close_change)) { ?>
+                            <tr>
+                                <td>
+                                    Completed
+                                    by <?php echo getNameJobTitleAndDepartment($payload['form']->project_leader_id); ?>
+                                    on <?php echo returnDate($payload['form']->project_leader_close_change, true) ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
                     </table>
                 </div>
             <?php }

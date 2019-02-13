@@ -50,8 +50,9 @@ heredoc;
                                                     <label class="form-check-label"
                                                            for="project_leader_close_change">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
                                                         -the Project Leader
-                                                        of this Project- certify that the information provided by me is
-                                                        accurate and true.</label>
+                                                        of this Project- certify that all issues raised have been
+                                                        addressed and the project has been implemented
+                                                        successfully.</label>
                                                 </div>
                                                 <small class="help-block with-errors"></small>
                                             </div>
@@ -107,8 +108,8 @@ heredoc;
                                                     <label class="form-check-label"
                                                            for="originator_close_change">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
                                                         -the Originator
-                                                        of this Project- certify that the information provided by me is
-                                                        accurate and true.</label>
+                                                        of this Project- certify that the project implementation is
+                                                        successful.</label>
                                                 </div>
                                                 <small class="help-block with-errors"></small>
                                             </div>
@@ -161,9 +162,8 @@ heredoc;
                                                 <label class="form-check-label"
                                                        for="hod_close_change">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
                                                     -the Owner
-                                                    of this Project- certify that the information provided by me is
-                                                    accurate and
-                                                    true.
+                                                    of this Project- certify the project has been implemented
+                                                    successfully.
                                                 </label>
                                             </div>
                                             <small class="help-block with-errors"></small>
@@ -229,8 +229,9 @@ heredoc;
                                                         <label class="form-check-label text-justify"
                                                                for="project_leader_close_change2">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
                                                             - the Project Leader
-                                                            of this Project- certify that the information provided by me
-                                                            is accurate and true.</label>
+                                                            of this Project- certify that all issues raised have been
+                                                            addressed and the project has been implemented
+                                                            successfully.</label>
                                                     </div>
                                                     <small class="help-block with-errors"></small>
                                                 </div>
@@ -284,8 +285,8 @@ heredoc;
                                                         <label class="form-check-label text-justify"
                                                                for="originator_close_change2">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
                                                             -the Originator
-                                                            of this Project- certify that the information provided by me
-                                                            is accurate and true.</label>
+                                                            of this Project- certify that the project implementation is
+                                                            successful.</label>
                                                     </div>
                                                     <small class="help-block with-errors"></small>
                                                 </div>
@@ -338,8 +339,8 @@ heredoc;
                                                         <label class="form-check-label text-justify"
                                                                for="hod_close_change2">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
                                                             -the Owner
-                                                            of this Project- certify that the information provided by me
-                                                            is accurate and true.</label>
+                                                            of this Project- certify the project has been implemented
+                                                            successfully.</label>
                                                     </div>
                                                     <small class="help-block with-errors"></small>
                                                 </div>

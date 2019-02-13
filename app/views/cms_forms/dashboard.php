@@ -127,14 +127,17 @@
                                                                         </a>
                                                                     <?php } ?>
                                                                     <?php
-                                                                    if (isDepartmentManager(getUserSession()->user_id, $cms_form->cms_form_id) || isOriginator($cms_form->cms_form_id, getUserSession()->user_id)) { ?>
-                                                                        <a href="<?php echo site_url("cms-forms/stop-change-process/$cms_form->cms_form_id"); ?>"
-                                                                           title="Stop Change Process"
-                                                                           data-href="<?php echo site_url('cms-forms/stop-change-process/' . $cms_form->cms_form_id); ?>"
-                                                                           class="btn w3-btn badge bg-danger-gradient">
-                                                                            <i class="badge small">Stop</i>
-                                                                        </a>
-                                                                    <?php }
+                                                                    if (isDepartmentManager(getUserSession()->user_id, $cms_form->cms_form_id) || isOriginator($cms_form->cms_form_id, getUserSession()->user_id)) {
+                                                                        if ($cms_form->state === STATUS_ACTIVE) {
+                                                                            ?>
+                                                                            <a href="<?php echo site_url("cms-forms/stop-change-process/$cms_form->cms_form_id"); ?>"
+                                                                               title="Stop Change Process"
+                                                                               data-href="<?php echo site_url('cms-forms/stop-change-process/' . $cms_form->cms_form_id); ?>"
+                                                                               class="btn w3-btn badge bg-danger-gradient">
+                                                                                <i class="badge small">Stop</i>
+                                                                            </a>
+                                                                        <?php }
+                                                                    }
                                                                     ?>
                                                                 </dd>
                                                             </dl>
