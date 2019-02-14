@@ -5,6 +5,18 @@
                 <i class="fa <?php echo ICON_FA_PLUS ?>" data-target="#section_1"></i> Section 1 - Proposed Change
                 <?php echo echoCompleted(); ?>
             </a>
+            <?php
+            if (!empty($payload)) { ?>
+                <span class="mx-2"></span>
+                <a
+                        href="<?php echo URL_ROOT . '/cms-forms/download-additional-info/' . $payload['form']->cms_form_id; ?>"
+                        target="_blank"
+                        title="Download Attached Documents"
+                        class="">
+                    <span class="text-sm badge badge-success"> <i class="fa fa-file-download"></i> Download Attached Documents</span>
+                </a>
+            <?php }
+            ?>
         </h6>
         <span class="text-right float-right d-none">
             <?php /** @var array $payload */ //todo: Consider sections as database tables in the future.
@@ -90,7 +102,7 @@
                         </span>
                     </span>
                     </td>
-                    <!-- <td scope="row">
+                    <td scope="row">
                     <span class="row">
                         <span class="col-sm-4 text-sm-right">
                             <b>Additional Info: </b>
@@ -99,15 +111,15 @@
                             <?php if (!empty($payload['form']->additional_info)) { ?>
                             <a href="<?php echo URL_ROOT . '/cms-forms/download-additional-info/' . $payload['form']->cms_form_id; ?>"
                                target="_blank"
-                               class="text-sm badge badge-danger" title="Download Attached Information">
-                                    Download
+                               class="" title="Download Attached Information">
+                                    <span class="text-sm badge badge-success"> <i class="fa fa-file-download"></i> Download Attached Documents</span>
                                 </a><?php } else {
                         echoIfEmpty($payload['form']->additional_info, 'N/A');
                     } ?>
                         </span>
                     </span>
                 </td>
-                -->
+
                 </tr>
                 <tr>
                     <td scope="row" class="">

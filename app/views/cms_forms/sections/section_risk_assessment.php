@@ -37,17 +37,33 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                     <div id="section_3" class="collapse show section p-3 border">
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="form-group form-row">
+                                <div class="form-row multiple-form-group" data-max="3">
                                     <label for="" class="col-sm-12">
                                         Risk Assessment Document
                                         <small class="d-sm-inline d-block">(Attach Risk Assessment Document)</small>
                                     </label>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-8 form-group">
+                                        <div class="input-group">
+                                            <input accept="<?php echo DOC_FILE_TYPES; ?>"
+                                                   class="form-control" multiple="multiple"
+                                                   name="risk_attachment[]"
+                                                   required type="file"/>
+                                            <div class="input-group-append cursor-pointer"
+                                                 title="Click to add more files.">
+                                                <div class="input-group-text add-input"><i
+                                                            class="fas fa-plus-square text-success"></i></div>
+                                            </div>
+                                        </div>
+                                        <small class="help-block text-muted">Hint: Attach risk assessment document
+                                        </small>
+                                        <small id="helpId" class="form-text with-errors help-block"></small>
+                                    </div>
+                                    <!--                                    <div class="col-sm-8">
                                         <input class="form-control" type="file" name="risk_attachment"
                                                aria-describedby="helpId"
-                                               accept="<?php echo DOC_FILE_TYPES; ?>" required/>
+                                               accept="<?php /*echo DOC_FILE_TYPES; */ ?>" required/>
                                         <small class="form-text with-errors help-block"></small>
-                                    </div>
+                                    </div>-->
                                 </div>
                             </div>
                             <div class="col-sm-12">
@@ -107,7 +123,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                                     target="_blank"
                                     title="Download Attached Risk Assessment"
                                     class="">
-                                <span class="text-sm badge badge-success"> <i class="fa fa-file-download"></i> Download</span>
+                                <span class="text-sm badge badge-success"> <i class="fa fa-file-download"></i> Download Risk Assessments</span>
                             </a>
                             <?php
                         } ?>
@@ -172,7 +188,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                                                 <a href="<?php echo URL_ROOT . '/cms-forms/download-risk-attachment/' . $payload['form']->cms_form_id; ?>"
                                                    target="_blank"
                                                    title="Download Attached Risk Assessment"
-                                                   class="btn btn-primary btn-sm">Download</a>
+                                                   class="btn btn-primary btn-sm">Download Risk Assessment</a>
                                             <small class="text-muted"><i>(Download the risk assessment document attached to this form)</i></small>
                                             </span>
                                         </span>

@@ -41,34 +41,35 @@ class CMSFormModel extends Model implements \JsonSerializable
     public $email_subject;
     public $risk_attachment;
     public $state;
+    public $title;
     /**
      * @var array
      */
     private $where_col_val;
 
-    public function __construct(array $where_col_val = null)
+    public function __construct($where_col_val = null)
     {
         parent::__construct();
         if (!empty($where_col_val)) {
-            $ret = $this->fetchSingle($where_col_val);
-            if ($ret) {
-                foreach ($ret as $col => $value) {
-                    $this->$col = $value;
+            if (is_array($where_col_val)) {
+                $ret = $this->fetchSingle($where_col_val);
+                if ($ret) {
+                    foreach ($ret as $col => $value) {
+                        $this->$col = $value;
+                    }
+                }
+            } else {
+                $cms_form_id = $where_col_val;
+                $db = Database::getDbh();
+                $ret = $db->where('cms_form_id', $cms_form_id)
+                    ->getOne(self::$table);
+                if ($ret) {
+                    foreach ($ret as $col => $value) {
+                        $this->$col = $value;
+                    }
                 }
             }
         }
-    }
-
-    public function insert()
-    {
-        $db = Database::getDbh();
-        $data = $this->jsonSerialize();
-        unset($data['cms_form_id']);
-        $ret = $db->insert(self::$table, $data);
-        if ($ret) {
-            return $db->getInsertId();
-        }
-        return false;
     }
 
     public function fetchSingle(array $where_col_val)
@@ -145,6 +146,95 @@ class CMSFormModel extends Model implements \JsonSerializable
         return false;
     }
 
+    public function insert()
+    {
+        $db = Database::getDbh();
+        $data = $this->jsonSerialize();
+        unset($data['cms_form_id']);
+        $ret = $db->insert(self::$table, $data);
+        if ($ret) {
+            return $db->getInsertId();
+        }
+        return false;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'cms_form_id' => $this->cms_form_id,
+            'originator_id' => $this->originator_id,
+            'date_raised' => $this->date_raised,
+            'department_id' => $this->department_id,
+            'change_type' => $this->change_type,
+            'change_description' => $this->change_description,
+            'title' => $this->title,
+            //'department_id' => $this->department_id,
+            'advantages' => $this->advantages,
+            'alternatives' => $this->alternatives,
+            'area_affected' => $this->area_affected,
+            'hod_id' => $this->hod_id,
+            'hod_approval' => $this->hod_approval,
+            'hod_ref_num' => $this->hod_ref_num,
+            'gm_approval' => $this->gm_approval,
+            'gm_approval_reasons' => $this->gm_approval_reasons,
+            'hod_authorization' => $this->hod_authorization,
+            'hod_authorization_comment' => $this->getHodAuthorizationComment(),
+            'project_leader_id' => $this->project_leader_id,
+            'project_leader_acceptance' => $this->project_leader_acceptance,
+            'hod_close_change' => $this->hod_close_change,
+            'originator_close_change' => $this->originator_close_change,
+            'project_leader_close_change' => $this->project_leader_close_change,
+            'next_action' => $this->next_action,
+            'budget_level' => $this->budget_level,
+            'risk_level' => $this->risk_level,
+            'additional_info' => $this->additional_info,
+            'hod_reasons' => $this->hod_reasons,
+            'affected_dept' => $this->affected_dept,
+            'hod_approval_date' => $this->hod_approval_date,
+            'section_completed' => $this->section_completed,
+            'email_subject' => $this->email_subject,
+            'risk_attachment' => $this->risk_attachment,
+            'gm_id' => $this->gm_id,
+            'state' => $this->getState(),
+        ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHodAuthorizationComment()
+    {
+        return $this->hod_authorization_comment;
+    }
+
+    /**
+     * @param mixed $hod_authorization_comment
+     * @return CMSFormModel
+     */
+    public function setHodAuthorizationComment($hod_authorization_comment)
+    {
+        $this->hod_authorization_comment = $hod_authorization_comment;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param mixed $state
+     * @return CMSFormModel
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+        return $this;
+    }
+
     /**
      * @return mixed
      */
@@ -178,24 +268,6 @@ class CMSFormModel extends Model implements \JsonSerializable
     public function setHodAuthorization($hod_authorization)
     {
         $this->hod_authorization = $hod_authorization;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getHodAuthorizationComment()
-    {
-        return $this->hod_authorization_comment;
-    }
-
-    /**
-     * @param mixed $hod_authorization_comment
-     * @return CMSFormModel
-     */
-    public function setHodAuthorizationComment($hod_authorization_comment)
-    {
-        $this->hod_authorization_comment = $hod_authorization_comment;
         return $this;
     }
 
@@ -829,24 +901,6 @@ class CMSFormModel extends Model implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    /**
-     * @param mixed $state
-     * @return CMSFormModel
-     */
-    public function setState($state)
-    {
-        $this->state = $state;
-        return $this;
-    }
-
     public function add(array $insertData)
     {
         return Database::getDbh()->insert(self::$table, $insertData);
@@ -865,45 +919,5 @@ class CMSFormModel extends Model implements \JsonSerializable
         return (object)$db->where('cms_form_id', $cms_form_id)->
         objectBuilder()->
         getOne('cms_form');
-    }
-
-    public function jsonSerialize()
-    {
-        return [
-            'cms_form_id' => $this->cms_form_id,
-            'originator_id' => $this->originator_id,
-            'date_raised' => $this->date_raised,
-            'department_id' => $this->department_id,
-            'change_type' => $this->change_type,
-            'change_description' => $this->change_description,
-            //'department_id' => $this->department_id,
-            'advantages' => $this->advantages,
-            'alternatives' => $this->alternatives,
-            'area_affected' => $this->area_affected,
-            'hod_id' => $this->hod_id,
-            'hod_approval' => $this->hod_approval,
-            'hod_ref_num' => $this->hod_ref_num,
-            'gm_approval' => $this->gm_approval,
-            'gm_approval_reasons' => $this->gm_approval_reasons,
-            'hod_authorization' => $this->hod_authorization,
-            'hod_authorization_comment' => $this->getHodAuthorizationComment(),
-            'project_leader_id' => $this->project_leader_id,
-            'project_leader_acceptance' => $this->project_leader_acceptance,
-            'hod_close_change' => $this->hod_close_change,
-            'originator_close_change' => $this->originator_close_change,
-            'project_leader_close_change' => $this->project_leader_close_change,
-            'next_action' => $this->next_action,
-            'budget_level' => $this->budget_level,
-            'risk_level' => $this->risk_level,
-            'additional_info' => $this->additional_info,
-            'hod_reasons' => $this->hod_reasons,
-            'affected_dept' => $this->affected_dept,
-            'hod_approval_date' => $this->hod_approval_date,
-            'section_completed' => $this->section_completed,
-            'email_subject' => $this->email_subject,
-            'risk_attachment' => $this->risk_attachment,
-            'gm_id' => $this->gm_id,
-            'state' => $this->getState(),
-        ];
     }
 }

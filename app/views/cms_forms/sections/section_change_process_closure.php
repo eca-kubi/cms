@@ -88,7 +88,7 @@ heredoc;
                     ?>
                     <?php
                     if (empty($payload['form']->originator_close_change)) {
-                        if ($payload['form']->originator_id === getUserSession()->user_id
+                        if ($payload['form']->originator_id === getUserSession()->user_id && !empty($payload['form']->project_leader_close_change)
                         ) { ?>
                             <tr>
                                 <td class="text-right" scope="row" style="width:30%">
@@ -145,7 +145,7 @@ heredoc;
                     <?php
                     if (empty($payload['form']->hod_close_change)) {
                         if (isHOD($payload['form']->cms_form_id, getUserSession()->user_id
-                        )) { ?>
+                            ) && !empty($payload['form']->originator_close_change)) { ?>
                             <td class="text-right" scope="row" style="width:17%">
                                 <b>HoD to Close Process: </b>
                             </td>

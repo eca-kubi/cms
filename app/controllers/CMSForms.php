@@ -80,6 +80,7 @@ class CMSForms extends Controller
             $form->setState(STATUS_ACTIVE);
             $form->setHodRefNum(getDeptRef($department_id));
             $form->setDepartmentId($department_id);
+            $form->title = $_POST['title'];
             //$form->risk_level = $_POST['risk_level'];
             //$form->budget_level = $_POST['budget_level'];
             if (isset($_POST['other_type'])) {
@@ -91,10 +92,11 @@ class CMSForms extends Controller
             //$form->next_action = ACTION_HOD_ASSESSMENT;
             $cms_form_id = $form->insert();
             if ($cms_form_id) {
-                /*$result = uploadAdditionalInfo('additional_info', $cms_form_id);
+                $result = uploadFile('additional_info', $cms_form_id, PATH_ADDITIONAL_INFO);
                 if ($result['success']) {
+                    $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
                     $form_model->updateForm($cms_form_id, ['additional_info' => $result['file']]);
-                }*/
+                }
                 flash('flash_view_change_process', 'Your Change Proposal has been submitted successfully.
                             Your manager has been notified for approval.',
                     'text-success text-sm text-center alert');
@@ -214,7 +216,7 @@ class CMSForms extends Controller
             // populate impact questions
 
             $form_model = new CMSFormModel(null);
-            $uploaded = uploadRiskAttachment('risk_attachment', $cms_form_id);
+            $uploaded = uploadFile('risk_attachment', $cms_form_id, PATH_RISK_ATTACHMENT);
             if (!$uploaded['success']) {
                 flash('flash_view_change_process', $uploaded['reason'], 'text-danger text-center alert text-sm');
                 redirect('cms-forms/view-change-process/' . $cms_form_id);
@@ -250,7 +252,9 @@ class CMSForms extends Controller
         $payload['form'] = new CMSForm(['cms_form_id' => $cms_form_id]);
         $payload['originator'] = new User($payload['form']->originator_id);
         $department = new Department($department_id);
+        $cms = new CMSFormModel(array('cms_form_id' => $cms_form_id));
         $hods = getDepartmentHods($department_id);
+        $change_owner = new User($cms->hod_id);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
             $ret = false;
@@ -277,6 +281,20 @@ class CMSForms extends Controller
                 } catch (Exception $e) {
                 }
 
+                // notify change owner
+                if ($change_owner->user_id !== getUserSession()->user_id) {
+                    (new EmailModel)->add([
+                        'subject' => genEmailSubject($cms_form_id),
+                        'recipient_address' => $change_owner->email,
+                        //'sender_user_id' => getUserSession()->user_id,
+                        'recipient_name' => ucwords($change_owner->first_name . ' ' . $change_owner->last_name),
+                        'body' => 'Hi ' . ucwords($change_owner->first_name . ' ' . $change_owner->last_name) . ', ' . HTML_NEW_LINE .
+                            'Impact Assessment for ' . $department->department .
+                            ' has been completed by ' . ' ' . ucwords(getUserSession()->first_name . '  ' . getUserSession()->last_name, '-. ') . HTML_NEW_LINE .
+                            'Use this link to view the details: ' . genLink($cms_form_id, 'view-change-process'),
+                        'cms_form_id' => $cms_form_id
+                    ]);
+                }
                 // notify hods
                 /*foreach ($hods as $hod) {
                     (new EmailModel)->add([
@@ -629,14 +647,97 @@ class CMSForms extends Controller
 
     public function DownloadAdditionalInfo($cms_form_id)
     {
-        $file_name = (new CMSForm(['cms_form_id' => $cms_form_id]))->getAdditionalInfo();
-        download_file(PATH_ADDITIONAL_INFO . $file_name);
+        $cms = new CMSFormModel(array('cms_form_id' => $cms_form_id));
+        $file_name = $cms->getAdditionalInfo();
+        $ref = $cms->getHodRefNum();
+        if (empty($ref)) {
+            $ref = getDeptRef($cms->department_id);
+        }
+        $files = explode(',', $file_name);
+        $title = "Additional Documents";
+        $zipname = 'zip/' . $title . "_$cms_form_id.zip";
+        $zip = new ZipArchive;
+        $zip->open($zipname, ZipArchive::CREATE);
+        foreach ($files as $file) {
+            $the_file = PATH_ADDITIONAL_INFO . "$cms_form_id\\" . $file;
+            $zip->addFile($the_file, basename($the_file));
+        }
+        $zip->close();
+        if (headers_sent()) {
+            echo 'HTTP header already sent';
+        } else {
+            if (!is_file($zipname)) {
+                header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+                echo 'File not found';
+            } else if (!is_readable($zipname)) {
+                header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+                echo 'File not readable';
+            } else {
+                // set the headers, prevent caching
+                //header("Pragma: public");
+                //header("Expires: -1");
+                //header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
+                header("Content-Disposition: attachment; filename=\"$title.$ref.zip\"");
+                header("Content-Type: " . "application/zip");
+                readfile($zipname);
+                exit;
+            }
+        }
     }
 
     public function DownloadRiskAttachment($cms_form_id)
     {
-        $file_name = (new CMSForm(['cms_form_id' => $cms_form_id]))->getRiskAttachment();
-        download_file(PATH_RISK_ATTACHMENT . $file_name);
+        $cms = new CMSFormModel(array('cms_form_id' => $cms_form_id));
+        $file_name = $cms->getRiskAttachment();
+        $ref = $cms->getHodRefNum();
+        if (empty($ref)) {
+            $ref = getDeptRef($cms->department_id);
+        }
+        $files = explode(',', $file_name);
+        $title = "Risk-Attachments";
+        $zipname = $title . "_$cms_form_id.zip";
+        $zip = new ZipArchive;
+        $zip->open('zip/' . $zipname, ZipArchive::CREATE);
+        foreach ($files as $file) {
+            $the_file = PATH_RISK_ATTACHMENT . "$cms_form_id\\" . $file;
+            $zip->addFile($the_file, basename($the_file));
+        }
+        $zip->close();
+        if (headers_sent()) {
+            echo 'HTTP header already sent';
+        } else {
+            if (!is_file($zipname)) {
+                header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+                echo 'File not found';
+            } else if (!is_readable($zipname)) {
+                header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+                echo 'File not readable';
+            } else {
+                // set the headers, prevent caching
+                //header("Pragma: public");
+                //header("Expires: -1");
+                //header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
+                header("Content-Disposition: attachment; filename=\"$title.$ref.zip\"");
+                header("Content-Type: " . "application/zip");
+                //header("Content-Transfer-Encoding: Binary");
+                //header("Content-Length: " . filesize($zipname));
+                readfile($zipname);
+
+                /* header($_SERVER['SERVER_PROTOCOL'] . ' 200 OK');
+                 //header('Content-Description: CMS Risk Assessment Documents'); not present in RFC2616  => https://www.media-division.com/the-right-way-to-handle-file-downloads-in-php/
+
+                 header("Content-Type: application/zip");
+                 //header("Content-Transfer-Encoding: Binary"); not present in RFC2616
+                 header("Content-Length: " . filesize($zipname));
+                 header("Content-disposition: attachment; filename=\"" . $zipname . "\"");
+                 readfile($zipname);*/
+                exit;
+            }
+        }
+    }
+
+    public function downloadFile()
+    {
     }
 
     public function HODComment($cms_form_id, $department_id)
@@ -692,3 +793,5 @@ class CMSForms extends Controller
     }
 
 }
+
+?>

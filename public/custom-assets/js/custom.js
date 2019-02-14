@@ -542,55 +542,40 @@ function searchList(element) {
     list.search(keyword);
 }
 
-var addFormGroup = function (event) {
-    event.preventDefault();
+let addFormGroup = function () {
+    let $inputGroup = $(this).closest('.input-group');
+    let $multipleFormGroup = $inputGroup.closest('.multiple-form-group');
+    let $lastInputGroupLast = $multipleFormGroup.find('.input-group:last');
 
-    var $formGroup = $(this).closest('.form-group');
-    var $multipleFormGroup = $formGroup.closest('.multiple-form-group');
-    var $formGroupClone = $formGroup.clone();
-
-    $(this)
-        .toggleClass('fa-plus-square text-success')
-        .html('–');
-
-    $formGroupClone.find('input').val('');
-    //$formGroupClone.find('.concept').text('Phone');
-    $formGroupClone.insertAfter($formGroup);
-
-    /*var $lastFormGroupLast = $multipleFormGroup.find('.form-group:last');
     if ($multipleFormGroup.data('max') <= countFormGroup($multipleFormGroup)) {
-        $lastFormGroupLast.find('.btn-add').attr('disabled', true);
-    }*/
+        $lastInputGroupLast.find('.add-input').addClass('cursor-disabled');
+        $.toast('You can only add up to three files!');
+        return;
+    }
+    let $inputGroupClone = $inputGroup.clone();
+    $(this)
+        .toggleClass('add-input remove-input')
+        .html('<i class="fas fa-minus-square text-danger"></i>');
+    $inputGroup.addClass('mb-1');
+    $inputGroupClone.find('input').val('');
+    $inputGroupClone.insertAfter($inputGroup);
+    $('form[data-toggle=validator]').validator('update')
 };
 
-var removeFormGroup = function (event) {
-    event.preventDefault();
+let removeFormGroup = function () {
+    let $formGroup = $(this).closest('.input-group');
+    let $multipleFormGroup = $formGroup.closest('.multiple-form-group');
 
-    var $formGroup = $(this).closest('.form-group');
-    var $multipleFormGroup = $formGroup.closest('.multiple-form-group');
-
-    /* var $lastFormGroupLast = $multipleFormGroup.find('.form-group:last');
-     if ($multipleFormGroup.data('max') >= countFormGroup($multipleFormGroup)) {
-         $lastFormGroupLast.find('.btn-add').attr('disabled', false);
-     }
- */
+    let $lastFormGroupLast = $multipleFormGroup.find('.input-group:last');
+    if ($multipleFormGroup.data('max') >= countFormGroup($multipleFormGroup)) {
+        $lastFormGroupLast.find('.add-input').removeClass('cursor-disabled');
+    }
     $formGroup.remove();
-};
-
-let selectFormGroup = function (event) {
-    event.preventDefault();
-
-    let $selectGroup = $(this).closest('.input-group-select');
-    let param = $(this).attr("href").replace("#", "");
-    let concept = $(this).text();
-
-    $selectGroup.find('.concept').text(concept);
-    $selectGroup.find('.input-group-select-val').val(param);
-
+    $('form[data-toggle=validator]').validator('update')
 };
 
 let countFormGroup = function ($form) {
-    return $form.find('.form-group').length;
+    return $form.find('.input-group').length;
 };
 
 let stopChangeProcess = function (e) {

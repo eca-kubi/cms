@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2243eb531ffb1cd13a4836ace944086f",
+  "content-hash": "05f33a5b93e9f115b93e9c5db6b78918",
     "packages": [
         {
             "name": "alexistm/simple-json-php",
@@ -611,7 +611,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-json": "*"
+      "ext-json": "*",
+      "ext-zip": "*"
     },
     "platform-dev": []
 }

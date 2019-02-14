@@ -54,6 +54,7 @@ class CMSForm implements \JsonSerializable
     public $hod_authorization_date;
     public $impact_ass_completed_dept;
     public $project_leader_acceptance_date;
+    public $title;
 
     /**
      * CMSForm constructor.
@@ -738,6 +739,8 @@ class CMSForm implements \JsonSerializable
             'cms_form_id' => $this->cms_form_id,
             'originator_id' => $this->originator_id,
             'date_raised' => $this->date_raised,
+            'title' => $this->title,
+            'department_id' => $this->department_id,
             'change_type' => $this->change_type,
             'change_description' => $this->change_description,
             'advantages' => $this->advantages,

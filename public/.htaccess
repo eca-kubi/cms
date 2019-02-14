@@ -11,3 +11,4 @@
   AddType text/css .css
   AddType text/javascript .js
 </IfModule>
+SetEnv no-gzip dont-vary

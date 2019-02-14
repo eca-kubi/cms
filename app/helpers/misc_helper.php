@@ -403,7 +403,18 @@ function getGmId($cms_form_id)
 
 function genEmailSubject($cms_form_id)
 {
-    return EMAIL_SUBJECT . ' Form #' . $cms_form_id;
+    //return EMAIL_SUBJECT . ' Form #' . $cms_form_id;
+    // we use ref number and change title
+    $cms = (new CMSFormModel(array('cms_form_id' => $cms_form_id)));
+    $change_type = explode(',', $cms->getChangeType());
+    $ref = $cms->getHodRefNum();
+    $title = ''; //$cms->getTitle();
+    if (!empty($title)) {
+        $ref = "Change Management System [" . $ref . ' - ' . $title . "]";
+    } else {
+        $ref = "Change Management System [" . $ref . ' - ' . concatWith(',', '&', $change_type) . "]";
+    }
+    return $ref;
 }
 
 function genLink($cms_form_id, $controller)
@@ -460,8 +471,7 @@ function notifyImpactAccessReps($cms_form_id)
             $body = "Hi, " . ucwords($rep->first_name . ' ' . $rep->last_name, '-. ') . ', ' . HTML_NEW_LINE .
                 "A Change Proposal raised by " . ($rep->user_id === $originator->user_id ? " you " : getNameJobTitleAndDepartment($originator->user_id)) .
                 " requires response to questions on Possible Impacts related to your department (" . $affected_department->department . "). " .
-                "Click this link if you wish to respond to the questions: " . '<a href="' .
-                $link . '" />' . $link . '</a>';
+                "Click this link if you wish to respond to the questions: " . '<a href="' . $link . '" />' . $link . '</a>';
             insertEmail($subject, $body, $rep->email, ucwords($rep->first_name . ' ' . $rep->last_name, '-. '));
         }
     }
