@@ -37,6 +37,8 @@
     <link rel="stylesheet" href="<?php echo URL_ROOT ?>/public/assets/css/shards.min.css">
     <link rel="stylesheet"
           href="<?php echo URL_ROOT; ?>/public/custom-assets/css/custom.css?<?php echo microtime(); ?>"/>
+    <link rel="stylesheet" media="print"
+          href="<?php echo URL_ROOT; ?>/public/custom-assets/css/print.css?<?php echo microtime(); ?>"/>
 </head>
 
 <body class="hold-transition sidebar-mini sidebar-collapse">

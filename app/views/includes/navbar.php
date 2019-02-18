@@ -184,6 +184,14 @@
                         </li>
                     </ul>
                 </li>
+                <?php
+                if ($user->can_change_gm) { ?>
+                    <li class="nav-item fa mx-2">
+                        <a href="#" class="nav-link btn border-0 border-0 text-bold flat" data-toggle="modal"
+                           data-target="#changeGM">Change GM</a>
+                    </li>
+                <?php }
+                ?>
             </ul>
             <?php
             /** @var array $payload */

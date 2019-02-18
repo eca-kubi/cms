@@ -32,7 +32,7 @@ class EmailModel extends Model
         return false;
     }
 
-    public function add($insertData)
+    public function add($insertData): bool
     {
     	return Database::getDbh()->insert(self::$table, $insertData);
     }

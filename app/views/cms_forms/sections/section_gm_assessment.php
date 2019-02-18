@@ -1,7 +1,7 @@
 <?php /** @var  array $payload */
 if (sectionCompleted($payload['form']->cms_form_id, SECTION_IMPACT_ASSESSMENT)) {
     if (!sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
-        if (isGM()) { ?>
+        if (isCurrentGM()) { ?>
             <div class="row p-2">
                 <form class="w-100"
                       action="<?php echo URL_ROOT . '/cms-forms/gm-assessment/' . $payload['form']->cms_form_id ?>"

@@ -74,7 +74,7 @@ function getUserSession(){
 
 function createUserSession(User $u)
 {
-    unset($u->password);
+    //unset($u->password);
     $_SESSION['logged_in_user'] = $u;
 }
 
@@ -124,7 +124,7 @@ function isAdminSessionOn( )
 	return !empty($_SESSION['admin_session']);
 }
 
-
+/*
 function isAdmin($staff_id) {
     $role = Database::getDbh()->where('staff_id', $staff_id)->getValue('users', 'role');
     return in_array($role, ADMINS);
@@ -133,7 +133,7 @@ function isAdmin($staff_id) {
 function isReviewer($staff_id) {
     $role = Database::getDbh()->where('staff_id', $staff_id)->getValue('users', 'role');
     return in_array($role, REVIEWERS);
-}
+}*/
 
 function reviewSessionOn()
 {
@@ -159,7 +159,7 @@ function isReviewSessionOn( )
  */
 function excludeReviewer( )
 {
-    Database::getInstance()->db->where('u.user_id', getUserSession()->user_id, '<>');
+    Database::getInstance()->where('u.user_id', getUserSession()->user_id, '<>');
     return Database::getInstance();
 }
 

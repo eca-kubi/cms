@@ -31,7 +31,7 @@ heredoc;
                     <?php
                     if (empty($payload['form']->project_leader_close_change)) {
                         if ($payload['form']->project_leader_id === getUserSession()->user_id
-                        ) { ?>
+                            && !empty($payload['form']->project_leader_acceptance)) { ?>
                             <tr>
                                 <td class="text-right" scope="row" style="width:30%">
                                     <b>Project Leader to Close Process: </b>
@@ -264,7 +264,7 @@ heredoc;
                     <?php } ?>
                     <?php
                     if (empty($payload['form']->originator_close_change)) {
-                        if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id)) { ?>
+                        if (isOriginator($payload['form']->cms_form_id, getUserSession()->user_id) && !empty($payload['form']->project_leader_close_change)) { ?>
                             <tr>
                                 <td colspan="2" class="text-sm-right">
                                     <div class="col-sm-4 text-sm-right">
@@ -319,7 +319,7 @@ heredoc;
                     <?php } ?>
                     <?php
                     if (empty($payload['form']->hod_close_change)) {
-                        if (isHOD($payload['form']->cms_form_id, getUserSession()->user_id)) { ?>
+                        if (isHOD($payload['form']->cms_form_id, getUserSession()->user_id) && !empty($payload['form']->originator_close_change)) { ?>
                             <tr>
                                 <td colspan="2" class="text-sm-right">
                                     <div class="col-sm-4 text-sm-right">

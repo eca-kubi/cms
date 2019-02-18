@@ -272,7 +272,7 @@ HoDs should add their comments under their respective departments.">
                             <?php }
                             //$impact_ass_status->getStatus() == STATUS_IMPACT_ASSESSMENT_HOD_COMMENT_PENDING && empty($impact_ass_status->getHodComment())
                             //                                && isDepartmentManager(getUserSession()->user_id, $department->department_id)
-                            if (empty($impact_ass_status->getHodComment())) { ?>
+                            if (empty($impact_ass_status->getHodComment()) && $can_assess_impact_for_dept) { ?>k
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="form-group form-row mb-2">

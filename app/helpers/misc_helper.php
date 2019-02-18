@@ -171,6 +171,13 @@ function isGM($user_id = '')
     return in_array($job_title, GMs);
 }
 
+function isCurrentGM($user_id = '')
+{
+    if (empty($user_id)) {
+        $user_id = getUserSession()->user_id;
+    }
+    return $user_id === getCurrentGM();
+}
 /**
  *Concats array elements with $symbol and $symbolForlastElem.
  *
@@ -406,14 +413,14 @@ function genEmailSubject($cms_form_id)
     //return EMAIL_SUBJECT . ' Form #' . $cms_form_id;
     // we use ref number and change title
     $cms = (new CMSFormModel(array('cms_form_id' => $cms_form_id)));
-    $change_type = explode(',', $cms->getChangeType());
+    //$change_type = explode(',', $cms->getChangeType());
     $ref = $cms->getHodRefNum();
-    $title = ''; //$cms->getTitle();
-    if (!empty($title)) {
-        $ref = "Change Management System [" . $ref . ' - ' . $title . "]";
-    } else {
-        $ref = "Change Management System [" . $ref . ' - ' . concatWith(',', '&', $change_type) . "]";
-    }
+    $title = $cms->title;
+    $ref = "Change Management System [" . $ref . ' - ' . $title . "]";
+    /*  if (!empty($title)) {
+      } else {
+          $ref = "Change Management System [" . $ref . ' - ' . concatWith(',', '&', $change_type) . "]";
+      }*/
     return $ref;
 }
 
@@ -736,13 +743,21 @@ function echoInComplete($append = '')
 function insertEmail($subject, $body, $recipient_address, $recipient_name)
 {
     $email_model = new EmailModel();
-    $email_model->add([
+    return $email_model->add([
         'subject' => $subject,
         'body' => $body,
         'recipient_address' => $recipient_address,
         'recipient_name' => $recipient_name,
-        'sender_user_id' => getUserSession()->user_id
+        //'sender_user_id' => getUserSession()->user_id
     ]);
+}
+
+/**
+ * @return int gm user_id
+ */
+function getCurrentGM(): int
+{
+    return (new CmsSettingsModel())->getValue('current_gm');
 }
 
 function its_logged_in_user($user_id)
@@ -840,14 +855,84 @@ function inDelimiteredString($needle, $delimiter, $delimetered_string)
 function getDeptRef($department_id)
 {
     $db = Database::getDbh();
+    $ref = '';
     $ret = $db->where('department_id', $department_id)
         ->get('cms_form');
     $department = new Department($department_id);
     $short_name = $department->short_name;
-    return $short_name . '-' . (count($ret) + 1);
+    $count = count($ret) + 1 . "";
+    $char_count = strlen($count);
+    if ($char_count === 1) {
+        $ref = '00' . $char_count;
+    } elseif ($char_count === 2) {
+        $ref = '0' . $char_count;
+    }
+    return $short_name . '-' . $ref;
 }
 
 function site_url($url = '')
 {
     return URL_ROOT . '/' . $url;
 }
+
+function modal($modal)
+{
+    // Check for modal file
+    if (file_exists(APP_ROOT . '/views/modals/' . $modal . '.php')) {
+        require_once APP_ROOT . '/views/modals/' . $modal . '.php';
+    } else {
+        // Modal does not exist
+        die('Modal is missing.');
+    }
+}
+
+function goBack()
+{
+    $referer = filter_var($_SERVER['HTTP_REFERER'], FILTER_VALIDATE_URL);
+
+    if (false/*!empty($referer)*/) {
+
+        // echo '<p><a href="'. $referer .'" title="Return to the previous page">&laquo; Go back</a></p>';
+        header("Location: $referer");
+
+    } else {
+
+        //echo '<p><a href="javascript:history.go(-1)" title="Return to the previous page">&laquo; Go back</a></p>';
+        echo '<script>history.go(-1)</script>';
+    }
+}
+
+function the_controller($url = ''): string
+{
+    $controller = '';
+    if (!$url) {
+        $url = the_url();
+    }
+    $parts = explode('/', $url);
+    if (!empty($parts[4])) {
+        $controller = str_replace('-', '_', $parts[4]);
+    }
+    return $controller;
+}
+
+function the_method($url = ''): string
+{
+    $method = '';
+    if (!$url) {
+        $url = the_url();
+    }
+    $parts = explode('/', $url);
+    if (!empty($parts[5])) {
+        $method = str_replace('-', '_', $parts[5]);
+    }
+    return $method;
+}
+
+/**
+ * @return string | bool
+ */
+function the_url()
+{
+    return $referer = filter_var($_SERVER['HTTP_REFERER'], FILTER_VALIDATE_URL);
+}
+

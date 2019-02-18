@@ -14,6 +14,7 @@ class UserModel extends Model
     public $title;
     public $job_title;
     public $department_id;
+    public $can_change_gm;
 
     public function __construct()
     {

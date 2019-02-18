@@ -73,8 +73,8 @@ body {
   width: 100%;
   height: 600px;
   background-color: rgba(255, 255, 255, 0.7);
-  -webkit-box-shadow: 0px 0px 0px 30px rgba(255, 255, 255, 0.7) inset;
-          box-shadow: 0px 0px 0px 30px rgba(255, 255, 255, 0.7) inset;
+    -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.7) inset;
+    box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.7) inset;
   z-index: -1;
 }
 
@@ -100,7 +100,7 @@ body {
       -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
   font-size: 220px;
-  margin: 0px;
+    margin: 0;
   color: #222225;
   text-transform: uppercase;
 }
@@ -115,13 +115,15 @@ body {
   margin-bottom: 20px;
 }
 
-.notfound-search {
-  position: relative;
-  padding-right: 120px;
-  max-width: 420px;
-  width: 100%;
-  margin: 30px auto 20px;
-}
+    /*
+    .notfound-search {
+      position: relative;
+      padding-right: 120px;
+      max-width: 420px;
+      width: 100%;
+      margin: 30px auto 20px;
+    }
+    */
 
  input {
   font-family: 'Muli', sans-serif;
@@ -138,8 +140,8 @@ body {
 .notfound-search button {
   font-family: 'Muli', sans-serif;
   position: absolute;
-  right: 0px;
-  top: 0px;
+    right: 0;
+    top: 0;
   width: 120px;
   height: 40px;
   text-align: center;
@@ -164,9 +166,9 @@ body {
   font-size: 14px;
 }
 
-.notfound-social {
-  margin-bottom: 15px;
-}
+    /*.notfound-social {
+      margin-bottom: 15px;
+    }*/
 .notfound-social>a {
   display: inline-block;
   height: 40px;
@@ -184,13 +186,13 @@ body {
   background-color: #ff00b4;
 }
 
-.nav-link.active {
-    border-color: #343a40 !important;
-}
+    /*.nav-link.active {
+        border-color: #343a40 !important;
+    }*/
 
-.border-danger-4 {
-  border: 4px solid red;
-}
+    /*.border-danger-4 {
+      border: 4px solid red;
+    }*/
 
 #forgot_password:hover {
    color: #0056b3!important;
@@ -222,15 +224,16 @@ body {
                 </div>
                 <h5 class="font-passion-one d-md-none text-uppercase text-center">CMS Login</h5>
             </div>
-                        <?php flash('flash') ?>
+            <?php flash('flash_login') ?>
             <!-- .col-10 -->
             <div class="col-10 mx-auto">
                 <!-- .row -->
                 <div class="row">
                     <div class="col mb-2">
                         <div id="user_login">
-                            <form action="<?php echo URL_ROOT; ?>/users/login" enctype="multipart/form-data" method="post" role="form"
-                                data-toggle="validator">
+                            <form action="<?php echo site_url('users/login') ?>" enctype="multipart/form-data"
+                                  method="post" role="form"
+                                  data-toggle="validator">
                                 <fieldset class="py-0 text-left fa font-weight-normal col-sm-12 p-2">
                                     <small class="font-weight-bold text-purple text-center d-block mb-2">
                                         Password is case sensitive.
@@ -304,7 +307,8 @@ body {
                 </div>
                 <div class="modal-body">
                     <div class="" id="forgot_password_user_login">
-                        <form method="post" action="<?php echo URL_ROOT.'/users/forgotpassword'; ?>" id="forgot_password_form" role="form">
+                        <form method="post" action="<?php echo site_url('users/forgot-password'); ?>"
+                              id="forgot_password_form" role="form">
                             <p>Send us your email and we'll reset it for you!</p>
                             <div class="form-group">
                                 <input type="email" class="form-control" name="email" placeholder="Email" required />

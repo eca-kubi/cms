@@ -153,6 +153,14 @@
                                                 <?php } ?>
                                             </td>
                                         </tr>
+
+                                        <tr class="">
+                                            <td scope="row">Password</td>
+                                            <td>
+                                                <a href="#change_password_modal" data-toggle="modal">Set New
+                                                    Password</a>
+                                            </td>
+                                        </tr>
                                         </tbody>
                                     </table>
 

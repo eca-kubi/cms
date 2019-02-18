@@ -43,6 +43,12 @@ $(document).ready(function () {
         $.toast('You are not  allowed to respond to ' + department + ' Impact Assessment!');
     });
 
+    $('.modal').on('shown.bs.modal', (e) => {
+
+        let $this = $(e.currentTarget);
+        $this.find('input:first').focus();
+    });
+
     $(window).resize(function () {
         $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
     });
@@ -560,6 +566,7 @@ let addFormGroup = function () {
     $inputGroupClone.find('input').val('');
     $inputGroupClone.insertAfter($inputGroup);
     $('form[data-toggle=validator]').validator('update')
+
 };
 
 let removeFormGroup = function () {

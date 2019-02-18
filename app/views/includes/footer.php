@@ -30,6 +30,12 @@
         </div>
     </div>
 </div>
+
+<?php
+modal('select_gm');
+modal('change_password');
+?>
+
 </div>
 <!-- ./wrapper -->
 <input type="hidden" value="<?php echo URL_ROOT ?>" id="url_root"/>
@@ -95,7 +101,6 @@
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/pignose.calendar.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/list.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/hop.js"></script>
-<script src="<?php echo URL_ROOT; ?>/public/assets/js/shards.min.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/assets/js/kendo/kendo.all.min.js"></script>
 <script src="<?php echo URL_ROOT; ?>/public/custom-assets/js/custom.js?<?php echo microtime(); ?>"></script>
 </body>

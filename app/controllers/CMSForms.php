@@ -37,6 +37,9 @@ class CMSForms extends Controller
         $payload['active'] = CMSFormModel::getActive();
         $payload['closed'] = CMSFormModel::getClosed();
         $payload['rejected'] = CMSFormModel::getRejected();
+        $payload['gms'] = getGms();
+        $payload['current_gm'] = (new CmsSettingsModel())->getValue('current_gm');
+        $payload['dashboard'] = true;
         if (!empty($filter)) {
             $payload['filter'] = $filter;
         }
@@ -629,6 +632,11 @@ class CMSForms extends Controller
             ->update('cms_form', array(
                 'state' => STATUS_REJECTED
             ));
+        (new CmsActionLogModel())->setAction(ACTION_CHANGE_CANCELLED)
+            ->setPerformedBy(getUserSession()->user_id)
+            ->setCmsFormId($cms_form_id)
+            ->setSectionAffected(SECTION_ALL)
+            ->insert();
         if (isset($_GET['redirect'])) {
             header('location: ' . $_GET['redirect']);
             exit;
@@ -695,9 +703,9 @@ class CMSForms extends Controller
         }
         $files = explode(',', $file_name);
         $title = "Risk-Attachments";
-        $zipname = $title . "_$cms_form_id.zip";
+        $zipname = 'zip/' . $title . "_$cms_form_id.zip";
         $zip = new ZipArchive;
-        $zip->open('zip/' . $zipname, ZipArchive::CREATE);
+        $zip->open($zipname, ZipArchive::CREATE);
         foreach ($files as $file) {
             $the_file = PATH_RISK_ATTACHMENT . "$cms_form_id\\" . $file;
             $zip->addFile($the_file, basename($the_file));
@@ -788,10 +796,32 @@ class CMSForms extends Controller
             ->getOne('cms_form');
         $payload['cms_form_id'] = $cms_form_id;
         $payload['form'] = $form;
+
         flash('completed_form', 'Under Construction. Will be ready in a bit!', 'alert text-warning');
         $this->view('cms_forms/completed_form', $payload);
     }
 
+    public function changeGM()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filterPost();
+            $flash = "flash_" . the_method();
+            $db = Database::getDbh();
+            $gm = $_POST['gm'];
+            $db->where('prop', 'current_gm')
+                ->update('cms_settings', array('value' => $gm));
+            // set action log
+            (new CmsActionLogModel())->setAction(ACTION_CHANGED_GM)
+                ->setPerformedBy(getUserSession()->user_id)
+                ->insert();
+            flash($flash, 'GM changed successfully!', 'text-center text-success alert text-sm');
+        }
+        if (empty($_POST['cms_form_id'])) {
+            redirect('cms-forms/dashboard/');
+        } else {
+            redirect('cms-forms/view-change-process/' . $_POST['cms_form_id']);
+        }
+    }
 }
 
 ?>

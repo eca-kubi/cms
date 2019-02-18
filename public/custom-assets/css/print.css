@@ -1,0 +1,28 @@
+header, footer, aside, nav, form, iframe, .menu, .hero, .adslot {
+    display: none;
+}
+
+article {
+    column-width: 17em;
+    column-gap: 3em;
+}
+
+/* Display url info
+*/
+a[href^="http"]::after {
+    content: " (" attr(href) ")";
+}
+
+/*
+Append a message
+*/
+main::after {
+    content: "Copyright site.com";
+    display: block;
+    text-align: center;
+}
+
+/* target all pages */
+@page {
+    margin: 2cm;
+}

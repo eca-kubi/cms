@@ -69,7 +69,7 @@ $user = getUserSession();
                                                 <div class="col-sm-8">
                                                     <input type="text"
                                                            class="form-control"
-                                                           value="<?php echo ucwords($user->first_name . ' ' . $user->last_name, '-. '); ?>"
+                                                           value="<?php echo ucwords($user->first_name . ' ' . $user->last_name, '-. ') . " ($user->job_title)"; ?>"
                                                            aria-describedby="helpId" placeholder="" readonly/>
                                                     <small id="helpId" class="form-text with-errors help-block"></small>
                                                 </div>
@@ -77,16 +77,39 @@ $user = getUserSession();
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group form-row">
+                                                <label for="title" class="col-sm-4 text-sm-right">
+                                                    Title
+                                                </label>
+                                                <div class="col-sm-8">
+                                                    <div class="input-group ">
+                                                        <div class="input-group-prepend cursor-pointer"
+                                                             title="Click to add more files.">
+                                                            <div class="input-group-text"><?php echo $payload['reference']; ?>
+                                                                -
+                                                            </div>
+                                                        </div>
+                                                        <input type="text" class="form-control" id="title" name="title"
+                                                               placeholder="Enter a title for your Change" required>
+                                                    </div>
+                                                    <small class="form-text text-muted d-none">
+                                                        Hint: Enter a title for your Change
+                                                    </small>
+                                                    <small class="form-text with-errors help-block"></small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--<div class="col-sm-6">
+                                            <div class="form-group form-row">
                                                 <label for="" class="col-sm-4 text-sm-right">Position</label>
                                                 <div class="col-sm-8">
                                                     <input type="text"
                                                            class="form-control text-capitalize"
-                                                           value="<?php echo $user->job_title; ?>"
+                                                           value="<?php /*echo $user->job_title; */ ?>"
                                                            aria-describedby="helpId" placeholder="" readonly/>
                                                     <small id="helpId" class="form-text with-errors help-block"></small>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>-->
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6">
@@ -217,7 +240,8 @@ $user = getUserSession();
                                         <div class="col-sm-6">
                                             <div class="form-row multiple-form-group" data-max="3">
                                                 <label for="" class="col-sm-4 text-sm-right">
-                                                    Additional Information
+                                                    Additional Information <br>
+                                                    <small>(Maximum of three)</small>
                                                 </label>
                                                 <div class="col-sm-8 form-group">
                                                     <div class="input-group">
@@ -314,7 +338,7 @@ $user = getUserSession();
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <!--<div class="col-sm-6">
                                             <div class="form-group form-row">
                                                 <label for="title" class="col-sm-4 text-sm-right">
                                                     Title
@@ -323,7 +347,7 @@ $user = getUserSession();
                                                     <div class="input-group ">
                                                         <div class="input-group-prepend cursor-pointer"
                                                              title="Click to add more files.">
-                                                            <div class="input-group-text"><?php echo $payload['reference']; ?>
+                                                            <div class="input-group-text"><?php /*echo $payload['reference']; */ ?>
                                                                 -
                                                             </div>
                                                         </div>
@@ -336,7 +360,7 @@ $user = getUserSession();
                                                     <small class="form-text with-errors help-block"></small>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>-->
                                         <!--<div class="col-sm-6 d-none">
                                             <div class="form-group form-row">
                                                 <label class="col-sm-4 text-sm-right">Budget Measure</label>
