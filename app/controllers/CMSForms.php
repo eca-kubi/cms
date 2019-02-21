@@ -256,7 +256,7 @@ class CMSForms extends Controller
         $payload['originator'] = new User($payload['form']->originator_id);
         $department = new Department($department_id);
         $cms = new CMSFormModel(array('cms_form_id' => $cms_form_id));
-        $hods = getDepartmentHods($department_id);
+        //$hods = getDepartmentHods($department_id);
         $change_owner = new User($cms->hod_id);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
@@ -808,19 +808,94 @@ class CMSForms extends Controller
             $flash = "flash_" . the_method();
             $db = Database::getDbh();
             $gm = $_POST['gm'];
-            $db->where('prop', 'current_gm')
+            $gm_name = concatNameWithUserId($gm);
+            $user = getUserSession();
+            $user_name = concatNameWithUserId($user->user_id);
+            $ret = $db->where('prop', 'current_gm')
                 ->update('cms_settings', array('value' => $gm));
-            // set action log
-            (new CmsActionLogModel())->setAction(ACTION_CHANGED_GM)
-                ->setPerformedBy(getUserSession()->user_id)
-                ->insert();
-            flash($flash, 'GM changed successfully!', 'text-center text-success alert text-sm');
+            if ($ret) {
+                // set action log
+                $remarks = "$user_name changed the GM to "
+                    . " $gm_name";
+                (new CmsActionLogModel())->setAction(ACTION_CHANGED_GM)
+                    ->setPerformedBy(getUserSession()->user_id)
+                    ->setRemarks($remarks)
+                    ->insert();
+                flash($flash, 'GM changed successfully!', 'text-center text-success alert text-sm');
+            } else {
+                flash($flash, 'An error occurred!', 'text-center text-danger alert text-sm');
+            }
         }
-        if (empty($_POST['cms_form_id'])) {
+        goBack();
+        /* if (empty($_POST['cms_form_id'])) {
+             redirect('cms-forms/dashboard/');
+         } else {
+             redirect('cms-forms/view-change-process/' . $_POST['cms_form_id']);
+         }*/
+    }
+
+    public function changeManager($department_id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filterPost();
+            $flash = "flash_" . the_method();
+            $db = Database::getDbh();
+            $mgr = $_POST['mgr'];
+            $mgr_name = concatNameWithUserId($mgr);
+            $department = new Department($department_id);
+            $user = getUserSession();
+            $user_name = concatNameWithUserId($user->user_id);
+            $ret = $db->where('department_id', $department_id)
+                ->update('departments', array('current_manager' => $mgr));
+            if ($ret) {
+                $remarks = "$user_name changed the manager for " . $department->department
+                    . " to " . " $mgr_name";
+                // set action log
+                (new CmsActionLogModel())->setAction(ACTION_CHANGED_MANAGER)
+                    ->setPerformedBy($user->user_id)
+                    ->setRemarks($remarks)
+                    ->insert();
+                flash($flash, 'Manager changed successfully!', 'text-center text-success alert text-sm');
+            } else {
+                flash($flash, 'An error occurred!', 'text-center text-danger alert text-sm');
+            }
+        }
+        goBack();
+        /*if (empty($_POST['cms_form_id'])) {
             redirect('cms-forms/dashboard/');
         } else {
             redirect('cms-forms/view-change-process/' . $_POST['cms_form_id']);
+        }*/
+    }
+
+    public function departmentManagers()
+    {
+        $payload = array();
+        $payload['title'] = 'Department Managers';
+        $user = getUserSession();
+        //flash('flash_department_managers', 'Assign a member of the dep ')
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filterPost();
+            $mgrs = $_POST['mgrs'];
+            $db = Database::getDbh();
+            foreach ($mgrs as $mgr) {
+                if (!empty($mgr)) {
+                    $dept_id = getDepartmentID($mgr);
+                    $department = new Department($dept_id);
+                    $remarks = "" . concatNameWithUserId($user->user_id) . " has changed the manager for "
+                        . $department->department . " to " . concatNameWithUserId($mgr);
+                    $db->where('department_id', $dept_id)
+                        ->update('departments', array('current_manager' => $mgr));
+                    (new CmsActionLogModel())->setAction(ACTION_CHANGED_MANAGER)
+                        ->setPerformedBy($user->user_id)
+                        ->setRemarks($remarks)
+                        ->insert();
+                }
+            }
+            $flash = "flash_" . the_method();
+            flash($flash, 'Success!', 'text-center text-success alert text-sm');
         }
+        $this->view('cms_forms/department_managers', $payload);
     }
 }
 

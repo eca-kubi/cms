@@ -178,6 +178,7 @@ function isCurrentGM($user_id = '')
     }
     return $user_id === getCurrentGM();
 }
+
 /**
  *Concats array elements with $symbol and $symbolForlastElem.
  *
@@ -315,7 +316,7 @@ function notifyDepartmentManagers($cms_form_id, $department_id, $message = null,
 {
     // get the hod who approved the start change process ie. hod-assessment
     //$action_hod_commented = getActionLog($cms_form_id, ACTION_HOD_ASSESSMENT_COMPLETED, [], true);
-    $hods = getDepartmentHods($department_id);
+    $hods = getCurrentManager($department_id);
     //$link = URL_ROOT . '/cms-forms/view-change-process/' . $cms_form_id;
     $subject = genEmailSubject($cms_form_id);
     //$hod = new User($action_hod_commented->performed_by);
@@ -583,8 +584,8 @@ function updateImpactAssessmentCompleteList($cms_form_id, $department_id)
     $arr = explode(",", $list . "");
     if (!in_array($department_id, $arr)) {
         $list = trim($department_id . ',' . $list, ',');
-    $db->where('cms_form_id', $cms_form_id)
-        ->update('cms_form', ['impact_ass_completed_dept' => $list]);
+        $db->where('cms_form_id', $cms_form_id)
+            ->update('cms_form', ['impact_ass_completed_dept' => $list]);
     }
 }
 
@@ -646,6 +647,9 @@ function concatName(array $parts, $capitalize = true)
 
 function concatNameWithUserId($user_id)
 {
+    if (empty($user_id)) {
+        return "";
+    }
     $u = (new User($user_id));
     return ucwords($u->first_name . ' ' . $u->last_name, '- .');
 }
@@ -708,6 +712,13 @@ function getDepartmentHods($department_id)
         ->orWhere('role', ROLE_SUPERINTENDENT)
         ->objectBuilder()
         ->get('users');
+}
+
+function getCurrentManager($department_id)
+{
+    $db = Database::getDbh();
+    return $db->where('department_id', $department_id)
+        ->getValue('departments', 'current_manager');
 }
 
 /*
@@ -812,6 +823,11 @@ function getDepartment($user_id)
     return ((new User($user_id))->department)->department;
 }
 
+function getDepartmentID($user_id)
+{
+    return ((new User($user_id))->department)->department_id;
+}
+
 /**
  * @param $user_id
  * @return string
@@ -863,9 +879,9 @@ function getDeptRef($department_id)
     $count = count($ret) + 1 . "";
     $char_count = strlen($count);
     if ($char_count === 1) {
-        $ref = '00' . $char_count;
+        $ref = '00' . $count;
     } elseif ($char_count === 2) {
-        $ref = '0' . $char_count;
+        $ref = '0' . $count;
     }
     return $short_name . '-' . $ref;
 }
@@ -888,10 +904,9 @@ function modal($modal)
 
 function goBack()
 {
-    $referer = filter_var($_SERVER['HTTP_REFERER'], FILTER_VALIDATE_URL);
 
-    if (false/*!empty($referer)*/) {
-
+    if (!empty($_SERVER['HTTP_REFERER'])) {
+        $referer = filter_var($_SERVER['HTTP_REFERER'], FILTER_VALIDATE_URL);
         // echo '<p><a href="'. $referer .'" title="Return to the previous page">&laquo; Go back</a></p>';
         header("Location: $referer");
 
@@ -899,6 +914,7 @@ function goBack()
 
         //echo '<p><a href="javascript:history.go(-1)" title="Return to the previous page">&laquo; Go back</a></p>';
         echo '<script>history.go(-1)</script>';
+        exit;
     }
 }
 
@@ -934,5 +950,13 @@ function the_method($url = ''): string
 function the_url()
 {
     return $referer = filter_var($_SERVER['HTTP_REFERER'], FILTER_VALIDATE_URL);
+}
+
+function getDepartmentMembers($department_id)
+{
+    $db = Database::getDbh();
+    return $db->where('department_id', $department_id)
+        ->objectBuilder()
+        ->get('users');
 }
 

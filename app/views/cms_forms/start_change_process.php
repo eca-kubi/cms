@@ -37,7 +37,7 @@ $user = getUserSession();
             <div class="box">
                 <div class="box-header">
                     <h5>
-                        <?php flash('flash'); ?>
+                        <?php flash('flash_start_change_process'); ?>
                     </h5>
                     <h3 class="box-title text-bold d-none">
                         <?php /** @var array $payload */
@@ -52,6 +52,7 @@ $user = getUserSession();
                 <!-- /.box-header -->
                 <div class="box-body pt-0">
                     <form action="" method="POST" data-toggle="validator" id="add_cms_form"
+                          onsubmit=" checkHODAssignment()"
                           enctype="multipart/form-data">
                         <div class="row p-2 border">
                             <fieldset class="w-100">
@@ -309,7 +310,7 @@ $user = getUserSession();
                                                 </div>
                                             </div>
                                         </div>-->
-                                        <div class="col-sm-6">
+                                        <!-- <div class="col-sm-6">
                                             <div class="form-group form-row">
                                                 <label for="hod_id" class="col-sm-4 text-sm-right">
                                                     Select HOD
@@ -324,16 +325,34 @@ $user = getUserSession();
                                                             name="hod_id" id="hod_id" aria-describedby="helpId"
                                                             required>
                                                         <option class="d-none"></option><?php
-                                                        foreach ((array)$payload['hod'] as $value) {
-                                                            $hod = new User($value->user_id);
-                                                            ?>
+                                        /*                                                        foreach ((array)$payload['hod'] as $value) {
+                                                                                                    $hod = new User($value->user_id);
+                                                                                                    */ ?>
                                                             <option
-                                                            value="<?php echo $hod->user_id; ?>"><?php echo ucwords($hod->first_name . ' ' . $hod->last_name, '-. ') . ' (' . $hod->job_title . ')'; ?></option><?php }
-                                                        ?>
+                                                            value="<?php /*echo $hod->user_id; */ ?>"><?php /*echo ucwords($hod->first_name . ' ' . $hod->last_name, '-. ') . ' (' . $hod->job_title . ')'; */ ?></option><?php /*}
+                                                        */ ?>
                                                     </select>
                                                     <small class="form-text text-muted d-none">
                                                         Hint: Select HOD to Approve
                                                     </small>
+                                                    <small class="form-text with-errors help-block"></small>
+                                                </div>
+                                            </div>
+                                        </div>-->
+                                        <?php
+                                        $hod = getCurrentManager($user->department_id);
+                                        ?>
+                                        <div class="col-sm-6">
+                                            <div class="form-group form-row">
+                                                <label for="hod" class="col-sm-4 text-sm-right">
+                                                    Current HoD
+                                                </label>
+                                                <div class="col-sm-8">
+                                                    <input class="form-control" id="hod" name="hod" readonly type="text"
+                                                           value="<?php echo concatNameWithUserId($hod) ?>"
+                                                           data-validate="true" required>
+                                                    <input type="hidden" id="hod_id" name="hod_id"
+                                                           value="<?php echo $hod ?>">
                                                     <small class="form-text with-errors help-block"></small>
                                                 </div>
                                             </div>

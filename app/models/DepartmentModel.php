@@ -4,6 +4,7 @@ class DepartmentModel extends Model implements \JsonSerializable
     public $department;
     public $department_id;
     public $short_name;
+    public $current_manager;
 
     /**
      * @return mixed
@@ -52,7 +53,7 @@ class DepartmentModel extends Model implements \JsonSerializable
      * @param mixed $department_id
      * @return array
      */
-    public function getDepartment(int $department_id = null)
+    public function getDepartment($department_id = null)
     {
         $ret = Database::getDbh()->where('department_id', $department_id)->
                         objectBuilder()->
@@ -88,6 +89,8 @@ class DepartmentModel extends Model implements \JsonSerializable
         return [
             'department' => $this->department,
             'department_id' => $this->department_id,
+            'short_name' => $this->short_name,
+            'current_manager' => $this->current_manager
         ];
     }
 }

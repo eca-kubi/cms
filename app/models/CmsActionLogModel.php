@@ -10,6 +10,7 @@ class CmsActionLogModel extends Model implements \JsonSerializable
     public $performed_by;
     public $action;
     public $date;
+    public $remarks;
 
     public function __construct($where_col_val = null)
     {
@@ -120,6 +121,7 @@ class CmsActionLogModel extends Model implements \JsonSerializable
             'action' => $this->getAction(),
             'performed_by' => $this->performed_by,
             'cms_form_id' => $this->getCmsFormId(),
+            'remarks' => $this->remarks
         ];
     }
 
@@ -193,5 +195,23 @@ class CmsActionLogModel extends Model implements \JsonSerializable
     {
         $this->cms_form_id = $cms_form_id;
         return $this;
+    }
+
+    /**
+     * @param mixed $remarks
+     * @return CmsActionLogModel
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
     }
 }

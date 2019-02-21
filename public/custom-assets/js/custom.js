@@ -37,7 +37,7 @@ $(document).ready(function () {
     CMS_FORM_ID = $('#cms_form_id').val();
     URL_ROOT = $('#url_root').val();
     moment.modifyHolidays.add('Ghana');
-
+    checkHODAssignment();
     $('td.not-allowed').on('click', function () {
         let department = $(this).data('department');
         $.toast('You are not  allowed to respond to ' + department + ' Impact Assessment!');
@@ -588,4 +588,21 @@ let countFormGroup = function ($form) {
 let stopChangeProcess = function (e) {
     let redirect = window.location.href;
     window.location.href = $(this).attr('data-href') + '?redirect=' + redirect;
+};
+
+let checkHODAssignment = function (e) {
+    let hod = $('#hod_id');
+    if (hod.length === 0) return;
+    if (hod.val() === '') {
+        $.toast({
+            // heading: 'warning',
+            text: 'A Manager must be assigned!',
+            position: 'top-center',
+            stack: false,
+            hideAfter: false,
+            icon: 'error',
+            showHideTransition: 'plain'
+        });
+        return false;
+    }
 };

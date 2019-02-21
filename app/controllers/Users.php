@@ -14,6 +14,9 @@ class Users extends Controller
 
     function login()
     {
+        if (isLoggedIn()) {
+            goBack();
+        }
         $this->payload['title'] = 'CMS Login';
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->payload['post'] = validatePost('login_form');
@@ -222,11 +225,12 @@ class Users extends Controller
     public function profile($user_id = null)
     {
         $post = array();
+        $user = getUserSession();
         if (!isLoggedIn()) {
             redirect('users/login');
         }
         if (empty($user_id) || !userExists($user_id)) {
-            $user_id = getUserSession()->user_id;
+            $user_id = $user->user_id;
         }
 
         $this->payload['title'] = 'Profile';
@@ -240,8 +244,8 @@ class Users extends Controller
         } catch (Exception $e) {
         }
 
-        $this->payload['mgrs'] =
-            getDepartmentHods(getUserSession()->department_id);
+        $this->payload['mgrs'] = getCurrentManager($user->department_id);
+        //getDepartmentHods($user->department_id);
         $this->payload['post'] = $post;
         $this->payload['user'] = getUserSession();
         $this->view('users/profile', $this->payload);

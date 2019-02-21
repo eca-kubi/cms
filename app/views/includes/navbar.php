@@ -192,6 +192,24 @@
                     </li>
                 <?php }
                 ?>
+
+                <?php
+                if ($user->role === ROLE_MANAGER || $user->role == ROLE_SUPERINTENDENT) { ?>
+                    <li class="nav-item fa mx-2">
+                        <a href="#" class="nav-link btn border-0 border-0 text-bold flat" data-toggle="modal"
+                           data-target="#changeManager">Change Manager</a>
+                    </li>
+                <?php }
+                ?>
+
+                <?php
+                if ($user->can_change_dept_mgr) { ?>
+                    <li class="nav-item fa mx-2" title="Change Department Manager">
+                        <a href="<?php echo site_url('cms-forms/department-managers'); ?>"
+                           class="nav-link btn border-0 border-0 text-bold flat">Change Dept. Mgr.</a>
+                    </li>
+                <?php }
+                ?>
             </ul>
             <?php
             /** @var array $payload */

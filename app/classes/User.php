@@ -26,6 +26,7 @@ class User
     public $can_assess_impact;
     public $can_change_gm;
     public $default_password;
+    public $can_change_dept_mgr;
 
     public function __construct($user_id)
     {
@@ -46,6 +47,7 @@ class User
         $this->can_assess_impact = $userObj->can_assess_impact;
         $this->can_change_gm = $userObj->can_change_gm;
         $this->default_password = $userObj->default_password;
+        $this->can_change_dept_mgr = $userObj->can_change_dept_mgr;
     }
 
     public function jsonSerialize(){
@@ -63,7 +65,8 @@ class User
             'user_id' => $this->user_id,
             'can_assess_impact' => $this->can_assess_impact,
             'can_change_gm' => $this->can_change_gm,
-            'default_password' => $this->default_password
+            'default_password' => $this->default_password,
+            'can_change_dept_mgr' => $this->can_change_dept_mgr
         ];
     }
 }

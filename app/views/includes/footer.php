@@ -33,6 +33,7 @@
 
 <?php
 modal('select_gm');
+modal('select_mgr');
 modal('change_password');
 ?>
 
