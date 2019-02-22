@@ -53,6 +53,14 @@ $(document).ready(function () {
         $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
     });
 
+    $('#add_cms_form').validator().on('submit', (e)=>{
+        let hod = $('#hod_id');
+        if (hod.length === 0) return;
+        if (hod.val() === '') {
+            hod.siblings('.help-block').text('A manager must be assigned!');
+            return false;
+        }
+    });
     initList('active');
     initList('closed');
     initList('rejected');

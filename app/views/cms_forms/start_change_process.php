@@ -66,18 +66,6 @@ $user = getUserSession();
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group form-row">
-                                                <label for="" class="col-sm-4 text-sm-right">Name</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text"
-                                                           class="form-control"
-                                                           value="<?php echo ucwords($user->first_name . ' ' . $user->last_name, '-. ') . " ($user->job_title)"; ?>"
-                                                           aria-describedby="helpId" placeholder="" readonly/>
-                                                    <small id="helpId" class="form-text with-errors help-block"></small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group form-row">
                                                 <label for="title" class="col-sm-4 text-sm-right">
                                                     Title
                                                 </label>
@@ -92,13 +80,26 @@ $user = getUserSession();
                                                         <input type="text" class="form-control" id="title" name="title"
                                                                placeholder="Enter a title for your Change" required>
                                                     </div>
-                                                    <small class="form-text text-muted d-none">
-                                                        Hint: Enter a title for your Change
+                                                    <small class="form-text text-muted text-danger">
+                                                        Hint: Mandatory
                                                     </small>
                                                     <small class="form-text with-errors help-block"></small>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group form-row">
+                                                <label for="" class="col-sm-4 text-sm-right">Department</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           value="<?php echo $user->department->department; ?>"
+                                                           aria-describedby="helpId" placeholder="" readonly/>
+                                                    <small id="helpId" class="form-text with-errors help-block"></small>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <!--<div class="col-sm-6">
                                             <div class="form-group form-row">
                                                 <label for="" class="col-sm-4 text-sm-right">Position</label>
@@ -115,11 +116,11 @@ $user = getUserSession();
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group form-row">
-                                                <label for="" class="col-sm-4 text-sm-right">Department</label>
+                                                <label for="" class="col-sm-4 text-sm-right">Name</label>
                                                 <div class="col-sm-8">
                                                     <input type="text"
                                                            class="form-control"
-                                                           value="<?php echo $user->department->department; ?>"
+                                                           value="<?php echo ucwords($user->first_name . ' ' . $user->last_name, '-. ') . " ($user->job_title)"; ?>"
                                                            aria-describedby="helpId" placeholder="" readonly/>
                                                     <small id="helpId" class="form-text with-errors help-block"></small>
                                                 </div>
