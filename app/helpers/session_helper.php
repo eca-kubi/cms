@@ -25,7 +25,7 @@ function flash($name = 'flash', $message = '', $class = 'alert alert-success ale
 
             $_SESSION[$name] = $message;
             $_SESSION[$name . '_class'] = $class;
-            $_SESSION[$name. '_dismissible_button'] = $dismissible_button;
+            $_SESSION[$name . '_dismissible_button'] = $dismissible_button;
         } elseif (empty($message) && !empty($_SESSION[$name])) {
             $class = !empty($_SESSION[$name . '_class']) ? $_SESSION[$name . '_class'] : '';
             $dismissible_button = !empty($_SESSION[$name . '_dismissible_button']) ? $_SESSION[$name . '_dismissible_button'] : '';
@@ -64,11 +64,12 @@ function getRole()
  * Summary of getUserSession
  * @return User|bool
  */
-function getUserSession(){
+function getUserSession()
+{
     if (isset($_SESSION['logged_in_user'])) {
         return $_SESSION['logged_in_user'];
     } else {
-       return false;
+        return false;
     }
 }
 
@@ -99,7 +100,8 @@ function logout()
     redirectToStart();
 }
 
-function destroySession() {
+function destroySession()
+{
     unset($_SESSION['logged_in_user']);
     session_destroy();
     session_start();
@@ -119,9 +121,9 @@ function adminSessionOff()
  * Summary of isAdminSessionOn
  * @return boolean
  */
-function isAdminSessionOn( )
+function isAdminSessionOn()
 {
-	return !empty($_SESSION['admin_session']);
+    return !empty($_SESSION['admin_session']);
 }
 
 /*
@@ -149,15 +151,15 @@ function reviewSessionOff()
  * Summary of isAdminSessionOn
  * @return boolean
  */
-function isReviewSessionOn( )
+function isReviewSessionOn()
 {
-	return !empty($_SESSION['review_session']);
+    return !empty($_SESSION['review_session']);
 }
 
 /**
  * Reviewer must not review him/herself
  */
-function excludeReviewer( )
+function excludeReviewer()
 {
     Database::getInstance()->where('u.user_id', getUserSession()->user_id, '<>');
     return Database::getInstance();

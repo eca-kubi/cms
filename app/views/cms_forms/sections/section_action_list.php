@@ -16,6 +16,15 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION)) 
 heredoc;
                     } ?>
                 </a>
+                <span class="mx-2"></span>
+                <a
+                        data-toggle="modal"
+                        href="#uploadPlDoc"
+                        target="_blank"
+                        title="Upload More Documents"
+                        class="">
+                    <span class="text-sm badge badge-info"> <i class="fa fa-file-upload"></i> Upload Documents</span>
+                </a>
             </h6>
             <span class="text-right float-right invisible">
                         <a href="#" title="Edit this section">

@@ -50,7 +50,7 @@ while (true) {
                     $message['department'] = $department->department;
                     $message['recipient'] = $recipient_name;
                     $message['link'] = site_url("cms-forms/view-change-process/$cms_form_id");
-                    $body = get_include_contents('impact_assessment_reminder', $message);
+                    $body = get_include_contents('email_templates/impact_assessment_reminder', $message);
                     $address = $hod->email;
                     insertEmail($subject, $body, $address, $recipient_name);
                 }

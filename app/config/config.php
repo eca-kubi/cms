@@ -105,6 +105,8 @@ const OHS_EMAIL = 'ecakubi@adamusgh.com';
 const EMAIL_SUBJECT = 'Change Proposal';
 const PATH_RISK_ATTACHMENT = APP_ROOT . '\..\public\assets\uploads\risk-attachments\\';
 const PATH_ADDITIONAL_INFO = APP_ROOT . '\..\public\assets\uploads\additional-infos\\';
+const PATH_PL_DOCUMENTS = APP_ROOT . '\..\public\assets\uploads\project-leader\\';
+
 const SALT = 'archangel';
 const STATUS_PENDING_APPROVAL = 'pending_approval';
 const STATUS_APPROVED = 'approved';

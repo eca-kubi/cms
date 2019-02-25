@@ -44,10 +44,11 @@ $(document).ready(function () {
     });
 
     $('.modal').on('shown.bs.modal', (e) => {
-
         let $this = $(e.currentTarget);
         $this.find('input[type=text]:first').focus();
     });
+
+    $('form[data-toggle=validator] input[type=text]:not([readonly]):first').focus();
 
     $(window).resize(function () {
         $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');

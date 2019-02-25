@@ -7,12 +7,12 @@
  */
 ?>
 <!-- Change Password Modal -->
-<div class="modal fade" id="uploadAddDoc" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+<div class="modal fade" id="uploadPlDoc" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content fa font-weight-normal">
             <div class="modal-header">
-                <h6 class="modal-title" id="modelTitleId">Upload Additional Documents</h6>
+                <h6 class="modal-title" id="modelTitleId">Upload Documents</h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -21,9 +21,9 @@
                 <?php //flash('flash'); ?>
                 <div>
                     <form action="<?php /** @var array $payload */
-                    echo site_url('cms-forms/upload-additional-documents/' . $payload['form']->cms_form_id); ?>"
+                    echo site_url('cms-forms/upload-pl-documents/' . $payload['form']->cms_form_id); ?>"
                           data-toggle="validator"
-                          id="uploadAddDocForm" method="post" enctype="multipart/form-data"
+                          id="uploadPlDocForm" method="post" enctype="multipart/form-data"
                           role="form">
                         <div class="form-row multiple-form-group" data-max="3">
                             <!--<label for="" class="col-sm-4 text-sm-right">
@@ -55,7 +55,7 @@
                 <div class="col">
                     <button type="button" class="btn btn-secondary float-left" data-dismiss="modal">Cancel
                     </button>
-                    <button type="submit" form="uploadAddDocForm" class="btn btn-success float-right">Submit
+                    <button type="submit" form="uploadPlDocForm" class="btn btn-success float-right">Submit
                     </button>
                 </div>
             </div>

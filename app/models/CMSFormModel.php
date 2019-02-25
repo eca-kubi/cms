@@ -47,6 +47,7 @@ class CMSFormModel extends Model implements \JsonSerializable
      */
     private $where_col_val;
     public $gm_reasons;
+    public $pl_documents;
 
     public function __construct($where_col_val = null)
     {
@@ -197,6 +198,7 @@ class CMSFormModel extends Model implements \JsonSerializable
             'risk_attachment' => $this->risk_attachment,
             'gm_id' => $this->gm_id,
             'state' => $this->getState(),
+            'pl_documents' => $this->pl_documents
         ];
     }
 

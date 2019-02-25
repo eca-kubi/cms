@@ -55,6 +55,7 @@ class CMSForm implements \JsonSerializable
     public $impact_ass_completed_dept;
     public $project_leader_acceptance_date;
     public $title;
+    public $date_closed;
 
     /**
      * CMSForm constructor.

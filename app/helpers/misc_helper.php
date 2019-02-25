@@ -316,7 +316,7 @@ function notifyDepartmentManagers($cms_form_id, $department_id, $message = null,
 {
     // get the hod who approved the start change process ie. hod-assessment
     //$action_hod_commented = getActionLog($cms_form_id, ACTION_HOD_ASSESSMENT_COMPLETED, [], true);
-    $hods = getCurrentManager($department_id);
+    $hods = getHodsWithCurrent($department_id);
     //$link = URL_ROOT . '/cms-forms/view-change-process/' . $cms_form_id;
     $subject = genEmailSubject($cms_form_id);
     //$hod = new User($action_hod_commented->performed_by);
@@ -327,7 +327,6 @@ function notifyDepartmentManagers($cms_form_id, $department_id, $message = null,
 
 function notifyAllHODs($cms_form_id)
 {
-    $body = '';
     $cms_form = new CMSForm(array('cms_form_id' => $cms_form_id));
     $affected_department = new Department($cms_form->department_id);
     $subject = genEmailSubject($cms_form_id);
@@ -897,6 +896,8 @@ function now()
     try {
         return (new DateTime())->format(DFB_DT);
     } catch (Exception $e) {
+    } finally {
+        return '';
     }
 }
 
@@ -931,7 +932,8 @@ function site_url($url = '')
 
 function modal($modal, $payload = [])
 {
-    // Check for modal file
+    // todo: extract payload
+    //extract($payload);
     if (file_exists(APP_ROOT . '/views/modals/' . $modal . '.php')) {
         require_once APP_ROOT . '/views/modals/' . $modal . '.php';
     } else {
@@ -1055,9 +1057,10 @@ function getUnrespondedDeptStatus($cms_form_id)
 function get_include_contents($filename, $variablesToMakeLocal)
 {
     extract($variablesToMakeLocal);
-    if (is_file("email_templates/$filename.php")) {
+    $file = APP_ROOT . "/templates/$filename.php";
+    if (is_file($file)) {
         ob_start();
-        require "email_templates/$filename.php";
+        require "$file";
         $body = ob_get_clean();
         return $body;
     } else {

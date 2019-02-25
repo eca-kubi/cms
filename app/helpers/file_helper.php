@@ -141,7 +141,7 @@ function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
             $temp = explode('.', $_FILES[$file]['name'][$key]);
             $extension = end($temp);
             if ($_FILES[$file]['size'][$key] > 0) {
-                //$filename = $_FILES[$file]['name'][$key];
+                $filename = $_FILES[$file]['name'][$key];
                 //$filename = explode('/', $filename);
                 //$filename = end($filename);
                 $filetype = $_FILES[$file]['type'][$key];
@@ -168,8 +168,8 @@ function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
                         if (!file_exists($dir)) {
                             mkdir($dir, 0777, true);
                         }
-                        $result['success'] = move_uploaded_file($_FILES[$file]['tmp_name'][$key], $dir . "$db_file");
-                        $result['file'] = trim($result['file'] . ',' . $db_file, ',');
+                        $result['success'] = move_uploaded_file($_FILES[$file]['tmp_name'][$key], $dir . "$filename");
+                        $result['file'] = trim($result['file'] . ',' . $filename, ',');
                         if (!$result['success']) {
                             $result['reason'] = 'An error occurred while uploading file!';
                             return $result;

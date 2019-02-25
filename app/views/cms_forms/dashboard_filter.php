@@ -102,11 +102,15 @@
                                                             <dd class="col-sm-8 product-description ref_num"><span
                                                                         class="badge badge-outline-<?php echo $state['color']; ?>"><?php echo $cms_form->getHodRefNum(); ?></span>
                                                             </dd>
+                                                            <dt class="col-sm-4 text-sm-right">Title:</dt>
+                                                            <dd class="col-sm-8 product-description title">
+                                                                <span><?php echo $cms_form->title; ?></span>
+                                                            </dd>
                                                             <dt class="col-sm-4 text-sm-right">Originator</dt>
                                                             <dd class="col-sm-8 product-description originator"><?php echo ucwords($originator->first_name . ' ' . $originator->last_name); ?>
                                                                 (<?php echo $originator->job_title; ?>)
                                                                 @ <?php echo $originator->department->department; ?></dd>
-                                                            <dt class="col-sm-4 text-sm-right">Date</dt>
+                                                            <dt class="col-sm-4 text-sm-right">Date Raised</dt>
                                                             <dd class="col-sm-8 product-description date">
                                                                 <?php //echo formatDate($cms_form->date_raised, DFB_DT, DFF_DT);  ?>
                                                                 <?php echoDate($cms_form->date_raised); ?>
@@ -115,6 +119,12 @@
                                                             <dd class="col-sm-8 product-description change_type">
                                                                 <?php echo $cms_form->getChangeType(); ?>
                                                             </dd>
+                                                            <?php if ($cms_form->state === STATUS_CLOSED) { ?>
+                                                                <dt class="col-sm-4 text-sm-right">Date Closed:</dt>
+                                                                <dd class="col-sm-8 product-description change_type">
+                                                                    <?php echoDate($cms_form->date_closed); ?>
+                                                                </dd>
+                                                            <?php } ?>
                                                             <dt class="col-sm-4 invisible d-sm-block d-none">..</dt>
                                                             <dd class="col-sm-8">
                                                                 <a href="<?php echo site_url("cms-forms/view-change-process/$cms_form->cms_form_id"); ?>"

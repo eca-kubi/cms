@@ -77,6 +77,14 @@ class CMSForms extends Controller
             $form->advantages = $_POST['advantages'];
             $form->alternatives = $_POST['alternatives'];
             $form->area_affected = $_POST['area_affected'];
+            if (isset($_POST['other_type'])) {
+                $_POST['change_type'][] = $_POST['other_type'];
+                $key = array_search('Other', $_POST['change_type']);
+                if (false !== $key) {
+                    unset($_POST['change_type'][$key]);
+                }
+                $form->other_type = $_POST['other_type'];
+            }
             $form->change_type = concatWith(', ', ' & ', $_POST['change_type']);
             $form->originator_id = $user_id;
             $form->certify_details = $_POST['certify_details'];
@@ -86,9 +94,9 @@ class CMSForms extends Controller
             $form->title = $_POST['title'];
             //$form->risk_level = $_POST['risk_level'];
             //$form->budget_level = $_POST['budget_level'];
-            if (isset($_POST['other_type'])) {
+            /*if (isset($_POST['other_type'])) {
                 $form->other_type = $_POST['other_type'];
-            }
+            }*/
 
             // upload additional info
             $form->hod_id = $_POST['hod_id'];
@@ -631,21 +639,38 @@ class CMSForms extends Controller
     public function StopChangeProcess($cms_form_id)
     {
         $db = Database::getDbh();
+        $date_stopped = "";
+        try {
+            $date_stopped = (new DateTime())->format(DFB_DT);
+        } catch (Exception $e) {
+        }
         $db->where('cms_form_id', $cms_form_id)
             ->update('cms_form', array(
-                'state' => STATUS_REJECTED
+                'state' => STATUS_STOPPED,
+                'date_stopped' => $date_stopped
             ));
+        $user_id = getUserSession()->user_id;
+        $name = getNameJobTitleAndDepartment($user_id);
+        $arr = array(
+            'performed_by' => $name,
+            'subject' => genEmailSubject($cms_form_id)
+        );
+        $remarks = get_include_contents('action_remarks_templates/change_stopped', $arr);
         (new CmsActionLogModel())->setAction(ACTION_CHANGE_CANCELLED)
-            ->setPerformedBy(getUserSession()->user_id)
+            ->setPerformedBy($user_id)
             ->setCmsFormId($cms_form_id)
+            ->setRemarks($remarks)
             ->setSectionAffected(SECTION_ALL)
             ->insert();
-        if (isset($_GET['redirect'])) {
+        // todo: send email to hod (change owner)
+        flash($flash = "flash_" . the_method(), "Change stopped successfully!", 'text-sm text-center text-success alert');
+        goBack();
+        /*if (isset($_GET['redirect'])) {
             header('location: ' . $_GET['redirect']);
             exit;
         } else {
             redirect('cms-forms/view-change-process');
-        }
+        }*/
     }
 
     public function test()
@@ -913,6 +938,26 @@ class CMSForms extends Controller
             $result = uploadFile('additional_info', $cms_form_id, PATH_ADDITIONAL_INFO);
             if ($result['success']) {
                 $result['file'] = trim($result['file'] . ',' . $form_model->additional_info, ',');
+                $form_model->updateForm($cms_form_id, ['additional_info' => $result['file']]);
+                flash('flash_view_change_process', 'File upload success!',
+                    'text-success text-sm text-center alert');
+            } else {
+                flash('flash_view_change_process', 'An error occurred!',
+                    'text-danger text-sm text-center alert');
+            }
+        }
+        goBack();
+    }
+
+    public function uploadPlDocuments($cms_form_id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filterPost();
+            $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+            //$flash = "flash_".the_method();
+            $result = uploadFile('additional_info', $cms_form_id, PATH_PL_DOCUMENTS);
+            if ($result['success']) {
+                $result['file'] = trim($result['file'] . ',' . $form_model->pl_documents, ',');
                 $form_model->updateForm($cms_form_id, ['additional_info' => $result['file']]);
                 flash('flash_view_change_process', 'File upload success!',
                     'text-success text-sm text-center alert');
