@@ -5,18 +5,24 @@
                 <i class="fa <?php echo ICON_FA_PLUS ?>" data-target="#section_1"></i> Section 1 - Proposed Change
                 <?php echo echoCompleted(); ?>
             </a>
-            <?php
-            if (!empty($payload)) { ?>
-                <span class="mx-2"></span>
-                <a
-                        href="<?php echo URL_ROOT . '/cms-forms/download-additional-info/' . $payload['form']->cms_form_id; ?>"
-                        target="_blank"
-                        title="Download Attached Documents"
-                        class="">
-                    <span class="text-sm badge badge-success"> <i class="fa fa-file-download"></i> Download Attached Documents</span>
-                </a>
-            <?php }
-            ?>
+            <span class="mx-2"></span>
+            <a
+                    href="<?php /** @var array $payload */
+                    echo URL_ROOT . '/cms-forms/download-additional-info/' . $payload['form']->cms_form_id; ?>"
+                    target="_blank"
+                    title="Download Attached Documents"
+                    class="">
+                <span class="text-sm badge badge-success"> <i class="fa fa-file-download"></i> Download Attached Documents</span>
+            </a>
+            <span class="mx-2"></span>
+            <a
+                    data-toggle="modal"
+                    href="#uploadAddDoc"
+                    target="_blank"
+                    title="Upload More Documents"
+                    class="">
+                <span class="text-sm badge badge-info"> <i class="fa fa-file-upload"></i> Upload More Documents</span>
+            </a>
         </h6>
         <span class="text-right float-right d-none">
             <?php /** @var array $payload */ //todo: Consider sections as database tables in the future.
@@ -37,6 +43,12 @@
                 </tr>
                 </thead>
                 <tbody>
+                <tr>
+                    <td class="text-sm-right" style="width:17%"><b>Title: </b></td>
+                    <td scope="row" style="width:83%">
+                        <?php echo $payload['form']->title; ?>
+                    </td>
+                </tr>
                 <tr>
                     <td class="text-sm-right" style="width:17%"><b>By: </b></td>
                     <td scope="row" style="width:83%">
@@ -93,104 +105,117 @@
                 <tbody>
                 <tr>
                     <td scope="row">
-                    <span class="row">
+                        <div class="row">
+                            <span class="col-sm-4 text-sm-right">
+                                <b>Title: </b>
+                            </span>
+                            <span class="col-sm-8">
+                                <?php echo $payload['form']->change_description; ?>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td scope="row">
+                        <div class="row">
                         <span class="col-sm-4 text-sm-right">
                             <b>Description: </b>
                         </span>
-                        <span class="col-sm-8">
+                            <span class="col-sm-8">
                             <?php echoIfEmpty($payload['form']->change_description, 'N/A'); ?>
                         </span>
-                    </span>
+                        </div>
                     </td>
+                </tr>
+                <!--<tr>
                     <td scope="row">
-                    <span class="row">
+                        <div class="row">
                         <span class="col-sm-4 text-sm-right">
                             <b>Additional Info: </b>
                         </span>
-                        <span class="col-sm-8">
-                            <?php if (!empty($payload['form']->additional_info)) { ?>
-                            <a href="<?php echo URL_ROOT . '/cms-forms/download-additional-info/' . $payload['form']->cms_form_id; ?>"
+                            <span class="col-sm-8">
+                            <?php /*if (!empty($payload['form']->additional_info)) { */ ?>
+                            <a href="<?php /*echo URL_ROOT . '/cms-forms/download-additional-info/' . $payload['form']->cms_form_id; */ ?>"
                                target="_blank"
                                class="" title="Download Attached Information">
                                     <span class="text-sm badge badge-success"> <i class="fa fa-file-download"></i> Download Attached Documents</span>
-                                </a><?php } else {
-                        echoIfEmpty($payload['form']->additional_info, 'N/A');
-                    } ?>
+                                </a><?php /*} else {
+                                echoIfEmpty($payload['form']->additional_info, 'N/A');
+                            } */ ?>
                         </span>
-                    </span>
-                </td>
-
-                </tr>
+                        </div>
+                    </td>
+                </tr>-->
                 <tr>
                     <td scope="row" class="">
-                    <span class="row">
+                        <div class="row">
                         <span class="col-sm-4 text-sm-right">
                             <b>Advantages: </b>
                         </span>
-                        <span class="col-sm-8">
+                            <span class="col-sm-8">
                             <?php echoIfEmpty($payload['form']->advantages, 'N/A'); ?>
                         </span>
-                    </span>
+                        </div>
                     </td>
                 </tr>
                 <tr>
                     <td scope="row">
-                    <span class="row">
+                        <div class="row">
                         <span class="col-sm-4 text-sm-right">
                             <b>Alternatives: </b>
                         </span>
-                        <span class="col-sm-8">
+                            <span class="col-sm-8">
                             <?php echoIfEmpty($payload['form']->alternatives, 'N/A'); ?>
                         </span>
-                    </span>
+                        </div>
                     </td>
                 </tr>
                 <tr>
                     <td scope="row">
-                    <span class="row">
+                        <div class="row">
                         <span class="col-sm-4 text-sm-right">
                             <b>Change Type:</b>
                         </span>
-                        <span class="col-sm-8">
+                            <span class="col-sm-8">
                             <?php echo $payload['form']->change_type; ?>
                         </span>
-                    </span>
+                        </div>
                     </td>
                 </tr>
                 <tr>
                     <td scope="row">
-                    <span class="row">
+                        <div class="row">
                         <span class="col-lg-2 text-sm-right">
                             <b>Areas Affected: </b>
                         </span>
-                        <span class="col-sm-8">
+                            <span class="col-sm-8">
                             <?php echo $payload['form']->area_affected; ?>
                         </span>
-                    </span>
+                        </div>
                     </td>
                 </tr>
                 <tr>
                     <td scope="row">
-                    <span class="row">
+                        <div class="row">
                         <span class="col-lg-2 text-sm-right">
                             <b>Completed: </b>
                         </span>
-                        <span class="col-sm-8">
+                            <span class="col-sm-8">
                             <?php echo returnDate($payload['action_log'][ACTION_START_CHANGE_PROCESS_COMPLETED]->date); ?>
                         </span>
-                    </span>
+                        </div>
                     </td>
                 </tr>
                 <tr>
                     <td scope="row">
-                    <span class="row">
+                        <div class="row">
                         <span class="col-lg-2 text-sm-right">
                             <b>By: </b>
                         </span>
-                        <span class="col-sm-8">
+                            <span class="col-sm-8">
                             <?php echo getNameJobTitleAndDepartment($payload['form']->originator_id); ?>
                         </span>
-                    </span>
+                        </div>
                     </td>
                 </tr>
                 </tbody>

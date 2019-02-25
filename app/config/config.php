@@ -115,6 +115,8 @@ const STATUS_CLOSED = 'closed';
 const STATUS_ACTIVE = 'active';
 const STATUS_AUTHORIZED = 'authorized';
 const STATUS_ACCEPTED = 'accepted';
+const REMINDER_LIMIT = 3;
+const REMINDER_INTERVAL = 1;
 
 
 const ROLE_MANAGER = 'Manager';

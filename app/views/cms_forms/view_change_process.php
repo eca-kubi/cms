@@ -70,5 +70,7 @@ $user = getUserSession();
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-
+<?php
+modal('upload_add_doc', $payload);
+?>
 <?php require_once APP_ROOT . '\views\includes\footer.php'; ?>

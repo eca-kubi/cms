@@ -80,8 +80,8 @@ $user = getUserSession();
                                                         <input type="text" class="form-control" id="title" name="title"
                                                                placeholder="Enter a title for your Change" required>
                                                     </div>
-                                                    <small class="form-text text-muted text-danger">
-                                                        Hint: Mandatory
+                                                    <small class="form-text  text-danger text-bold">
+                                                        Hint: <i>Mandatory</i>
                                                     </small>
                                                     <small class="form-text with-errors help-block"></small>
                                                 </div>

@@ -325,9 +325,31 @@ function notifyDepartmentManagers($cms_form_id, $department_id, $message = null,
     }
 }
 
-function notifyAllHODs()
+function notifyAllHODs($cms_form_id)
 {
+    $body = '';
+    $cms_form = new CMSForm(array('cms_form_id' => $cms_form_id));
+    $affected_department = new Department($cms_form->department_id);
+    $subject = genEmailSubject($cms_form_id);
+    $link = site_url("cms-forms/view-change-process/$cms_form_id");
+    $managers = getManagers();
+    foreach ($managers as $manager) {
+        $name = concatNameWithUserId($manager->user_id);
+        $body = "Hi, " . $name . ', ' . HTML_NEW_LINE .
+            "A Change Proposal raised by " . ($manager->user_id === $cms_form->originator_id ? " you " : getNameJobTitleAndDepartment($cms_form->originator_id)) .
+            " requires response to questions on Possible Impacts related to your department (" . $affected_department->department . "). " .
+            "Click this link if you wish to respond to the questions: " . '<a href="' . $link . '" />' . $link . '</a>';
+        insertEmail($subject, $body, $manager->email, $name);
+    }
+}
 
+function getManagers(): array
+{
+    $db = Database::getDbh();
+    return $db->where('role', ROLE_MANAGER)
+        ->orWhere('role', ROLE_SUPERINTENDENT)
+        ->objectBuilder()
+        ->get('users');
 }
 
 function isBudgetHigh($cms_form_id)
@@ -707,11 +729,11 @@ function message($message_id, array $data = [])
 function getDepartmentHods($department_id)
 {
     $db = Database::getDbh();
-    return $db->where('role', ROLE_MANAGER)
-        ->where('department_id', $department_id)
-        ->orWhere('role', ROLE_SUPERINTENDENT)
+    $ret = $db->where('department_id', $department_id)
+        ->where("(role = ? or role = ?)", Array(ROLE_SUPERINTENDENT, ROLE_MANAGER))
         ->objectBuilder()
         ->get('users');
+    return $ret;
 }
 
 function getCurrentManager($department_id)
@@ -719,6 +741,22 @@ function getCurrentManager($department_id)
     $db = Database::getDbh();
     return $db->where('department_id', $department_id)
         ->getValue('departments', 'current_manager');
+}
+
+function getHodsWithCurrent($department_id)
+{
+    $current_mgr_id = getCurrentManager($department_id);
+    $mgrs = getDepartmentHods($department_id);
+    array_walk($mgrs, function (&$mgr, $key) use ($current_mgr_id, &$mgrs) {
+        if ($mgr->user_id === $current_mgr_id) {
+            unset($mgrs[$key]);
+        }
+    });
+    if (!empty($current_mgr_id)) {
+        $current_mgr = new User($current_mgr_id);
+        $mgrs[] = $current_mgr;
+    }
+    return $mgrs;
 }
 
 /*
@@ -891,7 +929,7 @@ function site_url($url = '')
     return URL_ROOT . '/' . $url;
 }
 
-function modal($modal)
+function modal($modal, $payload = [])
 {
     // Check for modal file
     if (file_exists(APP_ROOT . '/views/modals/' . $modal . '.php')) {
@@ -960,3 +998,78 @@ function getDepartmentMembers($department_id)
         ->get('users');
 }
 
+function script($content)
+{
+    echo <<<heredoc
+<script>
+$(
+    $content
+);
+</script>
+heredoc;
+
+}
+
+function setReminder($cms_form_id, $interval, $limit)
+{
+    $ret = false;
+    $db = Database::getDbh();
+    try {
+        $ret = $db->insert('assessment_reminder', array(
+            'cms_form_id' => $cms_form_id,
+            'remind_at' => (new DateTime())->add(new DateInterval('PT' . $interval . 'H'))->format(DFB_DT),
+            'limit' => $limit
+        ));
+    } catch (Exception $e) {
+    } finally {
+        return $ret;
+    }
+}
+
+function updateReminder($cms_form_id, $time, $interval, $limit, $expired)
+{
+    $ret = false;
+    $db = Database::getDbh();
+    try {
+        $ret = $db->update('assessment_reminder', array(
+            'cms_form_id' => $cms_form_id,
+            'remind_at' => (new DateTime($time))->add(new DateInterval('PT' . $interval . 'H'))->format(DFB_DT),
+            'limit' => $limit,
+            'expired' => $expired
+        ));
+    } catch (Exception $e) {
+    } finally {
+        return $ret;
+    }
+}
+
+function getUnrespondedDeptStatus($cms_form_id)
+{
+    $db = Database::getDbh();
+    return $db->where('status', STATUS_IMPACT_ASSESSMENT_RESPONSE_PENDING)
+        ->where('cms_form_id', $cms_form_id)
+        ->objectBuilder()
+        ->get('impact_ass_status');
+}
+
+function get_include_contents($filename, $variablesToMakeLocal)
+{
+    extract($variablesToMakeLocal);
+    if (is_file("email_templates/$filename.php")) {
+        ob_start();
+        require "email_templates/$filename.php";
+        $body = ob_get_clean();
+        return $body;
+    } else {
+        return "";
+    }
+}
+
+function getRemindersPending()
+{
+    $db = Database::getDbh();
+    $ret = $db->where('expired', NULL, 'IS')
+        ->objectBuilder()
+        ->get('assessment_reminder');
+    return $ret;
+}

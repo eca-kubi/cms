@@ -47,6 +47,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                                             <input accept="<?php echo DOC_FILE_TYPES; ?>"
                                                    class="form-control" multiple="multiple"
                                                    name="risk_attachment[]"
+                                                   data-dely="1000"
                                                    required type="file"/>
                                             <div class="input-group-append cursor-pointer"
                                                  title="Click to add more files.">
@@ -66,7 +67,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                                     </div>-->
                                 </div>
                             </div>
-                            <div class="col-sm-12">
+                            <!--<div class="col-sm-12">
                                 <div class="form-group form-row">
                                     <label for="s1" class="col-sm-12">Affected Departments</label>
                                     <div class="col-sm-8">
@@ -82,16 +83,16 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                                                 data-size="7"
                                                 multiple="multiple" required>
                                             <?php
-
-                                            foreach ($payload['departments'] as $dept) {
-                                                echo "<option value='$dept->department_id'> $dept->department </option>";
-                                            }
-                                            ?>
+                            /*
+                                                                        foreach ($payload['departments'] as $dept) {
+                                                                            echo "<option value='$dept->department_id'> $dept->department </option>";
+                                                                        }
+                                                                        */ ?>
                                         </select>
                                         <small class="with-errors help-block"></small>
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                             <div class="col-sm-12 text-right mt-2">
                                 <label></label>
                                 <button type="submit" class="btn bg-success w3-btn">Submit</button>
@@ -113,7 +114,8 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                     <h6 class="text-bold font-italic col m-1">
                         <a href="#section_3" data-toggle="collapse">
                             <i class="fa <?php echo ICON_FA_PLUS ?>"></i> Section 3 - Risk Assessment
-                            <?php echo isAllImpactAssessmentComplete($payload['form']->cms_form_id) ? echoCompleted() : echoInComplete(" -- Impact assessment pending"); ?>
+                            <?php echo isAllImpactAssessmentComplete($payload['form']->cms_form_id) ? echoCompleted() : echoInComplete(" -- Impact assessment pending");
+                            //script("alert('impact assessment incomplete')"); ?>
                         </a>
                         <?php //isAllImpactAssessmentComplete($payload['form']->cms_form_id) && !empty($payload['form']->risk_attachment
                         if (!empty($payload['form']->risk_attachment)) {

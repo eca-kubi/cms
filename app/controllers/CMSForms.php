@@ -171,9 +171,9 @@ class CMSForms extends Controller
             } elseif ($form->hod_approval == STATUS_APPROVED) {
                 $body = "Hi, " . ucwords($originator->first_name . ' ' . $originator->last_name, '-. ') . HTML_NEW_LINE .
                     "Your Change Proposal has been <u>approved</u> by your HoD, " . ucwords($hod->first_name . ' ' . $hod->last_name) . '.' . HTML_NEW_LINE .
-                    "Click this link to start Risk Assessment " . '<a href="' . $link . '" />' . $link . '</a>';
+                    "Click this link for more details" . '<a href="' . $link . '" />' . $link . '</a>';
                 insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
-                notifyOHSForMonitoring($cms_form_id);
+                //notifyOHSForMonitoring($cms_form_id);
                 /** if (!empty($_POST['gm_id'])) {
                  * notifyGm($cms_form_id, $form);
                  * } */
@@ -202,6 +202,7 @@ class CMSForms extends Controller
     public function RiskAssessment(int $cms_form_id = -1)
     {
         $payload = array();
+        $all_depts = Database::getDbh()->getValue('departments', 'department_id', null);
         $payload['user'] = getUserSession();
         $payload['title'] = 'Risk Assessment';
         $payload['form'] = new CMSForm(['cms_form_id' => $cms_form_id]);
@@ -215,7 +216,7 @@ class CMSForms extends Controller
         $log = new CmsActionLogModel();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
-            $payload['form']->affected_dept = implode(',', $_POST['affected_dept']);
+            $payload['form']->affected_dept = implode(',', $all_depts);
             // populate impact questions
 
             $form_model = new CMSFormModel(null);
@@ -236,7 +237,9 @@ class CMSForms extends Controller
                 ->insert();
             completeSection($cms_form_id, SECTION_RISK_ASSESSMENT);
             // Notify impact assessment reps
-            notifyImpactAccessReps($cms_form_id);
+            //notifyImpactAccessReps($cms_form_id);
+            notifyAllHODs($cms_form_id);
+            setReminder($cms_form_id, REMINDER_INTERVAL, REMINDER_LIMIT);
             populateImpactResponse(explode(',', $payload['form']->affected_dept), $cms_form_id);
             redirect('cms-forms/view-change-process/' . $cms_form_id);
         }
@@ -896,6 +899,26 @@ class CMSForms extends Controller
             flash($flash, 'Success!', 'text-center text-success alert text-sm');
         }
         $this->view('cms_forms/department_managers', $payload);
+    }
+
+    public function uploadAdditionalDocuments($cms_form_id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filterPost();
+            $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+            //$flash = "flash_".the_method();
+            $result = uploadFile('additional_info', $cms_form_id, PATH_ADDITIONAL_INFO);
+            if ($result['success']) {
+                $result['file'] = trim($result['file'] . ',' . $form_model->additional_info, ',');
+                $form_model->updateForm($cms_form_id, ['additional_info' => $result['file']]);
+                flash('flash_view_change_process', 'File upload success!',
+                    'text-success text-sm text-center alert');
+            } else {
+                flash('flash_view_change_process', 'An error occurred!',
+                    'text-danger text-sm text-center alert');
+            }
+        }
+        goBack();
     }
 }
 

@@ -46,7 +46,7 @@ $(document).ready(function () {
     $('.modal').on('shown.bs.modal', (e) => {
 
         let $this = $(e.currentTarget);
-        $this.find('input:first').focus();
+        $this.find('input[type=text]:first').focus();
     });
 
     $(window).resize(function () {
@@ -563,7 +563,14 @@ let addFormGroup = function () {
 
     if ($multipleFormGroup.data('max') <= countFormGroup($multipleFormGroup)) {
         $lastInputGroupLast.find('.add-input').addClass('cursor-disabled');
-        $.toast('You can only add up to three files!');
+        $.toast({
+            text: 'You can only add up to three files!',
+            position: 'top-center',
+            stack: false,
+            hideAfter: false,
+            icon: 'warning',
+            showHideTransition: 'plain'
+        });
         return;
     }
     let $inputGroupClone = $inputGroup.clone();

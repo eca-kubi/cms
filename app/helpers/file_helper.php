@@ -132,7 +132,9 @@ function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
     $result['success'] = false;
     $result['file'] = '';
     $result['reason'] = '';
-    $db_file = '';
+    $files = explode(',', $cms->additional_info);
+    $file_count = count($files);
+    //$db_file = '';
     $allowedExts = array('doc', 'docx', 'pdf', 'xlsx', 'xls', 'txt', 'pptx', 'ppt', 'csv');
     if (isset($_FILES[$file])) {
         foreach ($_FILES[$file]['name'] as $key => $value) {
@@ -157,9 +159,9 @@ function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
                     } else {
                         $ref = $cms->getHodRefNum();
                         if (empty($ref)) {
-                            $db_file = getDeptRef(getUserSession()->department_id) . "_$key.$extension";
+                            $db_file = getDeptRef(getUserSession()->department_id) . "_$file_count.$extension";
                         } else {
-                            $db_file = $ref . "_$key.$extension";
+                            $db_file = $ref . "_$file_count.$extension";
                         }
                         //$db_file = 'c_' . $cms_form_id . '_u_' . getUserSession()->user_id . "_k_$key." . $extension;
                         $dir = $path . "$cms_form_id\\";
@@ -171,6 +173,8 @@ function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
                         if (!$result['success']) {
                             $result['reason'] = 'An error occurred while uploading file!';
                             return $result;
+                        } else {
+                            $file_count = $file_count + 1;
                         }
                     }
                 } else {
