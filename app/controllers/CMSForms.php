@@ -666,6 +666,9 @@ class CMSForms extends Controller
         }
         $files = explode(',', $file_name);
         $title = "Additional Documents";
+        if (!file_exists('zip')) {
+            mkdir('zip', 0777, true);
+        }
         $zipname = 'zip/' . $title . "_$cms_form_id.zip";
         $zip = new ZipArchive;
         $zip->open($zipname, ZipArchive::CREATE);
