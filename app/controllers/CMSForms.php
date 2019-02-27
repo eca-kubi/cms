@@ -65,6 +65,7 @@ class CMSForms extends Controller
         $payload['title'] = 'New Change Proposal Form';
         $payload['ref_num'] = getDeptRef($department_id);
         $payload['reference'] = getDeptRef($department_id);
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
             $form = new CMSFormModel();
@@ -106,7 +107,7 @@ class CMSForms extends Controller
                         'user_id' => $hod->user_id,
                         'originator' => $originator_name,
                         'recipient' => $recipient,
-                        'link' => "cms-forms/view-change-process/$cms_form_id"
+                        'link' => site_url("cms-forms/view-change-process/$cms_form_id")
                     );
                     $body = get_include_contents('email_templates/change_application_raised/notify_hods', $data);
                     insertEmail($subject, $body, $hod->email, $recipient);
@@ -123,7 +124,7 @@ class CMSForms extends Controller
                         'user_id' => $user_id,
                         'originator' => $originator_name,
                         'recipient' => $recipient_name,
-                        'link' => "cms-forms/view-change-process/$cms_form_id"
+                        'link' => site_url("cms-forms/view-change-process/$cms_form_id")
                     );
                     $body = get_include_contents('email_templates/change_application_raised/notify_originator', $data);
                     insertEmail($subject, $body, $user->email, $recipient_name);

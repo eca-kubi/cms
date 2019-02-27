@@ -9,6 +9,6 @@ $echoYou = 'echoYou';
 
 echo <<<heredoc
 Hi $recipient,
-you have raised a Change Proposal application.
+you have raised a Change Proposal application. <br>
 Click this link for details: <a href="$link">$link</a>
 heredoc;
