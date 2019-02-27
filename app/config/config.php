@@ -60,6 +60,7 @@ const ACTION_RISK_ASSESSMENT = 'risk_assessment';
 const ACTION_RISK_ASSESSMENT_COMPLETED = 'risk_assessment_completed';
 const ACTION_IMPACT_ASSESSMENT = 'impact_assessment';
 const ACTION_CHANGE_CANCELLED = 'change-cancelled';
+const ACTION_CHANGE_STOPPED = 'change stopped';
 const ACTION_GM_ASSESSMENT = 'gm_assessment';
 const ACTION_HOD_AUTHORISATION = 'hod-authorisation';
 const ACTION_PROJECT_LEADER_ACCEPTANCE_COMPLETED = 'project-leader-acceptance-completed';
@@ -119,7 +120,7 @@ const STATUS_ACTIVE = 'active';
 const STATUS_AUTHORIZED = 'authorized';
 const STATUS_ACCEPTED = 'accepted';
 const REMINDER_LIMIT = 3;
-const REMINDER_INTERVAL = '30S'; // 10 seconds
+const REMINDER_INTERVAL = '1H'; // 1 hour
 
 const SUBJECT_MANAGER_CHANGED = 'CMS Manager Changed';
 const ROLE_MANAGER = 'Manager';

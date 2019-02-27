@@ -743,6 +743,16 @@ function getDepartmentHods($department_id)
     return $ret;
 }
 
+function getDepartmentHod($department_id)
+{
+    $db = Database::getDbh();
+    $ret = $db->where('department_id', $department_id)
+        ->where('role', ROLE_MANAGER)
+        ->objectBuilder()
+        ->get('users');
+    return $ret;
+}
+
 function getCurrentManager($department_id)
 {
     $db = Database::getDbh();
@@ -753,7 +763,7 @@ function getCurrentManager($department_id)
 function getHodsWithCurrent($department_id)
 {
     $current_mgr_id = getCurrentManager($department_id);
-    $mgrs = getDepartmentHods($department_id);
+    $mgrs = getDepartmentHod($department_id);
     array_walk($mgrs, function (&$mgr, $key) use ($current_mgr_id, &$mgrs) {
         if ($mgr->user_id === $current_mgr_id) {
             unset($mgrs[$key]);
@@ -764,6 +774,16 @@ function getHodsWithCurrent($department_id)
         $mgrs[] = $current_mgr;
     }
     return $mgrs;
+}
+
+function isDepartmentManager($department_id, $user_id)
+{
+    $db = Database::getDbh();
+    $is_dept_mgr = $db->where('department_id', $department_id)
+        ->where('role', ROLE_MANAGER)
+        ->where('user_id', $user_id)
+        ->has('users');
+    return $is_dept_mgr;
 }
 
 /*
@@ -827,11 +847,11 @@ function isProjectLeader($user_id, $cms_form_id)
     return $pl_id === $user_id;
 }
 
-function isDepartmentManager($user_id, $department_id)
+/*function isDepartmentManager($user_id, $department_id)
 {
     $user = new User($user_id);
     return ($user->department_id === $department_id && ($user->role === ROLE_MANAGER || $user->role === ROLE_SUPERINTENDENT));
-}
+}*/
 
 function echoPendingSections()
 {

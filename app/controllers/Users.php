@@ -12,12 +12,13 @@ class Users extends Controller
     }
 
 
-    function login()
+    function login($cms_form_id = '')
     {
         if (isLoggedIn()) {
             goBack();
         }
         $this->payload['title'] = 'CMS Login';
+        $this->payload['cms_form_id'] = $cms_form_id;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->payload['post'] = validatePost('login_form');
             $post = $this->payload['post'];
@@ -35,6 +36,9 @@ class Users extends Controller
                     }*/
                     $u = new \User($loggedInUser['user_id']);
                 	createUserSession($u);
+                    if (!empty($cms_form_id)) {
+                        redirect("cms-forms/view-change-process/$cms_form_id");
+                    }
                     redirect('cms-forms/dashboard');
                 }
             }

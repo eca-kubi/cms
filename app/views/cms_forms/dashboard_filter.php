@@ -140,7 +140,7 @@
                                                                 <?php } ?>
                                                                 <?php
                                                                 if ($cms_form->state == STATUS_ACTIVE) {
-                                                                    if (isDepartmentManager(getUserSession()->user_id, $cms_form->cms_form_id)
+                                                                    if (isDepartmentManager($cms_form->department_id, getUserSession()->user_id)
                                                                         || isOriginator($cms_form->cms_form_id, getUserSession()->user_id)) { ?>
                                                                         <!--suppress HtmlUnknownAnchorTarget -->
                                                                         <a class="btn w3-btn badge bg-danger-gradient"

@@ -3,7 +3,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
     if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION)) {
         // Is a manager or superintendent for the originator department
         $originator_department_id = getOriginatorDepartmentID($payload['form']->cms_form_id);
-        if (isDepartmentManager(getUserSession()->user_id, $originator_department_id)) { ?>
+        if (isDepartmentManager($originator_department_id, getUserSession()->user_id)) { ?>
             <div class="row p-2">
                 <form class="w-100"
                       action="<?php echo URL_ROOT . '/cms-forms/hod-authorisation/' . $payload['form']->cms_form_id ?>"

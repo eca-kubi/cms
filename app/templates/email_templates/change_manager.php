@@ -7,5 +7,5 @@
  */
 $echoYou = 'echoYou';
 echo <<<heredoc
-{$echoYou($user_name, $user_id)} changed the manager for $department to $mgr_name.
+$user_name has selected you as the manager for $department.
 heredoc;

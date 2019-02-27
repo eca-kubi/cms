@@ -13,18 +13,15 @@ class CMSForms extends Controller
     public function __construct()
     {
         parent::__construct();
-        if (!isLoggedIn()) {
+        /*if (!isLoggedIn()) {
             redirect('users/login');
-        }
+        }*/
         $this->db = Database::getDbh();
         $this->userModel = new UserModel();
     }
 
     public function index()
     {
-        if (!isLoggedIn()) {
-            redirect('users/login');
-        }
         redirect('cms-forms/dashboard');
     }
 
@@ -65,7 +62,7 @@ class CMSForms extends Controller
         $payload['title'] = 'New Change Proposal Form';
         $payload['ref_num'] = getDeptRef($department_id);
         $payload['reference'] = getDeptRef($department_id);
-
+        $current_user = getUserSession();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
             $form = new CMSFormModel();
@@ -156,6 +153,7 @@ class CMSForms extends Controller
         $payload['action_log'] = getActionLog($cms_form_id);
         $link = URL_ROOT . "/cms-forms/view-change-process/$cms_form_id";
         $subject = genEmailSubject($cms_form_id);
+        $cms_form = new CMSForm(['cms_form_id' => $cms_form_id]);
         $_POST = filterPost();
         $form->next_action = ACTION_RISK_ASSESSMENT;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -180,6 +178,8 @@ class CMSForms extends Controller
                 'link' => $link,
                 'user_id' => $originator->user_id
             );
+            $is_dept_mgr = isDepartmentManager($user->department_id, $user->user_id);
+            $dept_mgr = getDepartmentHod($user->department_id);
             if ($form->hod_approval == STATUS_REJECTED) {
                 $form->state = STATUS_REJECTED;
                 $body = get_include_contents('email_templates/change_rejected', $data);
@@ -191,6 +191,21 @@ class CMSForms extends Controller
                 insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
                 $remarks = get_include_contents('action_remarks_templates/change_approved', $data);
                 insertLog($cms_form_id, ACTION_HOD_ASSESSMENT_COMPLETED, $remarks, $originator->user_id);
+            }
+            if (!$is_dept_mgr && !empty($dept_mgr)) {
+                $body = '';
+                $data = array(
+                    'subject' => $subject,
+                    'performed_by' => concatNameWithUserId($user->user_id),
+                    'link' => $link,
+                    'user_id' => ''
+                );
+                if ($form->hod_approval == STATUS_REJECTED) {
+                    $body = get_include_contents('email_templates/change_rejected', $data);
+                } else {
+                    $body = get_include_contents('action_remarks_templates/change_approved', $data);
+                }
+                insertEmail($subject, $body, $dept_mgr[0]->email, concatNameWithUserId($dept_mgr[0]->user_id));
             }
 
             $data = $form->jsonSerialize();
@@ -634,6 +649,9 @@ class CMSForms extends Controller
         if (!CMSFormModel::has('cms_form_id', $cms_form_id)) {
             redirect('errors/index/404');
         }
+        if (!isLoggedIn()) {
+            redirect("users/login/$cms_form_id");
+        }
         $payload['title'] = 'Change Proposal, Assessment & Implementation';
         $payload['form'] = new CMSForm(['cms_form_id' => $cms_form_id]);
         $payload['active'] = CMSFormModel::getActive();
@@ -660,6 +678,7 @@ class CMSForms extends Controller
         $date_stopped = "";
         $cms_form = new CMSFormModel(['cms_form_id' => $cms_form_id]);
         $subject = genEmailSubject($cms_form_id);
+        $current_user = getUserSession();
         try {
             $date_stopped = (new DateTime())->format(DFB_DT);
         } catch (Exception $e) {
@@ -676,15 +695,22 @@ class CMSForms extends Controller
             'subject' => genEmailSubject($cms_form_id)
         );
         $remarks = get_include_contents('action_remarks_templates/change_stopped', $arr);
-        (new CmsActionLogModel())->setAction(ACTION_CHANGE_CANCELLED)
+        /*(new CmsActionLogModel())->setAction(ACTION_CHANGE_CANCELLED)
             ->setPerformedBy($user_id)
             ->setCmsFormId($cms_form_id)
             ->setRemarks($remarks)
             ->setSectionAffected(SECTION_ALL)
-            ->insert();
+            ->insert();*/
+        insertLog($cms_form_id, ACTION_CHANGE_STOPPED, $remarks, $current_user->user_id);
         $hods = getHodsWithCurrent($cms_form->department_id);
         foreach ($hods as $hod) {
-            insertEmail($subject, $remarks, $hod->email, concatNameWithUserId($hod->user_id));
+            $arr = array(
+                'user_id' => $user_id,
+                'performed_by' => $name,
+                'subject' => genEmailSubject($cms_form_id)
+            );
+            $body = get_include_contents('email_templates/change_stopped', $arr);
+            insertEmail($subject, $body, $hod->email, concatNameWithUserId($hod->user_id));
         }
         // todo: send email to hod (change owner)
         flash($flash = "flash_" . the_method(), "Change stopped successfully!", 'text-sm text-center text-success alert');
@@ -938,26 +964,39 @@ class CMSForms extends Controller
             $_POST = filterPost();
             $flash = "flash_" . the_method();
             $db = Database::getDbh();
-            $mgr = $_POST['mgr'];
-            $mgr_name = concatNameWithUserId($mgr);
+            $dept_mgr = getDepartmentHod($department_id);
+            $current_mgr = new User($_POST['mgr']);
+            $mgr_name = concatNameWithUserId($current_mgr->user_id);
             $department = new Department($department_id);
-            $user = getUserSession();
-            $user_name = concatNameWithUserId($user->user_id);
+            $current_user = getUserSession();
+            $user_name = concatNameWithUserId($current_user->user_id);
             $ret = $db->where('department_id', $department_id)
-                ->update('departments', array('current_manager' => $mgr));
+                ->update('departments', array('current_manager' => $current_mgr->user_id));
             if ($ret) {
                 $data = array(
                     'user_name' => $user_name,
                     'department' => $department->department,
-                    'mgr_name' => $mgr_name
+                    'mgr_name' => $mgr_name,
                 );
                 $remarks = get_include_contents('action_remarks_templates/change_manager', $data);
                 // set action log
-                insertLog(0, ACTION_CHANGED_MANAGER, $remarks, $user->user_id);
+                insertLog(0, ACTION_CHANGED_MANAGER, $remarks, $current_user->user_id);
+                if ($current_mgr->user_id !== $current_user->user_id) {
+                    $body = get_include_contents('email_templates/change_manager', $data);
+                    insertEmail(SUBJECT_MANAGER_CHANGED . " for " . $department->department, $body, $current_mgr->email, $mgr_name);
+                }
+
+                if (!empty($dept_mgr) && ($current_mgr->user_id !== $dept_mgr[0]->user_id)) {
+                    $user_name = echoYou($current_user->user_id);
+                    $body = "$user_name changed the Manager for " . $department->department . " to $mgr_name.";
+                    insertEmail(SUBJECT_MANAGER_CHANGED . " for " . $department->department, $body, $dept_mgr[0]->email, concatNameWithUserId($dept_mgr[0]->user_id));
+                }
+
+                /*
                 $hods = getHodsWithCurrent($department_id);
                 foreach ($hods as $hod) {
                     $data = array(
-                        'user_id' => $hod->user_id,
+                        'user_id' => $user->user_id,
                         'user_name' => $user_name,
                         'department' => $department->department,
                         'mgr_name' => $mgr_name
@@ -965,7 +1004,7 @@ class CMSForms extends Controller
                     $body = get_include_contents('email_templates/change_manager', $data);
                     $recipient_name = concatNameWithUserId($hod->user_id);
                     insertEmail(SUBJECT_MANAGER_CHANGED . " for " . $department->department, $body, $hod->email, $recipient_name);
-                }
+                }*/
                 flash($flash, 'Manager changed successfully!', 'text-center text-success alert text-sm');
             } else {
                 flash($flash, 'An error occurred!', 'text-center text-danger alert text-sm');

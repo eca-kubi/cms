@@ -1,6 +1,6 @@
 <?php /** @var  array $payload */
 if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
-    if (isDepartmentManager(getUserSession()->user_id, getOriginatorDepartmentID($payload['form']->cms_form_id)) && sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
+    if (isDepartmentManager($payload['form']->department_id, getUserSession()->user_id) && sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
         ?>
         <div class="row p-2">
             <form class="w-100"
@@ -37,7 +37,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                     <div id="section_3" class="collapse show section p-3 border">
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="form-row multiple-form-group" data-max="3">
+                                <div class="form-row multiple-form-group" data-max="15">
                                     <label for="" class="col-sm-12">
                                         Risk Assessment Document
                                         <small class="d-sm-inline d-block">(Attach Risk Assessment Document)</small>

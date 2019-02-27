@@ -139,7 +139,7 @@
                                                                         </a>
                                                                     <?php } ?>
                                                                     <?php
-                                                                    if (isDepartmentManager(getUserSession()->user_id, $cms_form->cms_form_id) || isOriginator($cms_form->cms_form_id, getUserSession()->user_id)) {
+                                                                    if (isDepartmentManager($cms_form->department_id, getUserSession()->user_id) || isOriginator($cms_form->cms_form_id, getUserSession()->user_id)) {
                                                                         if ($cms_form->state === STATUS_ACTIVE) {
                                                                             ?>
                                                                             <a href="#stopProcess" data-toggle="modal"

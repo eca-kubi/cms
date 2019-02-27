@@ -376,6 +376,10 @@ html {
     -ms-overflow-style: none;
 }
 
+/*
+ul.dropdown-menu {
+    list-style-type: none!important;
+}*/
 /*#action_list tr:not(.child) {
     counter-increment: rowNumber;
 }

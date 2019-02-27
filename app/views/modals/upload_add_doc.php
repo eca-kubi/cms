@@ -25,7 +25,7 @@
                           data-toggle="validator"
                           id="uploadAddDocForm" method="post" enctype="multipart/form-data"
                           role="form">
-                        <div class="form-row multiple-form-group" data-max="3">
+                        <div class="form-row multiple-form-group" data-max="15">
                             <!--<label for="" class="col-sm-4 text-sm-right">
                                 Additional Information <br>
                                 <small>(Maximum of three)</small>

@@ -231,7 +231,8 @@ body {
                 <div class="row">
                     <div class="col mb-2">
                         <div id="user_login">
-                            <form action="<?php echo site_url('users/login') ?>" enctype="multipart/form-data"
+                            <form action="<?php echo site_url('users/login/' . $payload['cms_form_id']) ?>"
+                                  enctype="multipart/form-data"
                                   method="post" role="form"
                                   data-toggle="validator">
                                 <fieldset class="py-0 text-left fa font-weight-normal col-sm-12 p-2">
