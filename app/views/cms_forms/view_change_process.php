@@ -56,9 +56,11 @@ $user = getUserSession();
                     if ($payload['form']->hod_approval !== 'rejected' && $payload['form']->hod_approval !== 'delayed') {
                         require_once APP_ROOT . "/views/cms_forms/sections/section_risk_assessment.php";
                         require_once APP_ROOT . "/views/cms_forms/sections/section_gm_assessment.php";
-                        require_once APP_ROOT . "/views/cms_forms/sections/section_hod_authorization.php";
-                        require_once APP_ROOT . "/views/cms_forms/sections/section_action_list.php";
-                        require_once APP_ROOT . "/views/cms_forms/sections/section_change_process_closure.php";
+                        if ($payload['form']->gm_approval !== 'rejected') {
+                            require_once APP_ROOT . "/views/cms_forms/sections/section_hod_authorization.php";
+                            require_once APP_ROOT . "/views/cms_forms/sections/section_action_list.php";
+                            require_once APP_ROOT . "/views/cms_forms/sections/section_change_process_closure.php";
+                        }
                     }
                     ?>
                 </div>

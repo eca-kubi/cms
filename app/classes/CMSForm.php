@@ -770,12 +770,12 @@ class CMSForm implements \JsonSerializable
             'email_subject' => $this->email_subject,
             'risk_attachment' => $this->risk_attachment,
             'gm_id' => $this->gm_id,
-            'state' => $this->getState(),
+            'state' => $this->state,
             'gm_approval_date' => $this->getGmApprovalDate(),
             'hod_authorization_date' => $this->hod_authorization_date,
             'impact_ass_completed_dept' => $this->impact_ass_completed_dept,
             'project_leader_acceptance_date' => $this->project_leader_acceptance_date,
-            'project_leader_acceptance_comment' => $this->getProjectLeaderAcceptanceComment()
+            'project_leader_acceptance_comment' => $this->project_leader_acceptance_comment
         ];
     }
 

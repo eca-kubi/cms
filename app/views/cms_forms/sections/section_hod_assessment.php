@@ -1,6 +1,6 @@
 <?php /** @var  array $payload */
 if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
-    if (isHOD($payload['form']->cms_form_id, getUserSession()->user_id) && sectionCompleted($payload['form']->cms_form_id, SECTION_START_CHANGE_PROCESS)) { ?>
+    if (getCurrentManager($payload['form']->department_id) === getUserSession()->user_id  /*isHOD($payload['form']->cms_form_id, getUserSession()->user_id)*/ && sectionCompleted($payload['form']->cms_form_id, SECTION_START_CHANGE_PROCESS)) { ?>
         <div class="row p-2">
             <form class="w-100"
                   action="<?php echo URL_ROOT . '/cms-forms/hod-assessment/' . $payload['form']->cms_form_id ?>"

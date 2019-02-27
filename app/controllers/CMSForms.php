@@ -132,7 +132,7 @@ class CMSForms extends Controller
                     'subject' => $subject,
                     'performed_by' => getNameJobTitleAndDepartment($user_id)
                 ));
-                insertLog($cms_form_id, ACTION_CHANGE_APPLICATION_RAISED, $remarks, $user_id);
+                insertLog($cms_form_id, ACTION_START_CHANGE_PROCESS_COMPLETED, $remarks, $user_id);
                 completeSection($cms_form_id, SECTION_START_CHANGE_PROCESS);
                 redirect('cms-forms/view-change-process/' . $cms_form_id);
             }
@@ -145,6 +145,7 @@ class CMSForms extends Controller
         if (!isLoggedIn()) {
             redirect('users/login');
         }
+        $user = getUserSession();
         $payload = array();
         $payload['title'] = "HOD's Approval ";
         $payload['form'] = $form = new CMSForm(['cms_form_id' => $cms_form_id]);
@@ -157,11 +158,11 @@ class CMSForms extends Controller
         $_POST = filterPost();
         $form->next_action = ACTION_RISK_ASSESSMENT;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (getUserSession()->user_id !== $payload['form']->hod_id) {
+            /*if (getUserSession()->user_id !== $payload['form']->hod_id) {
                 flash('flash_index', 'You are not the HoD assigned to approve this form.', 'text-danger text-center alert', '');
                 redirect('notices/index');
                 exit();
-            }
+            }*/
             $form->hod_approval = $_POST['hod_approval'];
             $form->hod_reasons = $_POST['hod_reasons'];
             //$form->hod_ref_num = $_POST['hod_ref_num'];
@@ -172,38 +173,28 @@ class CMSForms extends Controller
             if (!empty($_POST['gm_id'])) {
                 $form->gm_id = $_POST['gm_id'];
             }
+            $data = array(
+                'subject' => $subject,
+                'performed_by' => concatNameWithUserId($user->user_id),
+                'link' => $link,
+                'user_id' => $originator->user_id
+            );
             if ($form->hod_approval == STATUS_REJECTED) {
-                $body = "Hi, " . ucwords($originator->first_name . ' ' . $originator->last_name, '-. ') . HTML_NEW_LINE .
-                    "Your Change Proposal has been <u>rejected</u> by your HoD, " . ucwords($hod->first_name . ' ' . $hod->last_name) . '.' . HTML_NEW_LINE .
-                    "Click this link for more details" . '<a href="' . $link . '" />' . $link . '</a>';
-                insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
                 $form->state = STATUS_REJECTED;
-            } elseif ($form->hod_approval == STATUS_APPROVED) {
-                $body = "Hi, " . ucwords($originator->first_name . ' ' . $originator->last_name, '-. ') . HTML_NEW_LINE .
-                    "Your Change Proposal has been <u>approved</u> by your HoD, " . ucwords($hod->first_name . ' ' . $hod->last_name) . '.' . HTML_NEW_LINE .
-                    "Click this link for more details" . '<a href="' . $link . '" />' . $link . '</a>';
+                $body = get_include_contents('email_templates/change_rejected', $data);
                 insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
-                //notifyOHSForMonitoring($cms_form_id);
-                /** if (!empty($_POST['gm_id'])) {
-                 * notifyGm($cms_form_id, $form);
-                 * } */
-            } /*else {
-                $body = "Hi, " . ucwords($originator->first_name . ' ' . $originator->last_name, '-. ') . HTML_NEW_LINE .
-                    "Your Change Proposal has been <u>delayed</u> by your HoD, " . ucwords($hod->first_name . ' ' . $hod->last_name) . '.' . HTML_NEW_LINE .
-                    "Click this link for more details " . '<a href="' . $link . '" />' . $link . '</a>';
-                $form->state = STATUS_DELAYED;
+                $remarks = get_include_contents('action_remarks_templates/change_rejected', $data);
+                insertLog($cms_form_id, ACTION_HOD_ASSESSMENT_COMPLETED, $remarks, $originator->user_id);
+            } else {
+                $body = get_include_contents('email_templates/change_approved', $data);
                 insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
-            }*/
+                $remarks = get_include_contents('action_remarks_templates/change_approved', $data);
+                insertLog($cms_form_id, ACTION_HOD_ASSESSMENT_COMPLETED, $remarks, $originator->user_id);
+            }
+
             $data = $form->jsonSerialize();
             (new CMSFormModel(null))->updateForm($cms_form_id, $data);
-
             completeSection($cms_form_id, SECTION_HOD_ASSESSMENT);
-            //set action log
-            (new CmsActionLogModel())->setAction(ACTION_HOD_ASSESSMENT_COMPLETED)
-                ->setPerformedBy(getUserSession()->user_id)
-                ->setCmsFormId($cms_form_id)
-                ->setSectionAffected(SECTION_HOD_ASSESSMENT)
-                ->insert();
             redirect('cms-forms/view-change-process/' . $cms_form_id);
         }
         $this->view('cms_forms/view_change_process', $payload);
@@ -212,6 +203,7 @@ class CMSForms extends Controller
     public function RiskAssessment(int $cms_form_id = -1)
     {
         $payload = array();
+        $current_user = getUserSession();
         $all_depts = Database::getDbh()->getValue('departments', 'department_id', null);
         $payload['user'] = getUserSession();
         $payload['title'] = 'Risk Assessment';
@@ -239,12 +231,18 @@ class CMSForms extends Controller
                 'affected_dept' => $payload['form']->affected_dept,
                 'risk_attachment' => $uploaded['success'] ? $uploaded['file'] : ''
             ]);
-            $log->setSectionAffected(SECTION_RISK_ASSESSMENT)
+            $data = array(
+                'subject' => genEmailSubject($cms_form_id),
+                'performed_by' => concatNameWithUserId($current_user->user_id),
+            );
+            $remarks = get_include_contents('action_remarks_templates/risk_assessment_completed', $data);
+            insertLog($cms_form_id, ACTION_RISK_ASSESSMENT_COMPLETED, $remarks, $current_user->user_id);
+            /*$log->setSectionAffected(SECTION_RISK_ASSESSMENT)
                 ->setAction(ACTION_RISK_ASSESSMENT_COMPLETED)
                 ->setPerformedBy(getUserSession()->user_id)
                 ->setCmsFormId($cms_form_id)
                 ->setDepartmentAffected($payload['form']->affected_dept)
-                ->insert();
+                ->insert();*/
             completeSection($cms_form_id, SECTION_RISK_ASSESSMENT);
             // Notify impact assessment reps
             //notifyImpactAccessReps($cms_form_id);
@@ -270,6 +268,7 @@ class CMSForms extends Controller
         $department = new Department($department_id);
         $cms = new CMSFormModel(array('cms_form_id' => $cms_form_id));
         //$hods = getDepartmentHods($department_id);
+        //$current_hod =
         $change_owner = new User($cms->hod_id);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
@@ -887,13 +886,26 @@ class CMSForms extends Controller
             $ret = $db->where('department_id', $department_id)
                 ->update('departments', array('current_manager' => $mgr));
             if ($ret) {
-                $remarks = "$user_name changed the manager for " . $department->department
-                    . " to " . " $mgr_name";
+                $data = array(
+                    'user_name' => $user_name,
+                    'department' => $department->department,
+                    'mgr_name' => $mgr_name
+                );
+                $remarks = get_include_contents('action_remarks_templates/change_manager', $data);
                 // set action log
-                (new CmsActionLogModel())->setAction(ACTION_CHANGED_MANAGER)
-                    ->setPerformedBy($user->user_id)
-                    ->setRemarks($remarks)
-                    ->insert();
+                insertLog(0, ACTION_CHANGED_MANAGER, $remarks, $user->user_id);
+                $hods = getHodsWithCurrent($department_id);
+                foreach ($hods as $hod) {
+                    $data = array(
+                        'user_id' => $hod->user_id,
+                        'user_name' => $user_name,
+                        'department' => $department->department,
+                        'mgr_name' => $mgr_name
+                    );
+                    $body = get_include_contents('email_templates/change_manager', $data);
+                    $recipient_name = concatNameWithUserId($hod->user_id);
+                    insertEmail(SUBJECT_MANAGER_CHANGED . " for " . $department->department, $body, $hod->email, $recipient_name);
+                }
                 flash($flash, 'Manager changed successfully!', 'text-center text-success alert text-sm');
             } else {
                 flash($flash, 'An error occurred!', 'text-center text-danger alert text-sm');

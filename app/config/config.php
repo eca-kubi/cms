@@ -121,7 +121,7 @@ const STATUS_ACCEPTED = 'accepted';
 const REMINDER_LIMIT = 3;
 const REMINDER_INTERVAL = '30S'; // 10 seconds
 
-
+const SUBJECT_MANAGER_CHANGED = 'CMS Manager Changed';
 const ROLE_MANAGER = 'Manager';
 const ROLE_SUPERINTENDENT = 'Superintendent';
 

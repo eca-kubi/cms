@@ -338,6 +338,10 @@ function notifyAllHODs($cms_form_id)
     $managers = getManagers();
     foreach ($managers as $manager) {
         $name = concatNameWithUserId($manager->user_id);
+        /*$data = array(
+
+        );*/
+        // todo: use template
         $body = "Hi, " . $name . ', ' . HTML_NEW_LINE .
             "A Change Proposal raised by " . ($manager->user_id === $cms_form->originator_id ? " you " : getNameJobTitleAndDepartment($cms_form->originator_id)) .
             " requires response to questions on Possible Impacts related to your department (" . $affected_department->department . "). " .
@@ -1021,11 +1025,12 @@ function setReminder($cms_form_id, $interval, $limit)
     $ret = false;
     $db = Database::getDbh();
     try {
-        $ret = $db->insert('assessment_reminder', array(
+        $arr = array(
             'cms_form_id' => $cms_form_id,
-            'remind_at' => (new DateTime())->add(new DateInterval('PT' . $interval . 'H'))->format(DFB_DT),
+            'remind_at' => (new DateTime())->add(new DateInterval('PT' . $interval))->format(DFB_DT),
             'limit' => $limit
-        ));
+        );
+        $ret = $db->insert('assessment_reminder', $arr);
     } catch (Exception $e) {
     } finally {
         return $ret;
@@ -1081,13 +1086,13 @@ function getRemindersPending()
     return $ret;
 }
 
-function echoYou($user_id, $substitute)
+function echoYou($substitute, $user_id = '')
 {
-    /*if (empty($user_id)) {
+    if (empty($user_id)) {
         $user_id = getUserSession()->user_id;
-    }*/
+    }
     if (its_logged_in_user($user_id)) {
-        return " You ";
+        return "You";
     }
     return $substitute;
 }
