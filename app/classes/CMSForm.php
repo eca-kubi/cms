@@ -57,6 +57,7 @@ class CMSForm implements \JsonSerializable
     public $title;
     public $date_closed;
 
+
     /**
      * CMSForm constructor.
      * @param array|null $where_col_val
@@ -753,7 +754,7 @@ class CMSForm implements \JsonSerializable
             'gm_approval' => $this->gm_approval,
             'gm_approval_reasons' => $this->gm_approval_reasons,
             'hod_authorization' => $this->hod_authorization,
-            'hod_authorization_comment' => $this->getHodAuthorizationComment(),
+            'hod_authorization_comment' => $this->hod_authorization_comment,
             'project_leader_id' => $this->project_leader_id,
             'project_leader_acceptance' => $this->project_leader_acceptance,
             'hod_close_change' => $this->hod_close_change,

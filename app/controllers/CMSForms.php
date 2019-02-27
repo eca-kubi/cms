@@ -509,9 +509,9 @@ class CMSForms extends Controller
         if (!isLoggedIn()) {
             redirect('users/login');
         }
-        if (!isDepartmentManager(getUserSession()->user_id, getOriginatorDepartmentID($cms_form_id))) {
+        /*if (!isDepartmentManager(getUserSession()->user_id, getOriginatorDepartmentID($cms_form_id))) {
             redirect('cms-forms/view-change-process/' . $cms_form_id);
-        }
+        }*/
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $cms_form = new CMSForm(['cms_form_id' => $cms_form_id]);
@@ -528,13 +528,23 @@ class CMSForms extends Controller
                 $cms_form->hod_authorization_date = (new DateTime())->format(DFB_DT);
             } catch (Exception $e) {
             }
-            $body = "Hi, " . concatNameWithUserId($originator->user_id) . HTML_NEW_LINE .
+            $template_data = array(
+                'project_owner' => concatNameWithUserId($hod->user_id),
+                'project_leader' => concatNameWithUserId($project_leader->user_id),
+                'subject' => genEmailSubject($cms_form_id),
+                'link' => $link
+            );
+            /*$body = "Hi, " . concatNameWithUserId($originator->user_id) . HTML_NEW_LINE .
                 getNameJobTitleAndDepartment($hod->user_id) . " has selected " .
                 ($project_leader->user_id === $originator->user_id ? "you " : getNameJobTitleAndDepartment($project_leader->user_id)) .
                 " as Project Leader for this Change Proposal." . HTML_NEW_LINE .
-                "Click this link for more details: " . '<a href="' . $link . '" />' . $link . '</a>';
-            insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
-
+                "Click this link for more details: " . '<a href="' . $link . '" />' . $link . '</a>';*/
+            if ($originator->user_id !== getUserSession()->user_id) {
+                $body = get_include_contents('email_templates/pl_selected', $template_data);
+                insertEmail($subject, $body, $project_leader->email, concatNameWithUserId($project_leader->user_id));
+            }
+            //insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
+            flash($flash = "flash_" . the_method(), "Success!", 'text-sm text-center text-success alert');
             $data = $cms_form->jsonSerialize();
             (new CMSFormModel(null))->updateForm($cms_form_id, $data);
             // complete section
@@ -562,13 +572,19 @@ class CMSForms extends Controller
             $cms_form->setProjectLeaderAcceptanceComment($_POST['project_leader_acceptance_comment']);
             $cms_form->setProjectLeaderAcceptanceDate(now());
             $data = $cms_form->jsonSerialize();
-            (new CMSFormModel(null))->updateForm($cms_form_id, $data);
-            completeSection($cms_form_id, SECTION_PL_ACCEPTANCE);
-            (new CmsActionLogModel())->setAction(ACTION_PROJECT_LEADER_ACCEPTANCE_COMPLETED)
-                ->setPerformedBy(getUserSession()->user_id)
-                ->setCmsFormId($cms_form_id)
-                ->setSectionAffected(SECTION_HOD_AUTHORISATION)
-                ->insert();
+            $cms_form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+            $ret = ($cms_form_model)->updateForm($cms_form_id, $data);
+            if ($ret) {
+                flash_success();
+                completeSection($cms_form_id, SECTION_PL_ACCEPTANCE);
+                (new CmsActionLogModel())->setAction(ACTION_PROJECT_LEADER_ACCEPTANCE_COMPLETED)
+                    ->setPerformedBy(getUserSession()->user_id)
+                    ->setCmsFormId($cms_form_id)
+                    ->setSectionAffected(SECTION_HOD_AUTHORISATION)
+                    ->insert();
+            } else {
+                flash_error();
+            }
         }
         redirect('cms-forms/view-change-process/' . $cms_form_id);
     }
@@ -629,8 +645,8 @@ class CMSForms extends Controller
         $payload['action_log'] = getActionLog($cms_form_id);
         $payload['gms'] = getGms();
         $payload['department_members'] = Database::getDbh()->where('department_id', getUserSession()->department_id)
-            ->where('role', 'Manager', '<>')
-            ->where('role', 'Superintendent', '<>')
+            /*->where('role', 'Manager', '<>')
+            ->where('role', 'Superintendent', '<>')*/
             ->objectBuilder()
             ->get('users');
         $this->view('cms_forms/view_change_process', $payload);
@@ -777,6 +793,49 @@ class CMSForms extends Controller
                  header("Content-Length: " . filesize($zipname));
                  header("Content-disposition: attachment; filename=\"" . $zipname . "\"");
                  readfile($zipname);*/
+                exit;
+            }
+        }
+    }
+
+    public function DownloadPlDocuments($cms_form_id)
+    {
+        $cms = new CMSFormModel(array('cms_form_id' => $cms_form_id));
+        $file_name = $cms->pl_documents;
+        $ref = $cms->getHodRefNum();
+        if (empty($ref)) {
+            $ref = getDeptRef($cms->department_id);
+        }
+        $files = explode(',', $file_name);
+        $title = "PL Documents";
+        if (!file_exists('zip')) {
+            mkdir('zip', 0777, true);
+        }
+        $zipname = 'zip/' . $title . "_$cms_form_id.zip";
+        $zip = new ZipArchive;
+        $zip->open($zipname, ZipArchive::CREATE);
+        foreach ($files as $file) {
+            $the_file = PATH_PL_DOCUMENTS . "$cms_form_id\\" . $file;
+            $zip->addFile($the_file, basename($the_file));
+        }
+        $zip->close();
+        if (headers_sent()) {
+            echo 'HTTP header already sent';
+        } else {
+            if (!is_file($zipname)) {
+                header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+                echo 'File not found';
+            } else if (!is_readable($zipname)) {
+                header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+                echo 'File not readable';
+            } else {
+                // set the headers, prevent caching
+                //header("Pragma: public");
+                //header("Expires: -1");
+                //header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
+                header("Content-Disposition: attachment; filename=\"$title.$ref.zip\"");
+                header("Content-Type: " . "application/zip");
+                readfile($zipname);
                 exit;
             }
         }
@@ -978,7 +1037,7 @@ class CMSForms extends Controller
             $result = uploadFile('additional_info', $cms_form_id, PATH_PL_DOCUMENTS);
             if ($result['success']) {
                 $result['file'] = trim($result['file'] . ',' . $form_model->pl_documents, ',');
-                $form_model->updateForm($cms_form_id, ['additional_info' => $result['file']]);
+                $form_model->updateForm($cms_form_id, ['pl_documents' => $result['file']]);
                 flash('flash_view_change_process', 'File upload success!',
                     'text-success text-sm text-center alert');
             } else {

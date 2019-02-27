@@ -901,11 +901,12 @@ function getOriginatorDepartmentID($cms_form_id)
  */
 function now()
 {
+    $date_time = '';
     try {
-        return (new DateTime())->format(DFB_DT);
+        $date_time = (new DateTime())->format(DFB_DT);
     } catch (Exception $e) {
     } finally {
-        return '';
+        return $date_time;
     }
 }
 
@@ -1107,4 +1108,14 @@ function insertLog($cms_form_id, $action, $remarks, $performed_by)
         'performed_by' => $performed_by
     );
     return $db->insert('cms_action_log', $data);
+}
+
+function flash_success()
+{
+    flash($flash = "flash_" . the_method(), "Success!", 'text-sm text-center text-success alert');
+}
+
+function flash_error()
+{
+    flash($flash = "flash_" . the_method(), "An error occurred!", 'text-sm text-center text-danger alert');
 }

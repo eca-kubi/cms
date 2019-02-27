@@ -911,8 +911,8 @@ class CMSFormModel extends Model implements \JsonSerializable
 
     public function updateForm($cms_form_id, array $insertData)
     {
-        return Database::getDbh()->where('cms_form_id', $cms_form_id)->
-        update(self::$table, $insertData);
+        return Database::getDbh()->where('cms_form_id', $cms_form_id)
+            ->update(self::$table, $insertData);
     }
 
     public function getCMSForm(int $cms_form_id)

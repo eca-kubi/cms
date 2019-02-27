@@ -1,6 +1,6 @@
 <?php /** @var  array $payload */
 //sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION) && !empty($payload['form']->project_leader_acceptance
-if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION)) { ?>
+if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION) && !empty($payload['form']->project_leader_acceptance)) { ?>
     <div class="row p-2">
         <div class="w-100 row border ml-0 p-1">
             <h6 class="text-bold font-italic col m-1">
@@ -16,15 +16,34 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION)) 
 heredoc;
                     } ?>
                 </a>
+                <?php
+                if (!empty($payload['form']->pl_documents)) {
+                    ?>
+                    <span class="mx-2"></span>
+                    <a
+                            href="<?php echo URL_ROOT . '/cms-forms/download-pl-documents/' . $payload['form']->cms_form_id; ?>"
+                            target="_blank"
+                            title="Download Attached Documents"
+                            class="">
+                        <span class="text-sm badge badge-success"> <i class="fa fa-file-download"></i> Download Attached Documents</span>
+                    </a>
+                    <?php
+                } ?>
                 <span class="mx-2"></span>
-                <a
-                        data-toggle="modal"
-                        href="#uploadPlDoc"
-                        target="_blank"
-                        title="Upload More Documents"
-                        class="">
-                    <span class="text-sm badge badge-info"> <i class="fa fa-file-upload"></i> Upload Documents</span>
-                </a>
+                <?php
+                if ($payload['form']->project_leader_id === getUserSession()->user_id) { ?>
+                    <a
+                            data-toggle="modal"
+                            href="#uploadPlDoc"
+                            target="_blank"
+                            title="Upload More Documents"
+                            class="">
+                        <span class="text-sm badge badge-info"> <i
+                                    class="fa fa-file-upload"></i> Upload Documents</span>
+                    </a>
+                <?php }
+                ?>
+
             </h6>
             <span class="text-right float-right invisible">
                         <a href="#" title="Edit this section">
