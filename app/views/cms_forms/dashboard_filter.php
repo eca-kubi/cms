@@ -61,8 +61,7 @@
                                     <div class="box-tools pull-right">
                                         <div class="btn-group">
                                             <button type="button"
-                                                    class="btn btn-box-tool dropdown-toggle p-1 text-<?php echo $state['color']; ?>"
-                                                    onclick="$(this).parents('.box').boxWidget('expand')"
+                                                    class="btn btn-box-tool dropdown-toggle p-1 search-button text-<?php echo $state['color']; ?>"
                                                     data-toggle="dropdown" aria-expanded="true">
                                                 <i class="fas fa-search"></i></button>
                                             <ul class="dropdown-menu px-2" role="menu">
@@ -111,7 +110,7 @@
                                                                 (<?php echo $originator->job_title; ?>)
                                                                 @ <?php echo $originator->department->department; ?></dd>
                                                             <dt class="col-sm-4 text-sm-right">Date Raised</dt>
-                                                            <dd class="col-sm-8 product-description date">
+                                                            <dd class="col-sm-8 product-description date_raised">
                                                                 <?php //echo formatDate($cms_form->date_raised, DFB_DT, DFF_DT);  ?>
                                                                 <?php echoDate($cms_form->date_raised); ?>
                                                             </dd>
@@ -121,7 +120,7 @@
                                                             </dd>
                                                             <?php if ($cms_form->state === STATUS_CLOSED) { ?>
                                                                 <dt class="col-sm-4 text-sm-right">Date Closed:</dt>
-                                                                <dd class="col-sm-8 product-description change_type">
+                                                                <dd class="col-sm-8 product-description date_closed">
                                                                     <?php echoDate($cms_form->date_closed); ?>
                                                                 </dd>
                                                             <?php } ?>

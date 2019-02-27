@@ -60,15 +60,10 @@ class CMSForms extends Controller
         }
         $payload = array();
         $department_id = getUserSession()->department_id;
-        $user_id = getUserSession()->user_id;
+        $user = getUserSession();
+        $user_id = $user->user_id;
         $payload['title'] = 'New Change Proposal Form';
         $payload['ref_num'] = getDeptRef($department_id);
-        $payload['hod'] = Database::getDbh()
-            ->objectBuilder()
-            ->where('role', 'Manager')
-            ->where('department_id', $department_id)
-            ->orWhere('role', 'Superintendent')
-            ->get('users', null, '*');
         $payload['reference'] = getDeptRef($department_id);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
@@ -77,7 +72,7 @@ class CMSForms extends Controller
             $form->advantages = $_POST['advantages'];
             $form->alternatives = $_POST['alternatives'];
             $form->area_affected = $_POST['area_affected'];
-            if (isset($_POST['other_type'])) {
+            if (!empty($_POST['other_type'])) {
                 $_POST['change_type'][] = $_POST['other_type'];
                 $key = array_search('Other', $_POST['change_type']);
                 if (false !== $key) {
@@ -92,15 +87,8 @@ class CMSForms extends Controller
             $form->setHodRefNum(getDeptRef($department_id));
             $form->setDepartmentId($department_id);
             $form->title = $_POST['title'];
-            //$form->risk_level = $_POST['risk_level'];
-            //$form->budget_level = $_POST['budget_level'];
-            /*if (isset($_POST['other_type'])) {
-                $form->other_type = $_POST['other_type'];
-            }*/
-
             // upload additional info
             $form->hod_id = $_POST['hod_id'];
-            //$form->next_action = ACTION_HOD_ASSESSMENT;
             $cms_form_id = $form->insert();
             if ($cms_form_id) {
                 $result = uploadFile('additional_info', $cms_form_id, PATH_ADDITIONAL_INFO);
@@ -108,29 +96,43 @@ class CMSForms extends Controller
                     $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
                     $form_model->updateForm($cms_form_id, ['additional_info' => $result['file']]);
                 }
-                flash('flash_view_change_process', 'Your Change Proposal has been submitted successfully.
-                            Your manager has been notified for approval.',
-                    'text-success text-sm text-center alert');
+                flash('flash_view_change_process', 'Success!', 'text-success text-sm text-center alert');
                 $originator_name = concatNameWithUserId(getUserSession()->user_id);
-                $hod = new User($_POST['hod_id']);
-                //$subject = 'Change Proposal, Assessment and Implementation';
-                $body = 'Hi ' . ucwords($hod->first_name . ' ' . $hod->last_name, '-. ') . ', ' . HTML_NEW_LINE . 'A Change Proposal application has been raised by ' .
-                    getNameJobTitleAndDepartment(getOriginatorId($cms_form_id)) . '.' .
-                    ' Kindly use the link below to approve it.' . HTML_NEW_LINE . genLink($cms_form_id, 'view-change-process');
-                insertEmail(genEmailSubject($cms_form_id), $body, $hod->email, $hod->first_name . ' ' . $hod->last_name);
-
-                $body = 'Hi ' . $originator_name . ', ' . HTML_NEW_LINE .
-                    'Your Change Proposal has been submitted to your manager for approval. ' .
-                    ' Kindly use the link below to monitor progress.' . HTML_NEW_LINE .
-                    genLink($cms_form_id, 'view-change-process');
-                insertEmail(genEmailSubject($cms_form_id), $body, getUserSession()->email, $originator_name);
-
-                //set action log
-                (new CmsActionLogModel())->setAction(ACTION_START_CHANGE_PROCESS_COMPLETED)
-                    ->setPerformedBy(getUserSession()->user_id)
-                    ->setCmsFormId($cms_form_id)
-                    ->setSectionAffected(SECTION_START_CHANGE_PROCESS)
-                    ->insert();
+                $hods = getHodsWithCurrent($department_id);
+                $subject = genEmailSubject($cms_form_id);
+                foreach ($hods as $hod) {
+                    $recipient = concatNameWithUserId($hod->user_id);
+                    $data = array(
+                        'user_id' => $hod->user_id,
+                        'originator' => $originator_name,
+                        'recipient' => $recipient,
+                        'link' => "cms-forms/view-change-process/$cms_form_id"
+                    );
+                    $body = get_include_contents('email_templates/change_application_raised/notify_hods', $data);
+                    insertEmail($subject, $body, $hod->email, $recipient);
+                }
+                $originator_is_hod = false;
+                array_walk($hods, function ($val, $key) use ($user_id, &$originator_is_hod) {
+                    if ($val->user_id === $user_id) {
+                        $originator_is_hod = true;
+                    }
+                });
+                if (!$originator_is_hod) {
+                    $recipient_name = concatNameWithUserId($user_id);
+                    $data = $data = array(
+                        'user_id' => $user_id,
+                        'originator' => $originator_name,
+                        'recipient' => $recipient_name,
+                        'link' => "cms-forms/view-change-process/$cms_form_id"
+                    );
+                    $body = get_include_contents('email_templates/change_application_raised/notify_originator', $data);
+                    insertEmail($subject, $body, $user->email, $recipient_name);
+                }
+                $remarks = get_include_contents('action_remarks_templates/change_raised', array(
+                    'subject' => $subject,
+                    'performed_by' => getNameJobTitleAndDepartment($user_id)
+                ));
+                insertLog($cms_form_id, ACTION_CHANGE_APPLICATION_RAISED, $remarks, $user_id);
                 completeSection($cms_form_id, SECTION_START_CHANGE_PROCESS);
                 redirect('cms-forms/view-change-process/' . $cms_form_id);
             }
@@ -640,6 +642,8 @@ class CMSForms extends Controller
     {
         $db = Database::getDbh();
         $date_stopped = "";
+        $cms_form = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+        $subject = genEmailSubject($cms_form_id);
         try {
             $date_stopped = (new DateTime())->format(DFB_DT);
         } catch (Exception $e) {
@@ -662,6 +666,10 @@ class CMSForms extends Controller
             ->setRemarks($remarks)
             ->setSectionAffected(SECTION_ALL)
             ->insert();
+        $hods = getHodsWithCurrent($cms_form->department_id);
+        foreach ($hods as $hod) {
+            insertEmail($subject, $remarks, $hod->email, concatNameWithUserId($hod->user_id));
+        }
         // todo: send email to hod (change owner)
         flash($flash = "flash_" . the_method(), "Change stopped successfully!", 'text-sm text-center text-success alert');
         goBack();

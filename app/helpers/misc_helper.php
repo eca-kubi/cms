@@ -198,6 +198,10 @@ function concatWith(string $symbol, $symbolForLastElem, array $array)
         return '';
     }
 
+    $array = array_filter($array, function ($value) {
+        return !empty($value);
+    });
+
     $lastElem = end($array);
     $lastElemKey = key($array);
 
@@ -1035,7 +1039,7 @@ function updateReminder($cms_form_id, $time, $interval, $limit, $expired)
     try {
         $ret = $db->update('assessment_reminder', array(
             'cms_form_id' => $cms_form_id,
-            'remind_at' => (new DateTime($time))->add(new DateInterval('PT' . $interval . 'H'))->format(DFB_DT),
+            'remind_at' => (new DateTime($time))->add(new DateInterval('PT' . $interval))->format(DFB_DT),
             'limit' => $limit,
             'expired' => $expired
         ));
@@ -1075,4 +1079,27 @@ function getRemindersPending()
         ->objectBuilder()
         ->get('assessment_reminder');
     return $ret;
+}
+
+function echoYou($user_id, $substitute)
+{
+    /*if (empty($user_id)) {
+        $user_id = getUserSession()->user_id;
+    }*/
+    if (its_logged_in_user($user_id)) {
+        return " You ";
+    }
+    return $substitute;
+}
+
+function insertLog($cms_form_id, $action, $remarks, $performed_by)
+{
+    $db = Database::getDbh();
+    $data = array(
+        'cms_form_id' => $cms_form_id,
+        'action' => $action,
+        'remarks' => $remarks,
+        'performed_by' => $performed_by
+    );
+    return $db->insert('cms_action_log', $data);
 }

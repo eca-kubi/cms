@@ -49,6 +49,7 @@ const AUDIO_FILE_TYPES = 'audio/*';
 const DOC_FILE_TYPES = '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/msword, application/pdf, text/plain, text/html, application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 const HTML_NEW_LINE = '<br/>';
 const ACTION_START_CHANGE_PROCESS = 'start_change_process';
+const ACTION_CHANGE_APPLICATION_RAISED = 'change application raised';
 const ACTION_IMPACT_ASSESSMENT_RESPONSE_COMPLETED = 'impact_assessment_response_complete';
 const ACTION_START_CHANGE_PROCESS_COMPLETED = 'start_change_process_completed';
 const ACTION_HOD_ASSESSMENT = 'hod_assessment';
@@ -118,7 +119,7 @@ const STATUS_ACTIVE = 'active';
 const STATUS_AUTHORIZED = 'authorized';
 const STATUS_ACCEPTED = 'accepted';
 const REMINDER_LIMIT = 3;
-const REMINDER_INTERVAL = 1;
+const REMINDER_INTERVAL = '30S'; // 10 seconds
 
 
 const ROLE_MANAGER = 'Manager';

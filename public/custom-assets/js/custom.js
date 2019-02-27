@@ -48,13 +48,21 @@ $(document).ready(function () {
         $this.find('input[type=text]:first').focus();
     });
 
+    $('.search-button').click(function () {
+        let $this = $(this);
+        $this.parents('.box').boxWidget('expand');
+        setTimeout(() => {
+            $this.siblings('ul').find('input').focus();
+        }, 200)
+    });
+
     $('form[data-toggle=validator] input[type=text]:not([readonly]):first').focus();
 
     $(window).resize(function () {
         $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
     });
 
-    $('#add_cms_form').validator().on('submit', (e)=>{
+    $('#add_cms_form').validator().on('submit', (e) => {
         let hod = $('#hod_id');
         if (hod.length === 0) return;
         if (hod.val() === '') {
@@ -534,13 +542,14 @@ function dateTemplate(date) {
 
 function initList(id) {
     let options = {
-        valueNames: ['ref_num', 'originator', 'date', 'change_type'],
+        valueNames: ['title', 'ref_num', 'originator', 'date_raised', 'change_type'],
         searchClass: 'search',
         item: `<div class="col-sm-5 mx-sm-5">
         <dl>
             <dt></dt><dd class="ref_num"></dd>
+            <dt></dt><dd class="title"></dd>
             <dt></dt><dd class="originator"></dd>
-            <dt></dt><dd class="date"></dd>
+            <dt></dt><dd class="date_raised"></dd>
             <dt></dt><dd class="change_type"></dd>
             <dt></dt><dd></dd>
         </dl>
@@ -602,8 +611,8 @@ let countFormGroup = function ($form) {
 };
 
 let stopChangeProcess = function (e) {
-    let redirect = window.location.href;
-    window.location.href = $(this).attr('data-href') + '?redirect=' + redirect;
+    //let redirect = window.location.href;
+    window.location.href = $(this).attr('data-href');
 };
 
 let checkHODAssignment = function (e) {

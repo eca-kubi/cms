@@ -9,6 +9,6 @@ $echoYou = 'echoYou';
 
 echo <<<heredoc
 Hi $recipient,
-A Change Proposal application has been raised by {$echoYou($user_id, $originator)}.
+You have raised a Change Proposal application.
 Click this link for details: <a href="$link">$link</a>
 heredoc;

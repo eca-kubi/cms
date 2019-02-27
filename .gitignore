@@ -260,3 +260,9 @@ paket-files/
 __pycache__/
 *.pyc
 /app/config/host.php
+
+# zip folder for download of attachments
+/public/zip/
+
+# uploads folder
+/public/assets/uploads/*

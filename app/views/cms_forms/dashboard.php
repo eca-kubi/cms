@@ -57,11 +57,12 @@
                                         </h3>
                                         <div class="box-tools pull-right">
                                             <div class="btn-group">
-                                                <button type="button" class="btn btn-box-tool dropdown-toggle p-1"
+                                                <button type="button"
+                                                        class="btn btn-box-tool dropdown-toggle p-1 search-button text-<?php echo $state['color']; ?>"
                                                     <?php $state_name = $state['name']; ?>
-                                                        onclick="$(this).parents('.box').boxWidget('expand'); $('#list_search_<?php echo $state_name; ?>').focus()"
                                                         data-toggle="dropdown" aria-expanded="true">
-                                                    <i class="fas fa-search"></i></button>
+                                                    <i class="fas fa-search"></i>
+                                                </button>
                                                 <ul class="dropdown-menu px-2" role="menu">
                                                     <li>
                                                         <input type="text" class="form-control"
@@ -84,7 +85,8 @@
                                         <?php
                                         if (!empty($payload[$state['name']])) { ?>
                                             <div id="list_container_<?php echo $state['name'] ?>">
-                                                <input class="search d-none" id="search_<?php echo $state['name']; ?>"/>
+                                                <input class="search d-none" id="search_<?php echo $state['name']; ?>"
+                                                       placeholder=""/>
                                                 <div class="products-list product-list-in-box row list">
                                                     <?php
                                                     $count = 1;
@@ -108,7 +110,7 @@
                                                                     (<?php echo $originator->job_title; ?>)
                                                                     @ <?php echo $originator->department->department; ?></dd>
                                                                 <dt class="col-sm-4 text-sm-right">Date Raised</dt>
-                                                                <dd class="col-sm-8 product-description date">
+                                                                <dd class="col-sm-8 product-description date_raised">
                                                                     <?php //echo formatDate($cms_form->date_raised, DFB_DT, DFF_DT);  ?>
                                                                     <?php echoDate($cms_form->date_raised); ?>
                                                                 </dd>
