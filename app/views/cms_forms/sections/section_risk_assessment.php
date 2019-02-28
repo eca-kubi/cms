@@ -1,6 +1,6 @@
 <?php /** @var  array $payload */
 if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
-    if (isDepartmentManager($payload['form']->department_id, getUserSession()->user_id) && sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
+    if (isCurrentManager($payload['form']->department_id, getUserSession()->user_id) && sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
         ?>
         <div class="row p-2">
             <form class="w-100"
@@ -130,6 +130,19 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                             </a>
                             <?php
                         } ?>
+                        <?php
+                        if (canUploadFile($payload['form']->cms_form_id)) { ?>
+                            <span class="mx-2"></span>
+                            <a
+                                    data-toggle="modal"
+                                    href="#uploadRiskAssDoc"
+                                    target="_blank"
+                                    title="Upload More Documents"
+                                    class="">
+                                <span class="text-sm badge badge-info"> <i class="fa fa-file-upload"></i> Upload More Documents</span>
+                            </a>
+                        <?php }
+                        ?>
                     </h6>
                     <span class="text-right float-right d-none">
                             <?php if (!empty($payload['form']->risk_attachment)) {

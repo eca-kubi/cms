@@ -12,9 +12,9 @@
   <link rel="icon" href="<?php echo URL_ROOT; ?>/public/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/animate.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/w3.css" />
+    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/adminlte.css"/>
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/bootstrap-fs-modal.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/bootstrap-select.css" />
-    <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/adminlte.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/adminlte-miscellaneous.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/box-widget.css" />
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/datatables.min.css" />

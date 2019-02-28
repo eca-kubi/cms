@@ -56,83 +56,45 @@ class CMSForms extends Controller
             redirect('users/login');
         }
         $payload = array();
-        $department_id = getUserSession()->department_id;
-        $user = getUserSession();
-        $user_id = $user->user_id;
-        $payload['title'] = 'New Change Proposal Form';
-        $payload['ref_num'] = getDeptRef($department_id);
-        $payload['reference'] = getDeptRef($department_id);
         $current_user = getUserSession();
+        $payload['title'] = 'New Change Proposal Form';
+        $payload['ref_num'] = $payload['reference'] = getDeptRef($current_user->department_id);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $_POST = filterPost();
-            $form = new CMSFormModel();
-            $form->change_description = $_POST['change_description'];
-            $form->advantages = $_POST['advantages'];
-            $form->alternatives = $_POST['alternatives'];
-            $form->area_affected = $_POST['area_affected'];
-            if (!empty($_POST['other_type'])) {
-                $_POST['change_type'][] = $_POST['other_type'];
-                $key = array_search('Other', $_POST['change_type']);
-                if (false !== $key) {
-                    unset($_POST['change_type'][$key]);
-                }
-                $form->other_type = $_POST['other_type'];
-            }
-            $form->change_type = concatWith(', ', ' & ', $_POST['change_type']);
-            $form->originator_id = $user_id;
-            $form->certify_details = $_POST['certify_details'];
-            $form->setState(STATUS_ACTIVE);
-            $form->setHodRefNum(getDeptRef($department_id));
-            $form->setDepartmentId($department_id);
-            $form->title = $_POST['title'];
-            // upload additional info
-            $form->hod_id = $_POST['hod_id'];
-            $cms_form_id = $form->insert();
+            $form_model = prepPostData(SECTION_START_CHANGE_PROCESS);
+            $cms_form_id = $form_model->insert();
             if ($cms_form_id) {
+                $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
                 $result = uploadFile('additional_info', $cms_form_id, PATH_ADDITIONAL_INFO);
+                $ret = false;
                 if ($result['success']) {
-                    $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-                    $form_model->updateForm($cms_form_id, ['additional_info' => $result['file']]);
+                    $form_model->additional_info = $result['file'];
+                    $ret = $form_model->updateForm($cms_form_id);
+                } else {
+                    flash_error('start-change-process');
+                    redirect('cms-forms/start-change-process/');
                 }
-                flash('flash_view_change_process', 'Success!', 'text-success text-sm text-center alert');
-                $originator_name = concatNameWithUserId(getUserSession()->user_id);
-                $hods = getHodsWithCurrent($department_id);
-                $subject = genEmailSubject($cms_form_id);
-                foreach ($hods as $hod) {
-                    $recipient = concatNameWithUserId($hod->user_id);
+                if ($ret) {
+                    flash_success('view-change-process');
+                    $performed_by = concatNameWithUserId($current_user->user_id);
+                    $hods = getHodsWithCurrent($current_user->department_id);
+                    $hods[] = $current_user;
+                    $recipients = array_unique_multidim_array($hods, 'user_id');
+                    $subject = genEmailSubject($cms_form_id);
                     $data = array(
-                        'user_id' => $hod->user_id,
-                        'originator' => $originator_name,
-                        'recipient' => $recipient,
+                        'subject' => $subject,
+                        'performed_by' => $performed_by,
                         'link' => site_url("cms-forms/view-change-process/$cms_form_id")
                     );
-                    $body = get_include_contents('email_templates/change_application_raised/notify_hods', $data);
-                    insertEmail($subject, $body, $hod->email, $recipient);
+                    insertEmailBulk('email_templates/change_raised', $recipients, $data);
+                    $data['performed_by'] = getNameJobTitleAndDepartment($current_user->user_id);
+                    $remarks = get_include_contents('action_remarks_templates/change_raised', $data);
+                    insertLog($cms_form_id, ACTION_START_CHANGE_PROCESS_COMPLETED, $remarks, $current_user->user_id);
+                    completeSection($cms_form_id, SECTION_START_CHANGE_PROCESS);
+                    redirect('cms-forms/view-change-process/' . $cms_form_id);
+                } else {
+                    flash_error('start_change_process');
+                    redirect('cms-forms/start-change-process/');
                 }
-                $originator_is_hod = false;
-                array_walk($hods, function ($val, $key) use ($user_id, &$originator_is_hod) {
-                    if ($val->user_id === $user_id) {
-                        $originator_is_hod = true;
-                    }
-                });
-                if (!$originator_is_hod) {
-                    $recipient_name = concatNameWithUserId($user_id);
-                    $data = $data = array(
-                        'user_id' => $user_id,
-                        'originator' => $originator_name,
-                        'recipient' => $recipient_name,
-                        'link' => site_url("cms-forms/view-change-process/$cms_form_id")
-                    );
-                    $body = get_include_contents('email_templates/change_application_raised/notify_originator', $data);
-                    insertEmail($subject, $body, $user->email, $recipient_name);
-                }
-                $remarks = get_include_contents('action_remarks_templates/change_raised', array(
-                    'subject' => $subject,
-                    'performed_by' => getNameJobTitleAndDepartment($user_id)
-                ));
-                insertLog($cms_form_id, ACTION_START_CHANGE_PROCESS_COMPLETED, $remarks, $user_id);
-                completeSection($cms_form_id, SECTION_START_CHANGE_PROCESS);
-                redirect('cms-forms/view-change-process/' . $cms_form_id);
             }
         }
         $this->view('cms_forms/start_change_process', $payload);
@@ -143,73 +105,40 @@ class CMSForms extends Controller
         if (!isLoggedIn()) {
             redirect('users/login');
         }
-        $user = getUserSession();
+        $current_user = getUserSession();
         $payload = array();
+        $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
         $payload['title'] = "HOD's Approval ";
-        $payload['form'] = $form = new CMSForm(['cms_form_id' => $cms_form_id]);
-        $payload['originator'] = $originator = new User($payload['form']->originator_id);
-        $payload['hod'] = $hod = new User($payload['form']->hod_id);
-        $payload['gms'] = getGms();
         $payload['action_log'] = getActionLog($cms_form_id);
-        $link = URL_ROOT . "/cms-forms/view-change-process/$cms_form_id";
-        $subject = genEmailSubject($cms_form_id);
-        $cms_form = new CMSForm(['cms_form_id' => $cms_form_id]);
-        $_POST = filterPost();
-        $form->next_action = ACTION_RISK_ASSESSMENT;
+        $payload['form'] = $form_model;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            /*if (getUserSession()->user_id !== $payload['form']->hod_id) {
-                flash('flash_index', 'You are not the HoD assigned to approve this form.', 'text-danger text-center alert', '');
-                redirect('notices/index');
-                exit();
-            }*/
-            $form->hod_approval = $_POST['hod_approval'];
-            $form->hod_reasons = $_POST['hod_reasons'];
-            //$form->hod_ref_num = $_POST['hod_ref_num'];
-            try {
-                $form->hod_approval_date = (new DateTime())->format(DFB_DT);
-            } catch (Exception $e) {
+            $form_model = prepPostData(SECTION_HOD_ASSESSMENT, $cms_form_id);
+            $payload['form'] = $form_model;
+            $ret = $form_model->updateForm($cms_form_id);
+            if ($ret) {
+                flash_success();
+            } else {
+                flash_error();
             }
-            if (!empty($_POST['gm_id'])) {
-                $form->gm_id = $_POST['gm_id'];
-            }
+            $link = site_url("/cms-forms/view-change-process/$cms_form_id");
+            $subject = genEmailSubject($cms_form_id);
             $data = array(
                 'subject' => $subject,
-                'performed_by' => concatNameWithUserId($user->user_id),
+                'performed_by' => concatNameWithUserId($current_user->user_id),
                 'link' => $link,
-                'user_id' => $originator->user_id
+                'approval_status' => $form_model->hod_approval,
             );
-            $is_dept_mgr = isDepartmentManager($user->department_id, $user->user_id);
-            $dept_mgr = getDepartmentHod($user->department_id);
-            if ($form->hod_approval == STATUS_REJECTED) {
-                $form->state = STATUS_REJECTED;
-                $body = get_include_contents('email_templates/change_rejected', $data);
-                insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
-                $remarks = get_include_contents('action_remarks_templates/change_rejected', $data);
-                insertLog($cms_form_id, ACTION_HOD_ASSESSMENT_COMPLETED, $remarks, $originator->user_id);
-            } else {
-                $body = get_include_contents('email_templates/change_approved', $data);
-                insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
-                $remarks = get_include_contents('action_remarks_templates/change_approved', $data);
-                insertLog($cms_form_id, ACTION_HOD_ASSESSMENT_COMPLETED, $remarks, $originator->user_id);
+            $dept_mgr = getDepartmentHod($current_user->department_id);
+            $recipients[] = new User($form_model->originator_id);
+            $recipients[] = $current_user;
+            if (!empty($dept_mgr)) {
+                $recipients[] = $dept_mgr[0];
             }
-            if (!$is_dept_mgr && !empty($dept_mgr)) {
-                $body = '';
-                $data = array(
-                    'subject' => $subject,
-                    'performed_by' => concatNameWithUserId($user->user_id),
-                    'link' => $link,
-                    'user_id' => ''
-                );
-                if ($form->hod_approval == STATUS_REJECTED) {
-                    $body = get_include_contents('email_templates/change_rejected', $data);
-                } else {
-                    $body = get_include_contents('action_remarks_templates/change_approved', $data);
-                }
-                insertEmail($subject, $body, $dept_mgr[0]->email, concatNameWithUserId($dept_mgr[0]->user_id));
-            }
-
-            $data = $form->jsonSerialize();
-            (new CMSFormModel(null))->updateForm($cms_form_id, $data);
+            $recipients = array_unique_multidim_array($recipients, 'user_id');
+            insertEmailBulk('email_templates/hod_assessment', $recipients, $data);
+            $data['performed_by'] = getNameJobTitleAndDepartment($current_user->user_id);
+            $remarks = get_include_contents('action_remarks_templates/hod_assessment', $data);
+            insertLog($cms_form_id, ACTION_HOD_ASSESSMENT_COMPLETED, $remarks, $current_user->user_id);
             completeSection($cms_form_id, SECTION_HOD_ASSESSMENT);
             redirect('cms-forms/view-change-process/' . $cms_form_id);
         }
@@ -220,51 +149,42 @@ class CMSForms extends Controller
     {
         $payload = array();
         $current_user = getUserSession();
-        $all_depts = Database::getDbh()->getValue('departments', 'department_id', null);
-        $payload['user'] = getUserSession();
+        //$payload['user'] = getUserSession();
         $payload['title'] = 'Risk Assessment';
         $payload['form'] = new CMSForm(['cms_form_id' => $cms_form_id]);
-        $payload['originator'] = new User($payload['form']->originator_id);
-        $payload['hod'] = new User($payload['form']->hod_id);
-        $payload['departments'] = (new DepartmentModel())->getAllDepartments();
-        $payload['affected_departments'] = getAffectedDepartments($cms_form_id);
-        $payload['cms_questions'] = getImpactQuestions();
-        $payload['action_log'] = getActionLog($cms_form_id);
-
-        $log = new CmsActionLogModel();
+        //$payload['originator'] = new User($payload['form']->originator_id);
+        //$payload['hod'] = new User($payload['form']->hod_id);
+        //$payload['departments'] = (new DepartmentModel())->getAllDepartments();
+        //$payload['affected_departments'] = getAffectedDepartments($cms_form_id);
+        //$payload['cms_questions'] = getImpactQuestions();
+        //$payload['action_log'] = getActionLog($cms_form_id);
+        //$log = new CmsActionLogModel();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $_POST = filterPost();
-            $payload['form']->affected_dept = implode(',', $all_depts);
-            // populate impact questions
-
-            $form_model = new CMSFormModel(null);
+            $form_model = prepPostData(SECTION_RISK_ASSESSMENT, $cms_form_id);
             $uploaded = uploadFile('risk_attachment', $cms_form_id, PATH_RISK_ATTACHMENT);
             if (!$uploaded['success']) {
-                flash('flash_view_change_process', $uploaded['reason'], 'text-danger text-center alert text-sm');
+                //flash('flash_view_change_process', $uploaded['reason'], 'text-danger text-center alert text-sm');
+                flash_error();
                 redirect('cms-forms/view-change-process/' . $cms_form_id);
+            } else {
+                $form_model->risk_attachment = $uploaded['file'];
             }
-            $form_model->updateForm($cms_form_id, [
-                'affected_dept' => $payload['form']->affected_dept,
-                'risk_attachment' => $uploaded['success'] ? $uploaded['file'] : ''
-            ]);
-            $data = array(
-                'subject' => genEmailSubject($cms_form_id),
-                'performed_by' => concatNameWithUserId($current_user->user_id),
-            );
-            $remarks = get_include_contents('action_remarks_templates/risk_assessment_completed', $data);
-            insertLog($cms_form_id, ACTION_RISK_ASSESSMENT_COMPLETED, $remarks, $current_user->user_id);
-            /*$log->setSectionAffected(SECTION_RISK_ASSESSMENT)
-                ->setAction(ACTION_RISK_ASSESSMENT_COMPLETED)
-                ->setPerformedBy(getUserSession()->user_id)
-                ->setCmsFormId($cms_form_id)
-                ->setDepartmentAffected($payload['form']->affected_dept)
-                ->insert();*/
-            completeSection($cms_form_id, SECTION_RISK_ASSESSMENT);
-            // Notify impact assessment reps
-            //notifyImpactAccessReps($cms_form_id);
-            notifyAllHODs($cms_form_id);
-            setReminder($cms_form_id, REMINDER_INTERVAL, REMINDER_LIMIT);
-            populateImpactResponse(explode(',', $payload['form']->affected_dept), $cms_form_id);
+            $ret = $form_model->updateForm($cms_form_id);
+            if ($ret) {
+                $data = array(
+                    'subject' => genEmailSubject($cms_form_id),
+                    'performed_by' => getNameJobTitleAndDepartment($current_user->user_id)
+                );
+                $remarks = get_include_contents('action_remarks_templates/risk_assessment_completed', $data);
+                insertLog($cms_form_id, ACTION_RISK_ASSESSMENT_COMPLETED, $remarks, $current_user->user_id);
+                completeSection($cms_form_id, SECTION_RISK_ASSESSMENT);
+                notifyAllHODs($cms_form_id);
+                setReminder($cms_form_id, REMINDER_INTERVAL, REMINDER_LIMIT);
+                populateImpactResponse(explode(',', $form_model->affected_dept), $cms_form_id);
+                flash_success();
+            } else {
+                flash_error();
+            }
             redirect('cms-forms/view-change-process/' . $cms_form_id);
         }
         $this->view('cms_forms/view_change_process', $payload);
@@ -762,10 +682,6 @@ class CMSForms extends Controller
                 header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
                 echo 'File not readable';
             } else {
-                // set the headers, prevent caching
-                //header("Pragma: public");
-                //header("Expires: -1");
-                //header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
                 header("Content-Disposition: attachment; filename=\"$title.$ref.zip\"");
                 header("Content-Type: " . "application/zip");
                 readfile($zipname);
@@ -783,7 +699,10 @@ class CMSForms extends Controller
             $ref = getDeptRef($cms->department_id);
         }
         $files = explode(',', $file_name);
-        $title = "Risk-Attachments";
+        $title = "Risk Assessment Documents";
+        if (!file_exists('zip')) {
+            mkdir('zip', 0777, true);
+        }
         $zipname = 'zip/' . $title . "_$cms_form_id.zip";
         $zip = new ZipArchive;
         $zip->open($zipname, ZipArchive::CREATE);
@@ -802,24 +721,9 @@ class CMSForms extends Controller
                 header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
                 echo 'File not readable';
             } else {
-                // set the headers, prevent caching
-                //header("Pragma: public");
-                //header("Expires: -1");
-                //header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
                 header("Content-Disposition: attachment; filename=\"$title.$ref.zip\"");
                 header("Content-Type: " . "application/zip");
-                //header("Content-Transfer-Encoding: Binary");
-                //header("Content-Length: " . filesize($zipname));
                 readfile($zipname);
-
-                /* header($_SERVER['SERVER_PROTOCOL'] . ' 200 OK');
-                 //header('Content-Description: CMS Risk Assessment Documents'); not present in RFC2616  => https://www.media-division.com/the-right-way-to-handle-file-downloads-in-php/
-
-                 header("Content-Type: application/zip");
-                 //header("Content-Transfer-Encoding: Binary"); not present in RFC2616
-                 header("Content-Length: " . filesize($zipname));
-                 header("Content-disposition: attachment; filename=\"" . $zipname . "\"");
-                 readfile($zipname);*/
                 exit;
             }
         }
@@ -856,10 +760,6 @@ class CMSForms extends Controller
                 header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
                 echo 'File not readable';
             } else {
-                // set the headers, prevent caching
-                //header("Pragma: public");
-                //header("Expires: -1");
-                //header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
                 header("Content-Disposition: attachment; filename=\"$title.$ref.zip\"");
                 header("Content-Type: " . "application/zip");
                 readfile($zipname);
@@ -1023,7 +923,6 @@ class CMSForms extends Controller
         $payload = array();
         $payload['title'] = 'Department Managers';
         $user = getUserSession();
-        //flash('flash_department_managers', 'Assign a member of the dep ')
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
             $mgrs = $_POST['mgrs'];
@@ -1042,27 +941,67 @@ class CMSForms extends Controller
                         ->insert();
                 }
             }
-            $flash = "flash_" . the_method();
-            flash($flash, 'Success!', 'text-center text-success alert text-sm');
+            flash_success();
         }
         $this->view('cms_forms/department_managers', $payload);
     }
 
     public function uploadAdditionalDocuments($cms_form_id)
     {
+        $current_user = getUserSession();
+        $performed_by = getNameJobTitleAndDepartment($current_user->user_id);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
             $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-            //$flash = "flash_".the_method();
             $result = uploadFile('additional_info', $cms_form_id, PATH_ADDITIONAL_INFO);
             if ($result['success']) {
-                $result['file'] = trim($result['file'] . ',' . $form_model->additional_info, ',');
-                $form_model->updateForm($cms_form_id, ['additional_info' => $result['file']]);
-                flash('flash_view_change_process', 'File upload success!',
-                    'text-success text-sm text-center alert');
+                $files = explode(',', trim($result['file'] . ',' . $form_model->additional_info, ','));
+                $files = implode(',', array_unique($files));
+                $ret = $form_model->updateForm($cms_form_id, ['additional_info' => $files]);
+                if ($ret) {
+                    flash_success('', 'File upload success!');
+                } else {
+                    flash_error('', 'An error occurred!');
+                }
+                $remarks = get_include_contents('action_remarks_templates/additional_doc_uploaded', array(
+                    'file_name' => $result['file'],
+                    'performed_by' => $performed_by,
+                    'subject' => genEmailSubject($cms_form_id)
+                ));
+                insertLog($cms_form_id, ACTION_ADDITIONAL_FILE_UPLOADED, $remarks, $current_user->user_id);
             } else {
-                flash('flash_view_change_process', 'An error occurred!',
-                    'text-danger text-sm text-center alert');
+                flash_error('', 'An error occurred!');
+            }
+        }
+        goBack();
+    }
+
+    public function uploadRiskAssDocuments($cms_form_id)
+    {
+        $current_user = getUserSession();
+        $performed_by = getNameJobTitleAndDepartment($current_user->user_id);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST = filterPost();
+            $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+            $result = uploadFile('additional_info', $cms_form_id, PATH_RISK_ATTACHMENT);
+            if ($result['success']) {
+                $files = explode(',', trim($result['file'] . ',' . $form_model->risk_attachment, ','));
+                $files = array_unique($files);
+                $form_model->risk_attachment = implode(',', $files);
+                $ret = $form_model->updateForm($cms_form_id);
+                if ($ret) {
+                    flash_success('', 'File upload success!');
+                    $remarks = get_include_contents('action_remarks_templates/risk_assessment_uploaded', array(
+                        'file_name' => $result['file'],
+                        'performed_by' => $performed_by,
+                        'subject' => genEmailSubject($cms_form_id)
+                    ));
+                    insertLog($cms_form_id, ACTION_RISK_ASSESSMENT_DOCUMENT_UPLOADED, $remarks, $current_user->user_id);
+                } else {
+                    flash_error('', 'An error occurred!');
+                }
+            } else {
+                flash_error('', 'An error occurred!');
             }
         }
         goBack();
@@ -1070,19 +1009,29 @@ class CMSForms extends Controller
 
     public function uploadPlDocuments($cms_form_id)
     {
+        $current_user = getUserSession();
+        $performed_by = getNameJobTitleAndDepartment($current_user->user_id);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
             $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-            //$flash = "flash_".the_method();
             $result = uploadFile('additional_info', $cms_form_id, PATH_PL_DOCUMENTS);
             if ($result['success']) {
-                $result['file'] = trim($result['file'] . ',' . $form_model->pl_documents, ',');
-                $form_model->updateForm($cms_form_id, ['pl_documents' => $result['file']]);
-                flash('flash_view_change_process', 'File upload success!',
-                    'text-success text-sm text-center alert');
+                $files = explode(',', trim($result['file'] . ',' . $form_model->pl_documents, ','));
+                $files = array_unique($files);
+                $ret = $form_model->updateForm($cms_form_id, ['pl_documents' => $files]);
+                if ($ret) {
+                    flash_success('', 'File upload success!');
+                    $remarks = get_include_contents('action_remarks_templates/project_document_uploaded', array(
+                        'file_name' => $result['file'],
+                        'performed_by' => $performed_by,
+                        'subject' => genEmailSubject($cms_form_id)
+                    ));
+                    insertLog($cms_form_id, ACTION_PROJECT_DOCUMENT_UPLOADED, $remarks, $current_user->user_id);
+                } else {
+                    flash_error('', 'An error occurred!');
+                }
             } else {
-                flash('flash_view_change_process', 'An error occurred!',
-                    'text-danger text-sm text-center alert');
+                flash_error('', 'An error occurred!');
             }
         }
         goBack();

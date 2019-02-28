@@ -75,5 +75,7 @@ $user = getUserSession();
 <?php
 modal('upload_add_doc', $payload);
 modal('upload_pl_doc', $payload);
+modal('upload_risk_ass_doc', $payload);
+
 ?>
 <?php require_once APP_ROOT . '\views\includes\footer.php'; ?>

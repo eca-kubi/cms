@@ -121,7 +121,9 @@ const STATUS_AUTHORIZED = 'authorized';
 const STATUS_ACCEPTED = 'accepted';
 const REMINDER_LIMIT = 3;
 const REMINDER_INTERVAL = '1H'; // 1 hour
-
+const ACTION_ADDITIONAL_FILE_UPLOADED = 'additional file uploaded';
+const ACTION_RISK_ASSESSMENT_DOCUMENT_UPLOADED = 'risk assessment document uploaded';
+const ACTION_PROJECT_DOCUMENT_UPLOADED = 'project document uploaded';
 const SUBJECT_MANAGER_CHANGED = 'CMS Manager Changed';
 const ROLE_MANAGER = 'Manager';
 const ROLE_SUPERINTENDENT = 'Superintendent';

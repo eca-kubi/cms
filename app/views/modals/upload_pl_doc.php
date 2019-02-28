@@ -43,7 +43,7 @@
                                     </div>
                                 </div>
                                 <small class="help-block text-muted">Hint: Attach any additional
-                                    documents <i>(Maximum of three)</i>
+                                    documents <i>(Maximum of fifteen)</i>
                                 </small>
                                 <small id="helpId" class="form-text with-errors help-block"></small>
                             </div>

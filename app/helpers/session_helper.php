@@ -4,11 +4,9 @@ session_start();
 // Flash message helper
 // EXAMPLE - flash('register_success', 'You are now registered');
 // DISPLAY IN VIEW - echo flash('register_success');
-function flash($name = 'flash', $message = '', $class = 'alert alert-success alert-dismissible text-sm', $dismissible_button = '<button type="button" class="close" data-dismiss="alert" style="position: absolute;top: 10%;left: 95%;" aria-label="Close">
-<span aria-hidden="true" >&times;</span>
-<span class="sr-only">Close</span>
-</button>')
+function flash($name = 'flash', $message = '', $class = 'alert alert-success alert-dismissible text-sm', $dismissible_button = '<button type="button" class="close" data-dismiss="alert" style="position: absolute;top: 10%;left: 95%;" aria-label="Close"><span aria-hidden="true" >&times;</span><span class="sr-only">Close</span></button>')
 {
+    $name = str_replace('-', '_', $name);
     if (!empty($name)) {
         if (!empty($message) && empty($_SESSION[$name])) {
             if (!empty($_SESSION[$name])) {

@@ -68,16 +68,6 @@ function getRandomString()
     return substr(md5(rand()), 0, 5);
 }
 
-function getCurrentSession()
-{
-    $current_session = 'user';
-    if (!empty($_REQUEST['current_session'])) {
-        $current_session = $_REQUEST['current_session'];
-    }
-
-    return $current_session;
-}
-
 /**
  * Summary of filterPost
  * It returns filtered POST array.
@@ -331,23 +321,26 @@ function notifyDepartmentManagers($cms_form_id, $department_id, $message = null,
 
 function notifyAllHODs($cms_form_id)
 {
-    $cms_form = new CMSForm(array('cms_form_id' => $cms_form_id));
-    $affected_department = new Department($cms_form->department_id);
-    $subject = genEmailSubject($cms_form_id);
-    $link = site_url("cms-forms/view-change-process/$cms_form_id");
-    $managers = getManagers();
-    foreach ($managers as $manager) {
-        $name = concatNameWithUserId($manager->user_id);
-        /*$data = array(
-
-        );*/
-        // todo: use template
-        $body = "Hi, " . $name . ', ' . HTML_NEW_LINE .
-            "A Change Proposal raised by " . ($manager->user_id === $cms_form->originator_id ? " you " : getNameJobTitleAndDepartment($cms_form->originator_id)) .
-            " requires response to questions on Possible Impacts related to your department (" . $affected_department->department . "). " .
-            "Click this link if you wish to respond to the questions: " . '<a href="' . $link . '" />' . $link . '</a>';
-        insertEmail($subject, $body, $manager->email, $name);
+    $form_model = new CMSFormModel(array('cms_form_id' => $cms_form_id));
+    $current_managers = [];
+    $affected_departments = getAffectedDepartments($cms_form_id);
+    foreach ($affected_departments as $affected_department) {
+        if (!empty($affected_department->current_manager)) {
+            $current_managers[] = new User($affected_department->current_manager);
+        }
     }
+    $data['subject'] = genEmailSubject($cms_form_id);
+    $data['link'] = site_url("cms-forms/view-change-process/$cms_form_id");
+    $data['originator'] = getNameJobTitleAndDepartment($form_model->originator_id);
+    insertEmailBulk('email_templates/notify_hods', $current_managers, $data);
+    /* foreach ($managers as $manager) {
+         $name = concatNameWithUserId($manager->user_id);
+         $body = "Hi, " . $name . ', ' . HTML_NEW_LINE .
+             "A Change Proposal raised by " . ($manager->user_id === $form_model->originator_id ? " you " : getNameJobTitleAndDepartment($form_model->originator_id)) .
+             " requires response to questions on Possible Impacts related to your department (" . $affected_department->department . "). " .
+             "Click this link if you wish to respond to the questions: " . '<a href="' . $link . '" />' . $link . '</a>';
+         insertEmail($subject, $body, $manager->email, $name);
+     }*/
 }
 
 function getManagers(): array
@@ -411,15 +404,15 @@ function getImpactQuestions($department_id = null)
 function getGms()
 {
     $result = [];
-    $gms = Database::getDbh()->where('staff_category', 'Management')
+    $managers = Database::getDbh()
+        ->where('staff_category', 'Management')
         ->objectBuilder()
         ->get('users');
-    foreach ($gms as $gm) {
-        if (in_array($gm->job_title, GMs)) {
-            $result[] = $gm;
+    foreach ($managers as $manager) {
+        if (in_array($manager->job_title, GMs)) {
+            $result[] = $manager;
         }
     }
-
     return $result;
 }
 
@@ -516,8 +509,9 @@ function notifyImpactAccessReps($cms_form_id)
 
 function canAssessImpactForDept($department_id)
 {
-    $u = (new User(getUserSession()->user_id));
-    return (($u->department_id == $department_id) && $u->can_assess_impact);
+    /*$u = (new User(getUserSession()->user_id));
+    return (($u->department_id == $department_id) && $u->can_assess_impact);*/
+    return getCurrentManager($department_id) === getUserSession()->user_id;
 }
 
 function populateImpactResponse(array $affected_depts, $cms_form_id)
@@ -1107,15 +1101,15 @@ function getRemindersPending()
     return $ret;
 }
 
-function echoYou($substitute, $user_id = '')
+function echoYou($you_they, $user_id = '')
 {
     if (empty($user_id)) {
         $user_id = getUserSession()->user_id;
     }
     if (its_logged_in_user($user_id)) {
-        return "You";
+        return $you_they['you'];
     }
-    return $substitute;
+    return $you_they['they'];
 }
 
 function insertLog($cms_form_id, $action, $remarks, $performed_by)
@@ -1130,12 +1124,110 @@ function insertLog($cms_form_id, $action, $remarks, $performed_by)
     return $db->insert('cms_action_log', $data);
 }
 
-function flash_success()
+function flash_success($method = '', $message = "Success!")
 {
-    flash($flash = "flash_" . the_method(), "Success!", 'text-sm text-center text-success alert');
+    if (empty($method)) {
+        $method = the_method();
+    }
+    flash($flash = "flash_" . $method, $message, 'text-sm text-center text-success alert');
 }
 
-function flash_error()
+function flash_error($method = '', $message = "An error occurred!")
 {
-    flash($flash = "flash_" . the_method(), "An error occurred!", 'text-sm text-center text-danger alert');
+    if (empty($method)) {
+        $method = the_method();
+    }
+    flash($flash = "flash_" . $method, $message, 'text-sm text-center text-danger alert');
+}
+
+function array_unique_multidim_array($array, $key)
+{
+    $temp_array = array();
+    $i = 0;
+    $key_array = array();
+
+    foreach ($array as $val) {
+        $val = (array)$val;
+        if (!in_array($val[$key], $key_array)) {
+            $key_array[$i] = $val[$key];
+            $temp_array[$i] = $val;
+        }
+        $i++;
+    }
+    return $temp_array;
+}
+
+function insertEmailBulk($template_file, $recipients, $data)
+{
+    foreach ($recipients as $recipient) {
+        $recipient = (array)$recipient;
+        $recipient_name = concatNameWithUserId($recipient['user_id']);
+        $recipient_department = getDepartment($recipient['user_id']);
+        $data['recipient_name'] = $recipient_name;
+        $data['recipient_department'] = $recipient_department;
+        $data['user_id'] = $recipient['user_id'];
+        $body = get_include_contents($template_file, $data);
+        insertEmail($data['subject'], $body, $recipient['email'], $recipient_name);
+    }
+}
+
+function prepPostData($section, $cms_form_id = '')
+{
+    $_POST = filterPost();
+    $current_user = getUserSession();
+    $form_model = new CMSFormModel();
+    if ($section === SECTION_START_CHANGE_PROCESS) {
+        $form_model = new CMSFormModel();
+        $form_model->change_description = $_POST['change_description'];
+        $form_model->advantages = $_POST['advantages'];
+        $form_model->alternatives = $_POST['alternatives'];
+        $form_model->area_affected = $_POST['area_affected'];
+        if (!empty($_POST['other_type'])) {
+            $_POST['change_type'][] = $_POST['other_type'];
+            $key = array_search('Other', $_POST['change_type']);
+            if (false !== $key) {
+                unset($_POST['change_type'][$key]);
+            }
+            $form_model->other_type = $_POST['other_type'];
+        }
+        $form_model->change_type = concatWith(', ', ' & ', $_POST['change_type']);
+        $form_model->originator_id = $current_user->user_id;
+        $form_model->certify_details = $_POST['certify_details'];
+        $form_model->state = STATUS_ACTIVE;
+        $form_model->hod_ref_num = getDeptRef($current_user->department_id);
+        $form_model->department_id = $current_user->department_id;
+        $form_model->title = $_POST['title'];
+        // upload additional info
+        $form_model->hod_id = $_POST['hod_id'];
+    } elseif ($section === SECTION_HOD_ASSESSMENT) {
+        $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+        $form_model->hod_approval = $_POST['hod_approval'];
+        $form_model->hod_reasons = $_POST['hod_reasons'];
+        if ($form_model->hod_approval == STATUS_REJECTED) {
+            $form_model->state = STATUS_REJECTED;
+        }
+        try {
+            $form_model->hod_approval_date = (new DateTime())->format(DFB_DT);
+        } catch (Exception $e) {
+        }
+    } elseif ($section === SECTION_RISK_ASSESSMENT) {
+        $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+        $all_depts = Database::getDbh()->getValue('departments', 'department_id', null);
+        $form_model->affected_dept = implode(',', $all_depts);
+    }
+    return $form_model;
+}
+
+function isCurrentManager($department_id, $user_id)
+{
+    return getCurrentManager($department_id) === $user_id;
+}
+
+function canUploadFile($cms_form_id)
+{
+    $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+    $current_user = getUserSession();
+    return $form_model->originator_id === $current_user->user_id
+        || $form_model->project_leader_id === $current_user->user_id
+        || isCurrentManager($form_model->department_id, $current_user->user_id);
 }

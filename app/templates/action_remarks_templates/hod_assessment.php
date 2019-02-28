@@ -7,5 +7,5 @@
  */
 $echoYou = 'echoYou';
 echo <<<heredoc
-Change procedure ($subject) has been rejected by {$performed_by}.
+Change Proposal ($subject) has been $approval_status by {$performed_by}.
 heredoc;

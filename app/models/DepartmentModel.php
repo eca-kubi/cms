@@ -1,10 +1,27 @@
 <?php
+
 class DepartmentModel extends Model implements \JsonSerializable
 {
+    public static $table = 'departments';
     public $department;
     public $department_id;
     public $short_name;
     public $current_manager;
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    public static function has($column, $value)
+    {
+        $db = Database::getDbh();
+        $db->where($column, $value);
+        if ($db->has(self::$table)) {
+            return 'true';
+        }
+        return false;
+    }
 
     /**
      * @return mixed
@@ -41,12 +58,6 @@ class DepartmentModel extends Model implements \JsonSerializable
         $this->short_name = $short_name;
         return $this;
     }
-    public static $table = 'departments';
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Summary of getDepartment
@@ -55,37 +66,29 @@ class DepartmentModel extends Model implements \JsonSerializable
      */
     public function getDepartment($department_id = null)
     {
-        $ret = Database::getDbh()->where('department_id', $department_id)->
-                        objectBuilder()->
-                        getOne(self::$table);
-        if (count((array)$ret) < 1)
-        {
+        $ret = Database::getDbh()
+            ->where('department_id', $department_id)
+            ->objectBuilder()
+            ->getOne(self::$table);
+        if (count((array)$ret) < 1) {
             $ret = isset($ret) ? $ret : new stdClass();
-        	$ret->department ='N/A';
+            $ret->department = 'N/A';
         }
         return $ret;
     }
 
+    // Verify existence of column value
+
     public function getAllDepartments()
     {
         return
-            Database::getDbh()->
-                        objectBuilder()->
-                        get(self::$table);
+            Database::getDbh()
+                ->objectBuilder()
+                ->get(self::$table);
     }
 
-    // Verify existence of column value
-    public static function has($column, $value )
+    public function jsonSerialize()
     {
-        $db = Database::getDbh();
-        $db->where($column, $value);
-        if ($db->has(self::$table)) {
-            return 'true';
-        }
-        return false;
-    }
-
-    public function jsonSerialize(){
         return [
             'department' => $this->department,
             'department_id' => $this->department_id,

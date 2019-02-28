@@ -128,12 +128,13 @@ function uploadCSV($table)
 function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
 {
     $cms = new CMSFormModel($cms_form_id);
+
     $result = array();
     $result['success'] = false;
     $result['file'] = '';
     $result['reason'] = '';
-    $files = explode(',', $cms->additional_info);
-    $file_count = count($files);
+    //$files = explode(',', $cms->additional_info);
+    //$file_count = count($files);
     //$db_file = '';
     $allowedExts = array('doc', 'docx', 'pdf', 'xlsx', 'xls', 'txt', 'pptx', 'ppt', 'csv');
     if (isset($_FILES[$file])) {
@@ -141,9 +142,7 @@ function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
             $temp = explode('.', $_FILES[$file]['name'][$key]);
             $extension = end($temp);
             if ($_FILES[$file]['size'][$key] > 0) {
-                $filename = $_FILES[$file]['name'][$key];
-                //$filename = explode('/', $filename);
-                //$filename = end($filename);
+                $filename = str_replace(',', '', $_FILES[$file]['name'][$key]);
                 $filetype = $_FILES[$file]['type'][$key];
                 $file_error = $_FILES[$file]['error'][$key];
                 if ((($filetype == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
@@ -157,12 +156,12 @@ function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
                         $result['success'] = false;
                         $result['reason'] = $_FILES['file']['error'] . '<br>';
                     } else {
-                        $ref = $cms->getHodRefNum();
+                        /*$ref = $cms->getHodRefNum();
                         if (empty($ref)) {
                             $db_file = getDeptRef(getUserSession()->department_id) . "_$file_count.$extension";
                         } else {
                             $db_file = $ref . "_$file_count.$extension";
-                        }
+                        }*/
                         //$db_file = 'c_' . $cms_form_id . '_u_' . getUserSession()->user_id . "_k_$key." . $extension;
                         $dir = $path . "$cms_form_id\\";
                         if (!file_exists($dir)) {
@@ -173,9 +172,9 @@ function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
                         if (!$result['success']) {
                             $result['reason'] = 'An error occurred while uploading file!';
                             return $result;
-                        } else {
+                        }/* else {
                             $file_count = $file_count + 1;
-                        }
+                        }*/
                     }
                 } else {
                     $result['reason'] = 'Please upload a risk assessment document in word, pdf, txt, or any Microsoft Office-Supported format (xlsx, csv...)!';

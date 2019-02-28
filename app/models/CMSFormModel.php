@@ -170,7 +170,6 @@ class CMSFormModel extends Model implements \JsonSerializable
             'change_type' => $this->change_type,
             'change_description' => $this->change_description,
             'title' => $this->title,
-            //'department_id' => $this->department_id,
             'advantages' => $this->advantages,
             'alternatives' => $this->alternatives,
             'area_affected' => $this->area_affected,
@@ -180,7 +179,7 @@ class CMSFormModel extends Model implements \JsonSerializable
             'gm_approval' => $this->gm_approval,
             'gm_approval_reasons' => $this->gm_approval_reasons,
             'hod_authorization' => $this->hod_authorization,
-            'hod_authorization_comment' => $this->getHodAuthorizationComment(),
+            'hod_authorization_comment' => $this->hod_authorization_comment,
             'project_leader_id' => $this->project_leader_id,
             'project_leader_acceptance' => $this->project_leader_acceptance,
             'hod_close_change' => $this->hod_close_change,
@@ -197,7 +196,7 @@ class CMSFormModel extends Model implements \JsonSerializable
             'email_subject' => $this->email_subject,
             'risk_attachment' => $this->risk_attachment,
             'gm_id' => $this->gm_id,
-            'state' => $this->getState(),
+            'state' => $this->state,
             'pl_documents' => $this->pl_documents
         ];
     }
@@ -909,9 +908,13 @@ class CMSFormModel extends Model implements \JsonSerializable
         return Database::getDbh()->insert(self::$table, $insertData);
     }
 
-    public function updateForm($cms_form_id, array $insertData)
+    public function updateForm($cms_form_id, array $insertData = null)
     {
-        return Database::getDbh()->where('cms_form_id', $cms_form_id)
+        if (empty($insertData)) {
+            $insertData = $this->jsonSerialize();
+        }
+        return Database::getDbh()
+            ->where('cms_form_id', $cms_form_id)
             ->update(self::$table, $insertData);
     }
 

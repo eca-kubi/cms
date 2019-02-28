@@ -7,5 +7,5 @@
  */
 $echoYou = 'echoYou';
 echo <<<heredoc
-Change procedure ($subject) has been rejected by {$performed_by}.
+Additional file ($file_name) uploaded by $performed_by for the Change procedure ($subject).
 heredoc;

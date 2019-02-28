@@ -14,15 +14,20 @@
                     class="">
                 <span class="text-sm badge badge-success"> <i class="fa fa-file-download"></i> Download Attached Documents</span>
             </a>
-            <span class="mx-2"></span>
-            <a
-                    data-toggle="modal"
-                    href="#uploadAddDoc"
-                    target="_blank"
-                    title="Upload More Documents"
-                    class="">
-                <span class="text-sm badge badge-info"> <i class="fa fa-file-upload"></i> Upload More Documents</span>
-            </a>
+            <?php
+            if (canUploadFile($payload['form']->cms_form_id)) { ?>
+                <span class="mx-2"></span>
+                <a
+                        data-toggle="modal"
+                        href="#uploadAddDoc"
+                        target="_blank"
+                        title="Upload More Documents"
+                        class="">
+                    <span class="text-sm badge badge-info"> <i
+                                class="fa fa-file-upload"></i> Upload More Documents</span>
+                </a>
+            <?php }
+            ?>
         </h6>
         <span class="text-right float-right d-none">
             <?php /** @var array $payload */ //todo: Consider sections as database tables in the future.

@@ -7,6 +7,5 @@
  */
 $echoYou = 'echoYou';
 echo <<<heredoc
-Change procedure ($subject) has been approved by {$echoYou($performed_by)}.
-Click this link for more details: <a href="$link">$link</a>
+Change procedure ($subject) has been approved by {$performed_by}.
 heredoc;
