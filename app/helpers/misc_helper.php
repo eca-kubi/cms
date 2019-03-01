@@ -447,11 +447,10 @@ function genEmailSubject($cms_form_id)
     return $ref;
 }
 
-function genLink($cms_form_id, $controller)
+function genLink($cms_form_id, $controller = 'view-change-process')
 {
-    $link = URL_ROOT . "/cms-forms/$controller/$cms_form_id";
-    return '<a href="' .
-        $link . '" >' . $link . '</a>';
+    $link = site_url("cms-forms/$controller/$cms_form_id");
+    return '<a href="' . $link . '" >' . $link . '</a>';
 }
 
 function genThreadId($cms_form_id)
@@ -861,16 +860,16 @@ function echoPendingSections()
 
 function isAllImpactAssessmentComplete($cms_form_id)
 {
-    /*
-     * Check if all departments affected have completed
-     * impact assessment
-     * */
-    $completed_departments_string = (new CMSForm(['cms_form_id' => $cms_form_id]))->getImpactAssCompletedDept();
+    $db = Database::getDbh();
+    $pending = $db->where('cms_form_id', $cms_form_id)
+        ->where('status', STATUS_IMPACT_ASSESSMENT_RESPONSE_PENDING)
+        ->has('impact_ass_status');
+    return !$pending;
+    /*$completed_departments_string = (new CMSForm(['cms_form_id' => $cms_form_id]))->getImpactAssCompletedDept();
     if (!empty($completed_departments_string)) {
         $completed_departments_array = explode(',', trim($completed_departments_string, ', '));
         return count(getAffectedDepartments($cms_form_id)) === count($completed_departments_array);
-    }
-    return false;
+    }*/
 }
 
 /**
@@ -1112,6 +1111,25 @@ function echoYou($you_they, $user_id = '')
     return $you_they['they'];
 }
 
+function echoYou2($you_they, $user_id_1, $user_id_2)
+{
+    if ($user_id_1 === $user_id_2) {
+        return $you_they['you'];
+    }
+    return $you_they['they'];
+}
+
+function echoPronounVsNoun($pronoun_noun, $user_id = '')
+{
+    if (empty($user_id)) {
+        $user_id = getUserSession()->user_id;
+    }
+    if (its_logged_in_user($user_id)) {
+        return $pronoun_noun['pronoun'];
+    }
+    return $pronoun_noun['noun'];
+}
+
 function insertLog($cms_form_id, $action, $remarks, $performed_by)
 {
     $db = Database::getDbh();
@@ -1166,12 +1184,13 @@ function insertEmailBulk($template_file, $recipients, $data)
         $data['recipient_name'] = $recipient_name;
         $data['recipient_department'] = $recipient_department;
         $data['user_id'] = $recipient['user_id'];
+        $data['recipient_user_id'] = $recipient['user_id'];
         $body = get_include_contents($template_file, $data);
         insertEmail($data['subject'], $body, $recipient['email'], $recipient_name);
     }
 }
 
-function prepPostData($section, $cms_form_id = '')
+function prepPostData($section, $cms_form_id = '', $department_id = '')
 {
     $_POST = filterPost();
     $current_user = getUserSession();

@@ -11,7 +11,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_IMPACT_ASSESSMENT)) 
                         <div class="w-100 row border ml-0 p-1">
                             <h6 class="text-bold font-italic col m-1">
                                 <a href="#section_4" data-toggle="collapse">
-                                    <i class="fa <?php echo ICON_FA_PLUS ?>"></i> Section 4 - GM's Approval
+                                    <i class="fa <?php echo ICON_FA_MINUS ?>"></i> Section 4 - GM's Approval
                                     <span class="small animated incomplete text-dark">
                                         [To be Completed by GM]
                                     </span>
@@ -25,7 +25,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_IMPACT_ASSESSMENT)) 
                                 } ?>
                             </span>
                         </div>
-                        <div id="section_4" class="collapse section border p-3 table-active">
+                        <div id="section_4" class=" section border p-3 table-active">
                             <div class="row">
                                 <div class="col-sm-12 form-group">
                                     <div class="form-check form-check-inline">

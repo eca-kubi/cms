@@ -6,6 +6,16 @@
  * Time: 9:32 AM
  */
 $echoYou = 'echoYou';
+$echoYou2 = 'echoYou2';
+$you_they_1 = array(
+    'you' => "You",
+    'they' => $performed_by
+);
+
+$you_they_2 = array(
+    'you' => "you",
+    'they' => $new_mgr_name
+);
 echo <<<heredoc
-$user_name has selected you as the manager for $department.
+{$echoYou($you_they_1, $recipient_user_id)} changed the manager for $recipient_department to {$echoYou2($you_they_2, $recipient_user_id, $new_mgr_user_id)}.
 heredoc;

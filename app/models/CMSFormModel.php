@@ -42,6 +42,7 @@ class CMSFormModel extends Model implements \JsonSerializable
     public $risk_attachment;
     public $state;
     public $title;
+    public $gm_approval_date;
     /**
      * @var array
      */
@@ -197,7 +198,8 @@ class CMSFormModel extends Model implements \JsonSerializable
             'risk_attachment' => $this->risk_attachment,
             'gm_id' => $this->gm_id,
             'state' => $this->state,
-            'pl_documents' => $this->pl_documents
+            'pl_documents' => $this->pl_documents,
+            'gm_approval_date' => $this->gm_approval_date
         ];
     }
 

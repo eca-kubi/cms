@@ -1,12 +1,10 @@
 <?php /** @var  array $payload */
 if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
     if (!sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION)) {
-        // Is a manager or superintendent for the originator department
-        $originator_department_id = getOriginatorDepartmentID($payload['form']->cms_form_id);
-        if (isDepartmentManager($originator_department_id, getUserSession()->user_id)) { ?>
+        if (isCurrentManager($payload['form']->department_id, getUserSession()->user_id)) { ?>
             <div class="row p-2">
                 <form class="w-100"
-                      action="<?php echo URL_ROOT . '/cms-forms/hod-authorisation/' . $payload['form']->cms_form_id ?>"
+                      action="<?php echo site_url('cms-forms/hod-authorisation/' . $payload['form']->cms_form_id) ?>"
                       method="post" data-toggle="validator" role="form"
                       enctype="multipart/form-data">
                     <fieldset class="w-100">
@@ -118,7 +116,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
                         <tr>
                             <?php
                             $authorized_by = new User($payload['action_log'][ACTION_HOD_AUTHORISATION_COMPLETED]->performed_by);
-                            $project_leader = new User($payload['form']->project_leader_id);
+                            //$project_leader = new User($payload['form']->project_leader_id);
                             ?>
                             <td class="text-right" style="width:17%"><b> Authorized by: </b></td>
                             <td scope="row" style="width:83%">
@@ -252,7 +250,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
                                 <td>
                                     <div class="row px-2">
                                         <form class="w-100"
-                                              action="<?php echo URL_ROOT ?>/cms-forms/project-leader-acceptance/<?php echo $payload['form']->cms_form_id; ?>"
+                                              action="<?php echo site_url("cms-forms/project-leader-acceptance/" . $payload['form']->cms_form_id) ?>"
                                               role="form" data-toggle="validator">
                                             <div class="form-row">
                                                 <label class="col-sm-12" for="comment">Comment:</label>

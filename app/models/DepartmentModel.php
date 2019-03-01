@@ -62,7 +62,7 @@ class DepartmentModel extends Model implements \JsonSerializable
     /**
      * Summary of getDepartment
      * @param mixed $department_id
-     * @return array
+     * @return mixed
      */
     public function getDepartment($department_id = null)
     {
@@ -70,10 +70,10 @@ class DepartmentModel extends Model implements \JsonSerializable
             ->where('department_id', $department_id)
             ->objectBuilder()
             ->getOne(self::$table);
-        if (count((array)$ret) < 1) {
-            $ret = isset($ret) ? $ret : new stdClass();
-            $ret->department = 'N/A';
-        }
+        /*        if (count((array)$ret) < 1) {
+                    $ret = isset($ret) ? $ret : new stdClass();
+                    $ret->department = 'N/A';
+                }*/
         return $ret;
     }
 

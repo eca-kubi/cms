@@ -2,7 +2,7 @@
 <aside class="fa main-sidebar sidebar-dark-primary elevation-4 blockable" style="left:-1px">
     <!-- Brand Logo -->
     <a href="<?php echo site_url(); ?>" class="brand-link">
-        <img src="<?php echo site_url('/public/assets/images/adamus.jpg'); ?>" alt="logo"
+        <img src="<?php echo site_url('public/assets/images/adamus.jpg'); ?>" alt="logo"
              class="brand-image  ml-0  elevation-3" style="opacity: .8"/>
         <span class="brand-text font-weight-light"><?php echo APP_NAME; ?></span>
     </a>
