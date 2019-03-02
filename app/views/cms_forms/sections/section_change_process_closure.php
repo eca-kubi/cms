@@ -1,5 +1,5 @@
 <?php /** @var  array $payload */
-if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION) && !empty($payload['form']->project_leader_acceptance)) { ?>
+if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION) && sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE)) { ?>
     <div class="row p-2">
         <div class="w-100 row border ml-0 p-1">
             <h6 class="text-bold font-italic col m-1">
@@ -18,7 +18,7 @@ heredoc;
             </h6>
         </div>
         <div id="section_7"
-             class="collapse section border w-100 <?php echo $_GET['target'] === SECTION_PROCESS_CLOSURE ? 'show' : '' ?>">
+             class="collapse section border w-100">
             <div class="d-sm-block d-none">
                 <table class="table table-bordered table-user-information font-raleway mb-0 table-striped table-active">
                     <thead class="thead-default d-none">
@@ -31,7 +31,7 @@ heredoc;
                     <?php
                     if (empty($payload['form']->project_leader_close_change)) {
                         if ($payload['form']->project_leader_id === getUserSession()->user_id
-                            && !empty($payload['form']->project_leader_acceptance)) { ?>
+                            && sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE)) { ?>
                             <tr>
                                 <td class="text-right" scope="row" style="width:30%">
                                     <b>Project Leader to Close Process: </b>
@@ -39,8 +39,8 @@ heredoc;
                                 <td style="width:70%">
                                     <div class="row px-2">
                                         <form class="w-100"
-                                              action=<?php echo URL_ROOT ?>/cms-forms/project-leader-closure/<?php echo $payload['form']->cms_form_id; ?>"
-                                              role="form" data-toggle="validator">
+                                              action=<?php echo site_url("cms-forms/project-leader-closure/" . $payload['form']->cms_form_id) ?>"
+                                              role=" form" data-toggle="validator">
                                             <div class="col-sm-12 form-group mb-0">
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="checkbox"
@@ -97,7 +97,7 @@ heredoc;
                                 <td style="width:70%">
                                     <div class="row px-2">
                                         <form class="w-100"
-                                              action="<?php echo URL_ROOT ?>/cms-forms/originator-closure/<?php echo $payload['form']->cms_form_id; ?>"
+                                              action="<?php echo site_url("cms-forms/originator-closure/" . $payload['form']->cms_form_id) ?>"
                                               role="form"
                                               data-toggle="validator">
                                             <div class="col-sm-12 form-group mb-0">
@@ -217,7 +217,7 @@ heredoc;
                                     <div class="col-sm-8">
                                         <div class="row px-2">
                                             <form class="w-100"
-                                                  action="<?php echo URL_ROOT ?>/cms-forms/project-leader-closure/<?php echo $payload['form']->cms_form_id; ?>"
+                                                  action="<?php echo site_url("cms-forms/project-leader-closure/" . $payload['form']->cms_form_id) ?>"
                                                   role="form"
                                                   data-toggle="validator">
                                                 <div class="col-sm-12 form-group pl-0 mb-0">
@@ -273,7 +273,7 @@ heredoc;
                                     <div class="col-sm-8">
                                         <div class="row px-2">
                                             <form class="w-100"
-                                                  action="<?php echo URL_ROOT ?>/cms-forms/originator-closure/<?php echo $payload['form']->cms_form_id; ?>"
+                                                  action="<?php echo site_url("cms-forms/originator-closure/" . $payload['form']->cms_form_id); ?>"
                                                   role="form"
                                                   data-toggle="validator">
                                                 <div class="col-sm-12 form-group pl-0 mb-0">
@@ -319,7 +319,7 @@ heredoc;
                     <?php } ?>
                     <?php
                     if (empty($payload['form']->hod_close_change)) {
-                        if (isHOD($payload['form']->cms_form_id, getUserSession()->user_id) && !empty($payload['form']->originator_close_change)) { ?>
+                        if (isCurrentManager($payload['form']->department_id, getUserSession()->user_id) && !empty($payload['form']->originator_close_change)) { ?>
                             <tr>
                                 <td colspan="2" class="text-sm-right">
                                     <div class="col-sm-4 text-sm-right">
@@ -328,7 +328,7 @@ heredoc;
                                     <div class="col-sm-8">
                                         <div class="row px-2">
                                             <form class="w-100"
-                                                  action="<?php echo URL_ROOT ?>/cms-forms/hod-closure/<?php echo $payload['form']->cms_form_id; ?>"
+                                                  action="<?php echo site_url("cms-forms/hod-closure/" . $payload['form']->cms_form_id) ?>"
                                                   role="form" data-toggle="validator">
                                                 <div class="col-sm-12 form-group pl-0 mb-0">
                                                     <div class="form-check form-check-inline">

@@ -98,12 +98,13 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
                         Acceptance
                         <span><?php echo echoCompleted(); ?> </span>
                         <span class="mx-2 animated incomplete text-dark small">
-                    <?php echo empty($payload['form']->project_leader_acceptance) ? '<i>[Project Leader Acceptance pending]</i>' : ''; ?>
+                    <?php echo !sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE) ? '<i>[Project Leader Acceptance pending]</i>' : ''; ?>
                 </span>
                     </a>
                 </h6>
             </div>
-            <div class="w-100 section collapse" id="section_5">
+            <div class="w-100 section <?php if (sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE) && isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id)) echo 'collapse'; ?>"
+                 id="section_5">
                 <div class="d-sm-block d-none">
                     <table class="table table-bordered table-user-information font-raleway table-striped table-active">
                         <thead class="thead-default d-none">
@@ -116,7 +117,6 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
                         <tr>
                             <?php
                             $authorized_by = new User($payload['action_log'][ACTION_HOD_AUTHORISATION_COMPLETED]->performed_by);
-                            //$project_leader = new User($payload['form']->project_leader_id);
                             ?>
                             <td class="text-right" style="width:17%"><b> Authorized by: </b></td>
                             <td scope="row" style="width:83%">
@@ -136,7 +136,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
                             </td>
                         </tr>
                         <?php
-                        if (isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id) && empty($payload['form']->project_leader_acceptance)) { ?>
+                        if (isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id) && !sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE)) { ?>
                             <tr>
                                 <td class="text-right">
                                     <b>Project Leader Acceptance: </b>
@@ -145,7 +145,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
                                     <form class="w-100" method="post"
                                           action="<?php echo URL_ROOT ?>/cms-forms/project-leader-acceptance/<?php echo $payload['form']->cms_form_id; ?>"
                                           role="form" data-toggle="validator" enctype="multipart/form-data">
-                                        <div class="form-row form-group mb-0">
+                                        <div class="form-row form-group mb-1">
                                             <label class="col-sm-12"
                                                    for="project_leader_acceptance_comment">Comment:</label>
                                             <div class="col-sm-8">
@@ -163,7 +163,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
                             </tr>
                             <?php
                         } else {
-                            if (empty($payload['form']->project_leader_acceptance) && !isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id)) { ?>
+                            if (!sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE) && !isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id)) { ?>
                                 <tr>
                                     <td class="text-right"><b>Project Leader Acceptance: </b></td>
                                     <td scope="row">
@@ -245,7 +245,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
                             </td>
                         </tr>
                         <?php
-                        if (isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id) && empty($payload['form']->project_leader_acceptance)) { ?>
+                        if (isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id) && !sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE)) { ?>
                             <tr>
                                 <td>
                                     <div class="row px-2">
@@ -277,7 +277,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
                                             <b>Leader's Acceptance: </b>
                                         </div>
                                         <div class="col-sm-8">
-                                            <?php echo empty($payload['form']->project_leader_acceptance) ? '<span class="text-danger">Pending</span>' :
+                                            <?php echo !sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE) ? '<span class="text-danger">Pending</span>' :
                                                 '<span class="text-success">' . ucwords($payload['form']->project_leader_acceptance) . '</span>'; ?>
                                         </div>
                                     </div>

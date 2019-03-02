@@ -43,6 +43,9 @@ class CMSFormModel extends Model implements \JsonSerializable
     public $state;
     public $title;
     public $gm_approval_date;
+    public $hod_authorization_date;
+    public $project_leader_acceptance_comment;
+    public $project_leader_acceptance_date;
     /**
      * @var array
      */
@@ -199,7 +202,10 @@ class CMSFormModel extends Model implements \JsonSerializable
             'gm_id' => $this->gm_id,
             'state' => $this->state,
             'pl_documents' => $this->pl_documents,
-            'gm_approval_date' => $this->gm_approval_date
+            'gm_approval_date' => $this->gm_approval_date,
+            'hod_authorization_date' => $this->hod_authorization_date,
+            'project_leader_acceptance_comment' => $this->project_leader_acceptance_comment,
+            'project_leader_acceptance_date' => $this->project_leader_acceptance_date
         ];
     }
 

@@ -572,6 +572,11 @@ function getResponseForQuestion($question_id, $cms_form_id)
     getOne('cms_impact_response');
 }
 
+/**
+ * @param $cms_form_id
+ * @param $section
+ * @return array|bool
+ */
 function sectionCompleted($cms_form_id, $section)
 {
     $section_completed = (new CMSForm(['cms_form_id' => $cms_form_id]))->getSectionCompleted();
@@ -1249,4 +1254,25 @@ function canUploadFile($cms_form_id)
     return $form_model->originator_id === $current_user->user_id
         || $form_model->project_leader_id === $current_user->user_id
         || isCurrentManager($form_model->department_id, $current_user->user_id);
+}
+
+/**
+ * @param $array array
+ * @param $prop
+ * @param $filterBy
+ * @param $fn callable
+ * @return array
+ */
+function array_filter_multidim_by_obj_prop($array, $prop, $filterBy, $fn)
+{
+    return array_filter($array, function ($value) use ($prop, $filterBy, $fn) {
+        $a = '';
+        if (is_object($value)) {
+            $a = $value->$prop;
+        } else {
+            $a = $value["$prop"];
+        }
+        $b = $filterBy;
+        return $fn($a, $b);
+    });
 }

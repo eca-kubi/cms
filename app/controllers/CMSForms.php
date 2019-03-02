@@ -285,145 +285,80 @@ class CMSForms extends Controller
         redirect('cms-forms/view-change-process/' . $cms_form_id);
     }
 
-    /* public function ApproveImpactResponse($cms_form_id)
-     {
-         $payload = array();
-         $payload['user'] = getUserSession();
-         $payload['title'] = 'Risk Assessment';
-         $payload['form'] = new CMSForm(['cms_form_id' => $cms_form_id]);
-         $payload['originator'] = new User($payload['form']->originator_id);
-         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-             $_POST = filterPost();
-             // Notify hod
-             $hod = new User(getHodId($cms_form_id));
-             $department = new Department(getUserSession()->department_id);
-             flash('flash_view_change_process', 'Impact Assessment for ' . $department->department . ' Approved!', 'text-sm text-center text-success alert');
-             //set approval status
-             if (ImpactAssStatusModel::has('cms_form_id', $cms_form_id, ['department' => $department->department_id])) {
-                 ImpactAssStatusModel::updateImpactAssStatus([
-                     'cms_form_id' => $cms_form_id,
-                     'department_id' => $department->department_id
-                 ], ['status' => STATUS_PENDING_APPROVAL]);
-             } else {
-                 (new ImpactAssStatusModel)->setDepartmentId($department->department_id)
-                     ->setStatus(STATUS_PENDING_APPROVAL)
-                     ->setCmsFormId($cms_form_id)
-                     ->insert();
-             }
-             (new EmailModel)->add([
-                 'subject' => genEmailSubject($cms_form_id),
-                 'recipient_address' => $hod->email,
-                 'sender_user_id' => getUserSession()->user_id,
-                 'recipient_name' => ucwords($hod->first_name . ' ' . $hod->last_name),
-                 'body' => 'Hi ' . ucwords($hod->first_name . ' ' . $hod->last_name) . ', ' . HTML_NEW_LINE .
-                     'Impact Assessment for ' . $department->department .
-                     ' has been updated by ' . ' ' . ucwords(getUserSession()->first_name . '  ' . getUserSession()->last_name, '-. ') . ', from ' .
-                     $department->department . ' Department.' . HTML_NEW_LINE .
-                     'Use this link to view the update: ' . genLink($cms_form_id, 'risk-assessment'),
-                 'follow_up' => true,
-                 'cms_form_id' => $cms_form_id
-             ]);
-             if (CmsActionLogModel::has('cms_form_id', $cms_form_id, [
-                 'action' => ACTION_IMPACT_ASSESSMENT_COMPLETED,
-                 'department_affected' => $department->department_id
-             ])) {
-                 actionLog($cms_form_id, ACTION_IMPACT_ASSESSMENT_MODIFIED, getUserSession()->user_id, $department->department_id);
-             } else {
-                 actionLog($cms_form_id, ACTION_IMPACT_ASSESSMENT_COMPLETED, getUserSession()->user_id, $department->department_id);
-             }
-             // Notify originator
-             if ($payload['originator']->user_id !== getUserSession()->user_id) {
-                 $department = new Department(getUserSession()->department_id);
-                 (new EmailModel)->add([
-                     'subject' => genEmailSubject($cms_form_id),
-                     'recipient_address' => $hod->email,
-                     'sender_user_id' => getUserSession()->user_id,
-                     'recipient_name' => ucwords($payload['originator']->first_name . ' ' . $payload['originator']->last_name),
-                     'body' => 'Hi ' . ucwords($payload['originator']->first_name . ' ' . $payload['originator']->last_name) . ', ' . HTML_NEW_LINE .
-                         'Impact Assessment for ' . $department->department .
-                         ' has been updated by ' . ' ' . ucwords(getUserSession()->first_name . '  ' . getUserSession()->last_name, '-. ') . ', from ' .
-                         $department->department . ' Department.' . HTML_NEW_LINE .
-                         'Use this link to view the update: ' . genLink($cms_form_id, 'risk-assessment'),
-                     'follow_up' => true,
-                     'cms_form_id' => $cms_form_id
-                 ]);
-             }
-
-         }
-         redirect('cms-forms/risk-assessment/' . $cms_form_id);
-     }*/
-
     public function HODAuthorisation(int $cms_form_id = -1)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $cms_form = new CMSForm(['cms_form_id' => $cms_form_id]);
-            $originator = new User($cms_form->originator_id);
-            $hod = new User(getUserSession()->user_id);
-            $link = URL_ROOT . "/cms-forms/view-change-process/$cms_form_id";
+            $current_user = getUserSession();
+            $recipients = [];
+            $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+            $originator = new User($form_model->originator_id);
+            $current_mgr = new User(getCurrentManager($form_model->department_id));
+            $dept_hod = getDepartmentHod($form_model->department_id);
+            $link = site_url("cms-forms/view-change-process/$cms_form_id");
             $subject = genEmailSubject($cms_form_id);
             $_POST = filterPost();
-            $cms_form->hod_authorization = $_POST['hod_authorization'];
-            $cms_form->hod_authorization_comment = $_POST['hod_authorization_comment'];
-            $cms_form->project_leader_id = $_POST['project_leader_id'];
-            $project_leader = new User($cms_form->project_leader_id);
+            $form_model->hod_authorization = $_POST['hod_authorization'];
+            $form_model->hod_authorization_comment = $_POST['hod_authorization_comment'];
+            $form_model->project_leader_id = $_POST['project_leader_id'];
+            $project_leader = new User($form_model->project_leader_id);
             try {
-                $cms_form->hod_authorization_date = (new DateTime())->format(DFB_DT);
+                $form_model->hod_authorization_date = (new DateTime())->format(DFB_DT);
             } catch (Exception $e) {
             }
-            $template_data = array(
-                'project_owner' => concatNameWithUserId($hod->user_id),
-                'project_leader' => concatNameWithUserId($project_leader->user_id),
-                'subject' => genEmailSubject($cms_form_id),
-                'link' => $link
-            );
-            /*$body = "Hi, " . concatNameWithUserId($originator->user_id) . HTML_NEW_LINE .
-                getNameJobTitleAndDepartment($hod->user_id) . " has selected " .
-                ($project_leader->user_id === $originator->user_id ? "you " : getNameJobTitleAndDepartment($project_leader->user_id)) .
-                " as Project Leader for this Change Proposal." . HTML_NEW_LINE .
-                "Click this link for more details: " . '<a href="' . $link . '" />' . $link . '</a>';*/
-            if ($originator->user_id !== getUserSession()->user_id) {
+            $ret = $form_model->updateForm($cms_form_id);
+            if ($ret) {
+                flash_success();
+                if (!empty($dept_hod)) {
+                    $recipients[] = $dept_hod[0];
+                }
+                $recipients[] = $originator;
+                $recipients[] = $current_mgr;
+                $recipients = array_unique_multidim_array($recipients, 'user_id');
+                $recipients = array_filter_multidim_by_obj_prop($recipients, 'user_id', $current_user->user_id, function ($a, $b) {
+                    return $a != $b;
+                });
+                $template_data = array(
+                    'performed_by' => concatNameWithUserId($current_user->user_id),
+                    'subject' => $subject,
+                    'link' => $link
+                );
+                insertEmailBulk('email_templates/hod_authorization', $recipients, $template_data);
+                $remarks = get_include_contents('action_remarks_templates/hod_authorization', $template_data);
+                insertLog($cms_form_id, ACTION_HOD_AUTHORISATION_COMPLETED, $remarks, $current_user->user_id);
+                $template_data['project_leader'] = concatNameWithUserId($project_leader->user_id);
+                $template_data['project_owner'] = concatNameWithUserId($current_user->user_id);
                 $body = get_include_contents('email_templates/pl_selected', $template_data);
                 insertEmail($subject, $body, $project_leader->email, concatNameWithUserId($project_leader->user_id));
+                completeSection($cms_form_id, SECTION_HOD_AUTHORISATION);
+            } else {
+                flash_error();
             }
-            //insertEmail($subject, $body, $originator->email, concatNameWithUserId($originator->user_id));
-            flash($flash = "flash_" . the_method(), "Success!", 'text-sm text-center text-success alert');
-            $data = $cms_form->jsonSerialize();
-            (new CMSFormModel(null))->updateForm($cms_form_id, $data);
-            // complete section
-            completeSection($cms_form_id, SECTION_HOD_AUTHORISATION);
-            //set action log
-            (new CmsActionLogModel())->setAction(ACTION_HOD_AUTHORISATION_COMPLETED)
-                ->setPerformedBy(getUserSession()->user_id)
-                ->setCmsFormId($cms_form_id)
-                ->setSectionAffected(SECTION_HOD_AUTHORISATION)
-                ->insert();
-            redirect('cms-forms/view-change-process/' . $cms_form_id);
         }
         redirect('cms-forms/view-change-process/' . $cms_form_id);
     }
 
     public function ProjectLeaderAcceptance(int $cms_form_id = -1)
     {
-        if (!isProjectLeader(getUserSession()->user_id, $cms_form_id)) {
-            redirect('cms-forms/view-change-process/' . $cms_form_id);
-        }
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $cms_form = new CMSForm(['cms_form_id' => $cms_form_id]);
+            $current_user = getUserSession();
+            $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
             $_POST = filterPost();
-            $cms_form->setProjectLeaderAcceptance(STATUS_ACCEPTED);
-            $cms_form->setProjectLeaderAcceptanceComment($_POST['project_leader_acceptance_comment']);
-            $cms_form->setProjectLeaderAcceptanceDate(now());
-            $data = $cms_form->jsonSerialize();
-            $cms_form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-            $ret = ($cms_form_model)->updateForm($cms_form_id, $data);
+            $form_model->setProjectLeaderAcceptance(STATUS_ACCEPTED);
+            $form_model->project_leader_acceptance_comment = $_POST['project_leader_acceptance_comment'];
+            try {
+                $form_model->project_leader_acceptance_date = (new DateTime())->format(DFB_DT);
+            } catch (Exception $e) {
+            }
+            $ret = $form_model->updateForm($cms_form_id);
             if ($ret) {
                 flash_success();
                 completeSection($cms_form_id, SECTION_PL_ACCEPTANCE);
-                (new CmsActionLogModel())->setAction(ACTION_PROJECT_LEADER_ACCEPTANCE_COMPLETED)
-                    ->setPerformedBy(getUserSession()->user_id)
-                    ->setCmsFormId($cms_form_id)
-                    ->setSectionAffected(SECTION_HOD_AUTHORISATION)
-                    ->insert();
+                $data = [
+                    'performed_by' => concatNameWithUserId($current_user->user_id),
+                    'subject' => genEmailSubject($cms_form_id)
+                ];
+                $remarks = get_include_contents('action_remarks_templates/pl_acceptance', $data);
+                insertLog($cms_form_id, ACTION_PROJECT_LEADER_ACCEPTANCE_COMPLETED, $remarks, $current_user->user_id);
             } else {
                 flash_error();
             }
@@ -930,6 +865,7 @@ class CMSForms extends Controller
             if ($result['success']) {
                 $files = explode(',', trim($result['file'] . ',' . $form_model->pl_documents, ','));
                 $files = array_unique($files);
+                $files = implode(',', $files);
                 $ret = $form_model->updateForm($cms_form_id, ['pl_documents' => $files]);
                 if ($ret) {
                     flash_success('', 'File upload success!');
