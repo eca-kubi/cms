@@ -10,19 +10,28 @@ article {
 /* Display url info
 */
 a[href^="http"]::after {
-    content: " (" attr(href) ")";
+    content: "    (" attr(href) ")";
 }
 
 /*
 Append a message
 */
-main::after {
-    content: "Copyright site.com";
+#main::after {
+    content: "Copyright 2019 Adamus IT";
     display: block;
     text-align: center;
+    font-size: 10px;
 }
 
 /* target all pages */
 @page {
     margin: 2cm;
+}
+
+.table-bordered th, .table-bordered td {
+    border: 2px solid #aaaaaa !important;
+}
+
+body {
+    color: #212529;;
 }

@@ -24,9 +24,11 @@
       // Check for view file
       if(file_exists('../app/views/' . $view . '.php')){
         require_once '../app/views/' . $view . '.php';
+      } else if (file_exists('../app/views/' . $view . '.html')) {
+          require_once '../app/views/' . $view . '.html';
       } else {
-        // View does not exist
-        die('View is missing.');
+          // View does not exist
+          die('View is missing.');
       }
     }
   }

@@ -691,7 +691,7 @@ function actionLog($cms_form_id, $action, $performed_by, $department_affected = 
         ->insert();
 }
 
-function echoDate(string $date, $return = false)
+function echoDate($date, $return = false)
 {
     try {
         $d = (new \Moment\Moment($date))->calendar(false);
@@ -747,7 +747,7 @@ function getDepartmentHod($department_id)
     $ret = $db->where('department_id', $department_id)
         ->where('role', ROLE_MANAGER)
         ->objectBuilder()
-        ->get('users');
+        ->getOne('users');
     return $ret;
 }
 
@@ -760,16 +760,14 @@ function getCurrentManager($department_id)
 
 function getHodsWithCurrent($department_id)
 {
+    $mgrs = [];
     $current_mgr_id = getCurrentManager($department_id);
-    $mgrs = getDepartmentHod($department_id);
-    array_walk($mgrs, function (&$mgr, $key) use ($current_mgr_id, &$mgrs) {
-        if ($mgr->user_id === $current_mgr_id) {
-            unset($mgrs[$key]);
-        }
-    });
-    if (!empty($current_mgr_id)) {
-        $current_mgr = new User($current_mgr_id);
-        $mgrs[] = $current_mgr;
+    if ($current_mgr_id) {
+        $mgrs[] = new User($current_mgr_id);
+    }
+    $hod = getDepartmentHod($department_id);
+    if (!empty($hod) && $hod->user_id != $current_mgr_id) {
+        $mgr[] = $hod;
     }
     return $mgrs;
 }
@@ -814,6 +812,13 @@ function echoInComplete($append = '')
     return "<span class=\"font-italic \"> <span class=\"text-dark small animated incomplete ml-1\">[Incomplete] $append</span> </span> ";
 }
 
+/**
+ * @param $subject string
+ * @param $body string
+ * @param $recipient_address string
+ * @param $recipient_name string
+ * @return bool
+ */
 function insertEmail($subject, $body, $recipient_address, $recipient_name)
 {
     $email_model = new EmailModel();
@@ -1016,7 +1021,11 @@ function the_method($url = ''): string
  */
 function the_url()
 {
-    return $referer = filter_var($_SERVER['HTTP_REFERER'], FILTER_VALIDATE_URL);
+    $referer = '';
+    if (isset($_SERVER['HTTP_REFERER'])) {
+        $referer = filter_var($_SERVER['HTTP_REFERER'], FILTER_VALIDATE_URL);
+    }
+    return $referer;
 }
 
 function getDepartmentMembers($department_id)
@@ -1275,4 +1284,30 @@ function array_filter_multidim_by_obj_prop($array, $prop, $filterBy, $fn)
         $b = $filterBy;
         return $fn($a, $b);
     });
+}
+
+function dbStartTransaction()
+{
+    $db = Database::getDbh();
+    $db->startTransaction();
+}
+
+function dbCommit()
+{
+    $db = Database::getDbh();
+    return $db->commit();
+}
+
+function emptyObj($obj)
+{
+    foreach ($obj AS $prop) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+function dbRollBack()
+{
+    $db = Database::getDbh();
+    return $db->rollback();
 }

@@ -32,11 +32,12 @@ let ANIMATE_FLASH = 'animated flash card infinite';
 // noinspection JSCheckFunctionSignatures
 // noinspection JSDeprecatedSymbols
 $(document).ready(function () {
+    $('.print-it').printPage();
     let NAV_BAR_HEIGHT = $('.navbar-fixed').height();
     $('.content-wrapper').css('margin-top', NAV_BAR_HEIGHT + 'px');
     CMS_FORM_ID = $('#cms_form_id').val();
     URL_ROOT = $('#url_root').val();
-    moment.modifyHolidays.add('Ghana');
+    //moment.modifyHolidays.add('Ghana');
     checkHODAssignment();
     $('td.not-allowed').on('click', function () {
         let department = $(this).data('department');

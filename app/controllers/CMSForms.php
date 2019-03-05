@@ -118,7 +118,7 @@ class CMSForms extends Controller
             $recipients[] = new User($form_model->originator_id);
             $recipients[] = $current_user;
             if (!empty($dept_mgr)) {
-                $recipients[] = $dept_mgr[0];
+                $recipients[] = $dept_mgr;
             }
             $recipients = array_unique_multidim_array($recipients, 'user_id');
             insertEmailBulk('email_templates/hod_assessment', $recipients, $data);
@@ -189,7 +189,7 @@ class CMSForms extends Controller
                 $recipients[] = new User($form_model->originator_id);
                 $dept_mgr = getDepartmentHod($form_model->department_id);
                 if (!empty($dept_mgr)) {
-                    $recipients[] = $dept_mgr[0];
+                    $recipients[] = $dept_mgr;
                 }
                 $recipients = array_unique_multidim_array($recipients, 'user_id');
                 $link = site_url("cms-forms/view-change-process/$cms_form_id");
@@ -270,7 +270,7 @@ class CMSForms extends Controller
                 $data['approval_status'] = $form_model->gm_approval;
                 $recipients[] = new User($current_hod);
                 if (!empty($hod)) {
-                    $recipients[] = $hod[0];
+                    $recipients[] = $hod;
                 }
                 $recipients[] = $originator;
                 $recipients = array_unique_multidim_array($recipients, 'user_id');
@@ -309,7 +309,7 @@ class CMSForms extends Controller
             if ($ret) {
                 flash_success();
                 if (!empty($dept_hod)) {
-                    $recipients[] = $dept_hod[0];
+                    $recipients[] = $dept_hod;
                 }
                 $recipients[] = $originator;
                 $recipients[] = $current_mgr;
@@ -366,37 +366,166 @@ class CMSForms extends Controller
         redirect('cms-forms/view-change-process/' . $cms_form_id);
     }
 
-    public function ActionList(int $cms_form_id = -1)
+    public function ProjectLeaderClosure($cms_form_id)
     {
-
-
-    }
-
-    public function ProjectLeaderClosure(int $cms_form_id = -1)
-    {
-        $cms_form = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-        $cms_form->updateForm($cms_form_id, [
-            'project_leader_close_change' => now()
-        ]);
-        completeSection($cms_form_id, SECTION_ACTION_LIST);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $current_user = getUserSession();
+            $_POST = filterPost();
+            $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+            $subject = genEmailSubject($cms_form_id);
+            $performed_by = getNameJobTitleAndDepartment($current_user->user_id);
+            $link = site_url("cms-forms/view-change-process/$cms_form_id");
+            $role = 'Project Leader';
+            $data = compact('subject', 'performed_by', 'role', 'link');
+            try {
+                dbStartTransaction();
+                $ret = $form_model->updateForm($cms_form_id, [
+                    'project_leader_close_change' => (new DateTime())->format(DFB_DT),
+                    'pl_closure_comment' => $_POST['pl_closure_comment']
+                ]);
+                if ($ret) {
+                    completeSection($cms_form_id, SECTION_ACTION_LIST);
+                    $recipients[] = getDepartmentHod($form_model->department_id);
+                    $cur_mgr_id = getCurrentManager($form_model->department_id);
+                    $recipients[] = new User($cur_mgr_id);
+                    $recipients = array_unique_multidim_array($recipients, 'user_id');
+                    $recipients = array_filter_multidim_by_obj_prop($recipients, 'user_id', $current_user->user_id, function ($a, $b) {
+                        return $a != $b;
+                    });
+                    foreach ($recipients as $recipient) {
+                        $recipient_name = concatNameWithUserId($recipient['user_id']);
+                        $data['role'] = $role;
+                        $data['recipient_user_id'] = $recipient['user_id'];
+                        $body = get_include_contents('email_templates/change_closed', $data);
+                        $ret = insertEmail($subject, $body, $recipient['email'], $recipient_name);
+                    }
+                    if ($ret) {
+                        $remarks = get_include_contents('action_remarks_templates/change_closed', $data);
+                        $performed_by = $current_user->user_id;
+                        $ret = insertLog($cms_form_id, ACTION_PL_CLOSURE, $remarks, $performed_by);
+                        if ($ret) {
+                            if (dbCommit()) {
+                                flash_success();
+                            }
+                        } else {
+                            dbRollBack();
+                            flash_error();
+                        }
+                    }
+                }
+            } catch (Exception $e) {
+                flash_error();
+            }
+        }
         redirect("cms-forms/view-change-process/$cms_form_id");
     }
 
     public function OriginatorClosure(int $cms_form_id = -1)
     {
-        $cms_form = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-        $cms_form->updateForm($cms_form_id, ['originator_close_change' => now()]);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $current_user = getUserSession();
+            $_POST = filterPost();
+            $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+            $subject = genEmailSubject($cms_form_id);
+            $performed_by = getNameJobTitleAndDepartment($current_user->user_id);
+            $link = site_url("cms-forms/view-change-process/$cms_form_id");
+            $role = 'Originator';
+            $data = compact('subject', 'performed_by', 'role', 'link');
+            try {
+                dbStartTransaction();
+                $ret = $form_model->updateForm($cms_form_id, [
+                    'originator_close_change' => (new DateTime())->format(DFB_DT),
+                    'originator_closure_comment' => $_POST['pl_closure_comment']
+                ]);
+                if ($ret) {
+                    $recipients[] = getDepartmentHod($form_model->department_id);
+                    $cur_mgr_id = getCurrentManager($form_model->department_id);
+                    $recipients[] = new User($cur_mgr_id);
+                    $recipients = array_unique_multidim_array($recipients, 'user_id');
+                    $recipients = array_filter_multidim_by_obj_prop($recipients, 'user_id', $current_user->user_id, function ($a, $b) {
+                        return $a != $b;
+                    });
+                    foreach ($recipients as $recipient) {
+                        $recipient_name = concatNameWithUserId($recipient['user_id']);
+                        $data['recipient_user_id'] = $recipient['user_id'];
+                        $data['role'] = $role;
+                        $body = get_include_contents('email_templates/change_closed', $data);
+                        $ret = insertEmail($subject, $body, $recipient['email'], $recipient_name);
+                    }
+                    if ($ret) {
+                        $remarks = get_include_contents('action_remarks_templates/change_closed', $data);
+                        $performed_by = $current_user->user_id;
+                        $ret = insertLog($cms_form_id, ACTION_ORIGINATOR_CLOSURE, $remarks, $performed_by);
+                        if ($ret) {
+                            if (dbCommit()) {
+                                flash_success();
+                            }
+                        } else {
+                            dbRollBack();
+                            flash_error();
+                        }
+                    }
+                }
+            } catch (Exception $e) {
+                flash_error();
+            }
+        }
         redirect("cms-forms/view-change-process/$cms_form_id");
     }
 
     public function HODClosure(int $cms_form_id = -1)
     {
-        $cms_form = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-        $cms_form->updateForm($cms_form_id, [
-            'hod_close_change' => now(),
-            'state' => STATUS_CLOSED
-        ]);
-        completeSection($cms_form_id, SECTION_PROCESS_CLOSURE);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $current_user = getUserSession();
+            $_POST = filterPost();
+            $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+            $subject = genEmailSubject($cms_form_id);
+            $performed_by = getNameJobTitleAndDepartment($current_user->user_id);
+            $link = site_url("cms-forms/view-change-process/$cms_form_id");
+            $role = 'HoD';
+            $data = compact('subject', 'performed_by', 'role', 'link');
+            try {
+                dbStartTransaction();
+                $ret = $form_model->updateForm($cms_form_id, [
+                    'hod_close_change' => (new DateTime())->format(DFB_DT),
+                    'hod_closure_comment' => $_POST['pl_closure_comment'],
+                    'state' => STATUS_CLOSED,
+                    'date_closed' => now()
+                ]);
+                if ($ret) {
+                    $recipients[] = getDepartmentHod($form_model->department_id);
+                    $cur_mgr_id = getCurrentManager($form_model->department_id);
+                    $recipients[] = new User($cur_mgr_id);
+                    $recipients = array_unique_multidim_array($recipients, 'user_id');
+                    $recipients = array_filter_multidim_by_obj_prop($recipients, 'user_id', $current_user->user_id, function ($a, $b) {
+                        return $a != $b;
+                    });
+                    foreach ($recipients as $recipient) {
+                        $recipient_name = concatNameWithUserId($recipient['user_id']);
+                        $data['recipient_user_id'] = $recipient['user_id'];
+                        $data['role'] = $role;
+                        $body = get_include_contents('email_templates/change_closed', $data);
+                        $ret = insertEmail($subject, $body, $recipient['email'], $recipient_name);
+                    }
+                    if ($ret) {
+                        $remarks = get_include_contents('action_remarks_templates/change_closed', $data);
+                        $performed_by = $current_user->user_id;
+                        $ret = insertLog($cms_form_id, ACTION_HOD_CLOSURE, $remarks, $performed_by);
+                        if ($ret) {
+                            if (dbCommit()) {
+                                completeSection($cms_form_id, SECTION_PROCESS_CLOSURE);
+                                flash_success();
+                            }
+                        } else {
+                            dbRollBack();
+                            flash_error();
+                        }
+                    }
+                }
+            } catch (Exception $e) {
+                flash_error();
+            }
+        }
         redirect("cms-forms/view-change-process/$cms_form_id");
     }
 
@@ -408,15 +537,16 @@ class CMSForms extends Controller
     {
         $payload = array();
         if (!CMSFormModel::has('cms_form_id', $cms_form_id)) {
-            redirect('errors/index/404');
+            //redirect('errors/index/404');
+            redirect('cms-forms/dashboard');
         }
         if (!isLoggedIn()) {
             redirect("users/login/$cms_form_id");
         }
         $payload['title'] = 'Change Proposal, Assessment & Implementation';
         $payload['form'] = new CMSForm(['cms_form_id' => $cms_form_id]);
-        $payload['active'] = CMSFormModel::getActive();
-        $payload['closed'] = CMSFormModel::getClosed();
+        //$payload['active'] = CMSFormModel::getActive();
+        //$payload['closed'] = CMSFormModel::getClosed();
         $payload['originator'] = new User($payload['form']->originator_id);
         $payload['hod'] = new User($payload['form']->hod_id);
         $payload['departments'] = (new DepartmentModel())->getAllDepartments();
@@ -883,6 +1013,35 @@ class CMSForms extends Controller
             }
         }
         goBack();
+    }
+
+    public function print($cms_form_id)
+    {
+        $payload = array();
+        if (!CMSFormModel::has('cms_form_id', $cms_form_id)) {
+            //redirect('errors/index/404');
+            redirect('cms-forms/dashboard');
+        }
+        if (!isLoggedIn()) {
+            redirect("users/login/$cms_form_id");
+        }
+        $payload['title'] = 'Change Proposal, Assessment & Implementation';
+        $payload['form'] = new CMSForm(['cms_form_id' => $cms_form_id]);
+        //$payload['active'] = CMSFormModel::getActive();
+        //$payload['closed'] = CMSFormModel::getClosed();
+        $payload['originator'] = new User($payload['form']->originator_id);
+        $payload['hod'] = new User($payload['form']->hod_id);
+        $payload['departments'] = (new DepartmentModel())->getAllDepartments();
+        $payload['affected_departments'] = getAffectedDepartments($cms_form_id);
+        $payload['cms_questions'] = getImpactQuestions();
+        $payload['action_log'] = getActionLog($cms_form_id);
+        $payload['gms'] = getGms();
+        $payload['department_members'] = Database::getDbh()->where('department_id', getUserSession()->department_id)
+            /*->where('role', 'Manager', '<>')
+            ->where('role', 'Superintendent', '<>')*/
+            ->objectBuilder()
+            ->get('users');
+        $this->view('cms_forms/print', $payload);
     }
 }
 

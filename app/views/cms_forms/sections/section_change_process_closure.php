@@ -4,7 +4,11 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION) &
         <div class="w-100 row border ml-0 p-1">
             <h6 class="text-bold font-italic col m-1">
                 <a href="#section_7" data-toggle="collapse">
-                    <i class="fa <?php echo ICON_FA_PLUS ?>" data-id></i> Section 7 - Change Process Closure
+                    <i class="fa <?php if (empty($payload['form']->hod_close_change)) {
+                        echo ICON_FA_MINUS;
+                    } else {
+                        echo ICON_FA_PLUS;
+                    } ?>" data-id></i> Section 7 - Change Process Closure
                     <?php if (sectionCompleted($payload['form']->cms_form_id, SECTION_PROCESS_CLOSURE)) {
                         echo echoCompleted();
                     } else {
@@ -18,7 +22,9 @@ heredoc;
             </h6>
         </div>
         <div id="section_7"
-             class="collapse section border w-100">
+             class="section border w-100 <?php if (!empty($payload['form']->hod_close_change)) {
+                 echo 'collapse';
+             } ?>">
             <div class="d-sm-block d-none">
                 <table class="table table-bordered table-user-information font-raleway mb-0 table-striped table-active">
                     <thead class="thead-default d-none">
@@ -38,11 +44,11 @@ heredoc;
                                 </td>
                                 <td style="width:70%">
                                     <div class="row px-2">
-                                        <form class="w-100"
-                                              action=<?php echo site_url("cms-forms/project-leader-closure/" . $payload['form']->cms_form_id) ?>"
-                                              role=" form" data-toggle="validator">
-                                            <div class="col-sm-12 form-group mb-0">
-                                                <div class="form-check form-check-inline">
+                                        <form class="w-100" method="post"
+                                              action="<?php echo site_url("cms-forms/project-leader-closure/" . $payload['form']->cms_form_id) ?>"
+                                              role="form" data-toggle="validator">
+                                            <div class="col-sm-12 form-group mb-1 p-0">
+                                                <div class="form-check form-check-inline p-0">
                                                     <input class="form-check-input" type="checkbox"
                                                            name="project_leader_close_change"
                                                            id="project_leader_close_change"
@@ -50,18 +56,25 @@ heredoc;
                                                     <label class="form-check-label"
                                                            for="project_leader_close_change">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
                                                         -the Project Leader
-                                                        of this Project- certify that all issues raised have been
+                                                        for this Project- certify that all issues raised have been
                                                         addressed and the project has been implemented
-                                                        successfully.</label>
+                                                        successfully.
+                                                    </label>
                                                 </div>
                                                 <small class="help-block with-errors"></small>
                                             </div>
-                                            <span class="pl-2"></span>
+                                            <div class="form-group mb-1">
+                                            <textarea name="pl_closure_comment" cols="30" rows="7"
+                                                      class="form-control" placeholder="Comments" required></textarea>
+                                                <small class="help-block with-errors"></small>
+                                            </div>
+                                            <span>
                                             <a class="btn small badge badge-success"
                                                onclick="$(this).siblings('#close').click();"
                                                href="javascript:">Close</a>
-                                            <b class="small"> <== Click this button to close this change process </b>
-                                            <input type="submit" class="d-none" value="Close" id="close">
+                                        <b class="small"> <== Click this button to close this change process </b>
+                                        <input type="submit" class="d-none" value="Close" id="close">
+                                        </span>
                                         </form>
                                     </div>
                                 </td>
@@ -99,9 +112,9 @@ heredoc;
                                         <form class="w-100"
                                               action="<?php echo site_url("cms-forms/originator-closure/" . $payload['form']->cms_form_id) ?>"
                                               role="form"
-                                              data-toggle="validator">
-                                            <div class="col-sm-12 form-group mb-0">
-                                                <div class="form-check form-check-inline">
+                                              data-toggle="validator" method="post">
+                                            <div class="col-sm-12 form-group mb-0 p-0">
+                                                <div class="form-check form-check-inline p-0">
                                                     <input class="form-check-input" type="checkbox"
                                                            name="originator_close_change" id="originator_close_change"
                                                            value="<?php echo STATUS_CLOSED ?>" required>
@@ -109,11 +122,17 @@ heredoc;
                                                            for="originator_close_change">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
                                                         -the Originator
                                                         of this Project- certify that the project implementation is
-                                                        successful.</label>
+                                                        successful.
+                                                    </label>
                                                 </div>
                                                 <small class="help-block with-errors"></small>
                                             </div>
-                                            <span class="pl-2">
+                                            <div class="form-group mb-1">
+                                            <textarea name="pl_closure_comment" cols="30" rows="7"
+                                                      class="form-control" placeholder="Comments" required></textarea>
+                                                <small class="help-block with-errors"></small>
+                                            </div>
+                                            <span class="">
                                                 <input type="submit" class="d-none" value="Close" id="close">
                                                 <a class="btn small badge badge-success"
                                                    onclick="$(this).siblings('#close').click();"
@@ -144,8 +163,7 @@ heredoc;
                     ?>
                     <?php
                     if (empty($payload['form']->hod_close_change)) {
-                        if (isHOD($payload['form']->cms_form_id, getUserSession()->user_id
-                            ) && !empty($payload['form']->originator_close_change)) { ?>
+                        if (isCurrentManager($payload['form']->department_id, getUserSession()->user_id) && !empty($payload['form']->originator_close_change)) { ?>
                             <td class="text-right" scope="row" style="width:17%">
                                 <b>HoD to Close Process: </b>
                             </td>
@@ -153,9 +171,9 @@ heredoc;
                                 <div class="row px-2">
                                     <form class="w-100"
                                           action="<?php echo URL_ROOT ?>/cms-forms/hod-closure/<?php echo $payload['form']->cms_form_id; ?>"
-                                          role="form" data-toggle="validator">
-                                        <div class="col-sm-12 form-group mb-0">
-                                            <div class="form-check form-check-inline">
+                                          role="form" data-toggle="validator" method="post">
+                                        <div class="col-sm-12 form-group mb-0 p-0">
+                                            <div class="form-check form-check-inline p-0">
                                                 <input class="form-check-input" type="checkbox" name="hod_close_change"
                                                        id="hod_close_change" value="<?php echo STATUS_CLOSED ?>"
                                                        required/>
@@ -168,11 +186,18 @@ heredoc;
                                             </div>
                                             <small class="help-block with-errors"></small>
                                         </div>
-                                        <span class="pl-2"></span><a class="btn small badge badge-success"
-                                                                     onclick="$(this).siblings('#close').click();"
-                                                                     href="javascript:">Close</a>
-                                        <b class="small"> <== Click this button to close this change process </b>
-                                        <input type="submit" class="d-none" value="Close" id="close">
+                                        <div class="form-group mb-1">
+                                            <textarea name="pl_closure_comment" cols="30" rows="7"
+                                                      class="form-control" placeholder="Comments" required></textarea>
+                                            <small class="help-block with-errors"></small>
+                                        </div>
+                                        <span>
+                                            <a class="btn small badge badge-success"
+                                               onclick="$(this).siblings('#close').click();"
+                                               href="javascript:">Close</a>
+                                            <b class="small"> <== Click this button to close this change process </b>
+                                            <input type="submit" class="d-none" value="Close" id="close">
+                                        </span>
                                     </form>
                                 </div>
                             </td>
@@ -374,10 +399,11 @@ heredoc;
             </div>
         </div>
         <?php if (sectionCompleted($payload['form']->cms_form_id, SECTION_PROCESS_CLOSURE)) {
+            $print_url = site_url('cms-forms/print/' . $payload['form']->cms_form_id);
             echo <<<heredoc
 <div class="alert text-success container-fluid text-bold text-center">
 <p class="text-center tada">Process Complete!</p>
-<p><small><a class="text-bold flash animated" href="#" style="color: #007bff; animation-iteration-count: infinite;">Click here to download the complete form.</a></small></p>
+<p><small><a class="text-bold flash animated print-it" href="$print_url" style="color: #007bff; animation-iteration-count: infinite;">Click here to download the complete form.</a></small></p>
 </div>
 heredoc;
 

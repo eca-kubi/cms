@@ -175,7 +175,7 @@ td.action > span {
     left: 100%;
 }
 
-.table td {
+.table td, .table th {
     padding: 0.5rem !important;
 }
 

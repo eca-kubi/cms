@@ -39,7 +39,7 @@ gulp.task('watch', function () {
     /*gulp.watch('./!**!/!*.php', function() {
       browserSync.reload();
     });*/
-    gulp.watch(['./**/*.php', './public/custom-assets/**/*.css', './public/custom-assets/js/**/*.js']).on('change', reload);
+    gulp.watch(['./**/*.php', './**/*.html', './public/custom-assets/**/*.css', './public/custom-assets/js/**/*.js']).on('change', reload);
     //gulp.watch(settings.themeLocation + 'public/custom-assets/css/**/*.css').on('change', reload);
     //gulp.watch(settings.themeLocation + 'js/scripts.js').on('change', reload);
     //gulp.watch(settings.themeLocation + 'public/custom-assets/css/**/*.css', gulp.parallel('waitForStyles'));

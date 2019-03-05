@@ -103,7 +103,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
                     </a>
                 </h6>
             </div>
-            <div class="w-100 section <?php if (sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE) && isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id)) echo 'collapse'; ?>"
+            <div class="w-100 section <?php if (sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE) && sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION)) echo 'collapse'; ?>"
                  id="section_5">
                 <div class="d-sm-block d-none">
                     <table class="table table-bordered table-user-information font-raleway table-striped table-active">
