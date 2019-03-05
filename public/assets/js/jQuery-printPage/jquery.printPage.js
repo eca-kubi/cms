@@ -70,7 +70,7 @@
 
             var url = getURL(el, pluginOptions);
             pluginOptions.id = (pluginOptions.id) ? pluginOptions.id : $(el).attr('id');
-            if (pluginOptions.id == 'undefined')
+            if (typeof pluginOptions.id === 'undefined')
                 pluginOptions.id = '';
 
             if (!$('#printPage')[0]) {
