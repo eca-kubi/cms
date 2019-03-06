@@ -562,14 +562,14 @@ function getImpactResponsesForDepartment($cms_form_id, $department_id)
  * Summary of getResponseForQuestion
  * @param mixed $question_id
  * @param $cms_form_id
- * @return object
+ * @return mixed
  */
 function getResponseForQuestion($question_id, $cms_form_id)
 {
-    return (object)Database::getDbh()->where('cms_impact_question_id', $question_id)->
-    where('cms_form_id', $cms_form_id)->
-    objectBuilder()->
-    getOne('cms_impact_response');
+    return (object)Database::getDbh()->where('cms_impact_question_id', $question_id)
+        ->where('cms_form_id', $cms_form_id)
+        ->objectBuilder()
+        ->getOne('cms_impact_response');
 }
 
 /**

@@ -1027,8 +1027,6 @@ class CMSForms extends Controller
         }
         $payload['title'] = 'Change Proposal, Assessment & Implementation';
         $payload['form'] = new CMSForm(['cms_form_id' => $cms_form_id]);
-        //$payload['active'] = CMSFormModel::getActive();
-        //$payload['closed'] = CMSFormModel::getClosed();
         $payload['originator'] = new User($payload['form']->originator_id);
         $payload['hod'] = new User($payload['form']->hod_id);
         $payload['departments'] = (new DepartmentModel())->getAllDepartments();

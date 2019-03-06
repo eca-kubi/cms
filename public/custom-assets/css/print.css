@@ -9,9 +9,11 @@ article {
 
 /* Display url info
 */
-a[href^="http"]::after {
+/*
+a[href^="http"]:not(.no-link)::after {
     content: "    (" attr(href) ")";
 }
+*/
 
 /*
 Append a message
