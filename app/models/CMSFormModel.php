@@ -46,6 +46,7 @@ class CMSFormModel extends Model implements \JsonSerializable
     public $hod_authorization_date;
     public $project_leader_acceptance_comment;
     public $project_leader_acceptance_date;
+    public $impact_ass_completed_dept;
     /**
      * @var array
      */
@@ -97,13 +98,14 @@ class CMSFormModel extends Model implements \JsonSerializable
                 ->orderBy('date_raised')
                 ->get('cms_form');
         } catch (Exception $e) {
+            return [];
         }
     }
 
     /**
      * Summary of getClosed.
      *
-     * @return array
+     * @return mixed
      */
     public static function getClosed()
     {
@@ -113,6 +115,7 @@ class CMSFormModel extends Model implements \JsonSerializable
                 ->orderBy('date_raised')
                 ->get('cms_form');
         } catch (Exception $e) {
+            return [];
         }
     }
 
@@ -138,6 +141,7 @@ class CMSFormModel extends Model implements \JsonSerializable
                 ->orderBy('date_raised')
                 ->get('cms_form');
         } catch (Exception $e) {
+            return [];
         }
     }
 
@@ -205,7 +209,8 @@ class CMSFormModel extends Model implements \JsonSerializable
             'gm_approval_date' => $this->gm_approval_date,
             'hod_authorization_date' => $this->hod_authorization_date,
             'project_leader_acceptance_comment' => $this->project_leader_acceptance_comment,
-            'project_leader_acceptance_date' => $this->project_leader_acceptance_date
+            'project_leader_acceptance_date' => $this->project_leader_acceptance_date,
+            'impact_ass_completed_dept' => $this->impact_ass_completed_dept
         ];
     }
 

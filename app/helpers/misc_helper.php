@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 function arrToObj($arr)
 {
     return json_decode(json_encode($arr));
@@ -85,7 +85,7 @@ function filterPost()
  */
 function requireModel(string $model)
 {
-    require_once '../app/models/' . ucwords($model) . '.php';
+    require_once('../app/models/' . ucwords($model) . '.php');
 
     return new $model();
 }
@@ -297,16 +297,7 @@ function notifyGms($cms_form_id, $message = null, $action = null, $action_option
     }
 }
 
-/**To notify Department heads; managers & superintendents for their approval
- * This function can be customized with the help of
- * its parameters for general notifications to department heads
- * @param $cms_form_id
- * @param $department_id
- * @param null $message
- * @param null $action
- * @param null $action_options
- */
-function notifyDepartmentManagers($cms_form_id, $department_id, $message = null, $action = null, $action_options = null)
+/*function notifyDepartmentManagers($cms_form_id, $department_id, $message = null, $action = null, $action_options = null)
 {
     // get the hod who approved the start change process ie. hod-assessment
     //$action_hod_commented = getActionLog($cms_form_id, ACTION_HOD_ASSESSMENT_COMPLETED, [], true);
@@ -317,7 +308,7 @@ function notifyDepartmentManagers($cms_form_id, $department_id, $message = null,
     foreach ($hods as $hod) {
         insertEmail($subject, $message, $hod->email, concatNameWithUserId($hod->user_id));
     }
-}
+}*/
 
 function notifyAllHODs($cms_form_id)
 {
@@ -579,9 +570,10 @@ function getResponseForQuestion($question_id, $cms_form_id)
  */
 function sectionCompleted($cms_form_id, $section)
 {
-    $section_completed = (new CMSForm(['cms_form_id' => $cms_form_id]))->getSectionCompleted();
+    $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+    $section_completed = $form_model->section_completed;
     if (empty($section_completed)) {
-        return [];
+        return false;
     }
     return in_array($section, explode(',', trim($section_completed, ',')));
 }
@@ -589,13 +581,14 @@ function sectionCompleted($cms_form_id, $section)
 function completeSection($cms_form_id, $section)
 {
     $db = Database::getDbh();
-    $s = $db->where('cms_form_id', $cms_form_id)
+    $value = $db->where('cms_form_id', $cms_form_id)
         ->getValue('cms_form', 'section_completed');
-    if (!strpos($s, $section)) {
-        $section = trim($section . ',' . $s, ',');
-    }
-    $db->where('cms_form_id', $cms_form_id)
-        ->update('cms_form', ['section_completed' => $section]);
+    $array = explode(',', $value);
+    $array[] = trim($section);
+    $array = array_unique($array);
+    $updateVal = implode(',', $array);
+    return $db->where('cms_form_id', $cms_form_id)
+        ->update('cms_form', ['section_completed' => $updateVal]);
 }
 
 /**
@@ -607,7 +600,8 @@ function completeSection($cms_form_id, $section)
 function updateImpactAssessmentCompleteList($cms_form_id, $department_id)
 {
     $db = Database::getDbh();
-    $list = (new CMSForm(['cms_form_id' => $cms_form_id]))->getImpactAssCompletedDept();
+    $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+    $list = $form_model->impact_ass_completed_dept;
     $arr = explode(",", $list . "");
     if (!in_array($department_id, $arr)) {
         $list = trim($department_id . ',' . $list, ',');
@@ -741,6 +735,10 @@ function getDepartmentHods($department_id)
     return $ret;
 }
 
+/**
+ * @param $department_id
+ * @return mixed
+ */
 function getDepartmentHod($department_id)
 {
     $db = Database::getDbh();
@@ -1097,7 +1095,7 @@ function get_include_contents($filename, $variablesToMakeLocal)
     $file = APP_ROOT . "/templates/$filename.php";
     if (is_file($file)) {
         ob_start();
-        require "$file";
+        require($file);
         $body = ob_get_clean();
         return $body;
     } else {
@@ -1204,7 +1202,7 @@ function insertEmailBulk($template_file, $recipients, $data)
     }
 }
 
-function prepPostData($section, $cms_form_id = '', $department_id = '')
+function prepPostData($section, $cms_form_id = '')
 {
     $_POST = filterPost();
     $current_user = getUserSession();
@@ -1275,7 +1273,6 @@ function canUploadFile($cms_form_id)
 function array_filter_multidim_by_obj_prop($array, $prop, $filterBy, $fn)
 {
     return array_filter($array, function ($value) use ($prop, $filterBy, $fn) {
-        $a = '';
         if (is_object($value)) {
             $a = $value->$prop;
         } else {
@@ -1298,13 +1295,13 @@ function dbCommit()
     return $db->commit();
 }
 
-function emptyObj($obj)
+/*function emptyObj($obj)
 {
     foreach ($obj AS $prop) {
         return FALSE;
     }
     return TRUE;
-}
+}*/
 
 function dbRollBack()
 {
