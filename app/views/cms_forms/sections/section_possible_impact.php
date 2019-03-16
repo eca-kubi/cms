@@ -34,8 +34,7 @@ HoDs should add their comments under their respective departments.">
                         </h6>
                         <div class="w-100 section collapse" id="<?php echo strtolower($department->department); ?>"
                              data-parent="#poss_imp">
-                            <form action="<?php echo URL_ROOT . '/cms-forms/impact-response/' . $payload['form']->cms_form_id . '/' . $department->department_id; ?>"
-                                  id="impact_assessment"
+                            <form action="<?php echo site_url("cms-forms/impact-response/") . $payload['form']->cms_form_id . '/' . $department->department_id; ?>"
                                   method="post" role="form">
                                 <fieldset>
                                     <table class="table table-bordered table-user-information font-raleway table-striped mb-0">

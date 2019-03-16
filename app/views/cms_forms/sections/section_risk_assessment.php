@@ -4,7 +4,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
         ?>
         <div class="row p-2">
             <form class="w-100"
-                  action="<?php echo URL_ROOT . '/cms-forms/risk-assessment/' . $payload['form']->cms_form_id ?>"
+                  action="<?php echo site_url("cms-forms/risk-assessment/" . $payload['form']->cms_form_id); ?>"
                   method="post" data-toggle="validator" role="form" enctype="multipart/form-data">
                 <fieldset class="w-100">
                     <div class="row w-100 border ml-0 p-1">
