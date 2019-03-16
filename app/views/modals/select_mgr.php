@@ -5,6 +5,7 @@
  * Date: 2/17/2019
  * Time: 4:40 PM
  */
+$user = getUserSession();
 ?>
 <!-- Modal -->
 <div class="modal fade" id="changeManager" tabindex="-1" role="dialog" aria-labelledby="changeManagerLabel"
@@ -12,7 +13,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="changeManagerLabel">Change Manager</h5>
+                <h5 class="modal-title" id="changeManagerLabel">Change <?php echo getDepartment($user->user_id) ?>
+                    Manager</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -41,7 +43,7 @@
                                     Manager
                                 </label>
                                 <div class="col-sm-10">
-                                    <label class="d-none" for="gm">
+                                    <label class="d-none" for="mgr">
                                     </label>
                                     <!--<select class="replace-multiple-select form-control"
                                             id="gm">

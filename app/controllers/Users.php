@@ -171,7 +171,11 @@ class Users extends Controller
                             $this->db->where('email', $email)
                                 ->delete('password_reset');
                             flash('flash', 'Password changed successfully. Please login with your new password!', 'alert text-success text-sm');
-                            actionLog('', ACTION_PASSWORD_RESET, $user_id);
+                            setActionLog([
+                                'action' => ACTION_PASSWORD_RESET,
+                                'performed_by' => $user_id,
+                                'remarks' => 'Password reset by ' . concatNameWithUserId($user_id)
+                            ]);
                             redirect('users/login');
                         }
                     } else {

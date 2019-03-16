@@ -93,7 +93,7 @@ heredoc;
                     } else { ?>
                         <tr>
                             <td class="" colspan="2" scope="row" style="width:100%">
-                                <span class="text-bold">Closed by: </span><?php echo concatNameWithUserId($payload['form']->project_leader_id) ?>
+                                <span class="text-bold">Closed by: </span><?php echo concatNameWithUserId($payload['action_log'][ACTION_PL_CLOSURE]->performed_by) ?>
                                 (Project Leader)
                                 on <?php echo returnDate($payload['form']->project_leader_close_change, true); ?>
                             </td>
@@ -161,14 +161,14 @@ heredoc;
                     } else { ?>
                         <tr>
                             <td class="" scope="row" colspan="2" style="width:100%">
-                                <b>Closed by Originator
-                                    (<?php echo concatNameWithUserId($payload['form']->orginator_id) ?>)
-                                    on <?php echo returnDate($payload['form']->originator_close_change, true); ?> </b>
+                                <span class="text-bold">Closed by: </span><?php echo concatNameWithUserId($payload['action_log'][ACTION_ORIGINATOR_CLOSURE]->performed_by) ?>
+                                (Originator)
+                                on <?php echo returnDate($payload['form']->originator_close_change, true); ?>
                             </td>
                         </tr>
                         <tr>
                             <td class="" scope="row" colspan="2" style="width:100%">
-                                <b>Originator Comment: </b><?php echo $payload['form']->orginator_closure_comment ?>
+                                <span class="text-bold">Originator Comment: </span><?php echo $payload['form']->originator_closure_comment ?>
                             </td>
                         </tr>
                     <?php }
@@ -226,14 +226,14 @@ heredoc;
                     } else { ?>
                         <tr>
                             <td class="" scope="row" colspan="2" style="width:100%">
-                                <b>Process Closed by the HoD
-                                    (<?php echo concatNameWithUserId($payload['form']->hod_id) ?> )
-                                    on <?php echo returnDate($payload['form']->hod_close_change, true); ?> </b>
+                                <span class="text-bold">Closed by:</span> <?php echo concatNameWithUserId($payload['action_log'][ACTION_HOD_CLOSURE]->performed_by) ?>
+                                (HoD)
+                                on <?php echo returnDate($payload['form']->hod_close_change, true); ?>
                             </td>
                         </tr>
                         <tr>
                             <td class="" scope="row" colspan="2" style="width:100%">
-                                <b>HoD Comment: </b><?php echo $payload['form']->hod_closure_comment ?>
+                                <span class="text-bold">HoD Comment: </span><?php echo $payload['form']->hod_closure_comment ?>
                             </td>
                         </tr>
                     <?php }
@@ -296,7 +296,7 @@ heredoc;
                             <td class="text-justify" colspan="2">
                                 <div class="col-sm-12">
                                     <b>Closed by Project Leader
-                                        (<?php echo concatNameWithUserId($payload['form']->project_leader_id) ?>
+                                        (<?php echo concatNameWithUserId($payload['action_log'][ACTION_PL_CLOSURE]->performed_by) ?>
                                         )
                                         on <?php echo returnDate($payload['form']->project_leader_close_change, true); ?> </b>
                                 </div>
@@ -351,7 +351,8 @@ heredoc;
                             <td class="text-justify" colspan="2">
                                 <div class="col-sm-12">
                                     <b>Closed by Originator
-                                        (<?php echo concatNameWithUserId($payload['form']->originator_id) ?> )
+                                        (<?php echo concatNameWithUserId($payload['action_log'][ACTION_ORIGINATOR_CLOSURE]->performed_by) ?>
+                                        )
                                         on <?php echo returnDate($payload['form']->originator_close_change, true); ?>
                                         . </b>
                                 </div>
@@ -405,7 +406,8 @@ heredoc;
                             <td class="text-justify" colspan="2">
                                 <div class="col-sm-12">
                                     <b>Process Closed by the HoD
-                                        (<?php echo concatNameWithUserId($payload['form']->hod_id) ?> )
+                                        (<?php echo concatNameWithUserId($payload['action_log'][ACTION_HOD_CLOSURE]->performed_by) ?>
+                                        )
                                         on <?php echo returnDate($payload['form']->hod_close_change, true); ?>. </b>
                                 </div>
                                 <div class="col-sm-12">

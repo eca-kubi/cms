@@ -1,6 +1,6 @@
 <?php
 
-class CmsActionLogModel extends Model implements \JsonSerializable
+class CmsActionLogModel implements \JsonSerializable
 {
     public static $table = 'cms_action_log';
     public $cms_action_log_id;
@@ -14,7 +14,7 @@ class CmsActionLogModel extends Model implements \JsonSerializable
 
     public function __construct($where_col_val = null)
     {
-        parent::__construct();
+        //parent::__construct();
         if (!empty($where_col_val)) {
             $log = $this->fetchSingle($where_col_val);
             foreach ($log as $col => $value) {
@@ -103,6 +103,9 @@ class CmsActionLogModel extends Model implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * @return bool|int
+     */
     public function insert()
     {
         $db = Database::getDbh();
@@ -110,15 +113,16 @@ class CmsActionLogModel extends Model implements \JsonSerializable
         if ($ret) {
             return $db->getInsertId();
         }
+        return false;
     }
 
     public function jsonSerialize()
     {
         return [
             'department_affected' => $this->department_affected,
-            'section_affected' => $this->getSectionAffected(),
-            'date' => $this->getDate(),
-            'action' => $this->getAction(),
+            'section_affected' => $this->section_affected,
+            'date' => $this->date,
+            'action' => $this->action,
             'performed_by' => $this->performed_by,
             'cms_form_id' => $this->getCmsFormId(),
             'remarks' => $this->remarks
@@ -184,6 +188,9 @@ class CmsActionLogModel extends Model implements \JsonSerializable
      */
     public function getCmsFormId()
     {
+        if (empty($this->cms_form_id)) {
+            return 0;
+        }
         return $this->cms_form_id;
     }
 

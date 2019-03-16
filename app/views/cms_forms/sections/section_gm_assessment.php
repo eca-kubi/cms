@@ -99,7 +99,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_IMPACT_ASSESSMENT)) 
                             <td class="text-right" style="width:17%"><b>By: </b></td>
                             <td scope="row" style="width:83%">
                                 <?php
-                                $action_gm_assessment_completed = getActionLog($payload['form']->cms_form_id, ACTION_GM_ASSESSMENT_COMPLETED, [], true);
+                                $action_gm_assessment_completed = getActionLog($payload['form']->cms_form_id)[ACTION_GM_ASSESSMENT_COMPLETED];
                                 echo getNameJobTitleAndDepartment($action_gm_assessment_completed->performed_by);
                                 ?>
                             </td>

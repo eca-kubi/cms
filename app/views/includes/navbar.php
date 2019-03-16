@@ -20,7 +20,7 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="" alt="User ..." class="img-size-50 mr-3 img-circle" />
+                            <img src="" alt="User ..." class="img-size-50 mr-3 img-circle"/>
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     Brad Diesel
@@ -40,7 +40,7 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="" alt="User ..." class="img-size-50 img-circle mr-3" />
+                            <img src="" alt="User ..." class="img-size-50 img-circle mr-3"/>
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     John Pierce
@@ -60,7 +60,7 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="" alt="User ..." class="img-size-50 img-circle mr-3" />
+                            <img src="" alt="User ..." class="img-size-50 img-circle mr-3"/>
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     Nora Silvester
@@ -84,9 +84,9 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <?php
                     $user = getUserSession();
-                    $initials = $user->first_name[0] .$user->last_name[0];
+                    $initials = $user->first_name[0] . $user->last_name[0];
                     if ($user->profile_pic == DEFAULT_PROFILE_PIC) {
-                        $name = $user->first_name .  ' ' .$user->last_name;
+                        $name = $user->first_name . ' ' . $user->last_name;
                         $src = PROFILE_PIC_DIR . $user->profile_pic . '?' . microtime();
                         echo "<img  alt='<?php echo $initials ?>' avatar=\"$name\" src=\"$src\" class=\"user-image img-size-32 img-fluid img-circle d-inline-block\" >";
                     } else { ?>
@@ -94,7 +94,7 @@
                              class="user-image img-size-32 img-fluid img-circle d-inline-block"
                              alt="<?php echo $initials; ?>" /><?php } ?>
                     <span class="hidden-xs text-capitalize">
-                        <?php echo ucwords($user->first_name . ' '. $user->last_name); ?>
+                        <?php echo ucwords($user->first_name . ' ' . $user->last_name); ?>
                     </span>
                 </a>
                 <ul class="dropdown-menu m-0 p-1 dropdown-menu-right" style="min-width: 19rem">
@@ -105,15 +105,15 @@
                         <div class="col fa p-2">
                             <?php
                             if ($user->profile_pic == DEFAULT_PROFILE_PIC) {
-                                $initials = $user->first_name[0] .$user->last_name[0];
-                                $name = $user->first_name .  ' ' .$user->last_name;
+                                $initials = $user->first_name[0] . $user->last_name[0];
+                                $name = $user->first_name . ' ' . $user->last_name;
                                 echo "<img alt='<?php echo $initials ?>' class=\"user-image img-size-32 img-fluid img-circle d-inline-block \" avatar=\"$name\" >";
                             } else { ?>
                                 <img src="<?php echo PROFILE_PIC_DIR . $user->profile_pic . '?' . microtime(); ?>"
                                      class="user-image img-size-32 img-fluid img-circle d-inline-block"
                                      alt="<?php echo $initials; ?>" /><?php } ?>
                             <p class="text-bold mb-1">
-                                <?php echo ucwords($user->first_name . ' '. $user->last_name, ' -'); ?>
+                                <?php echo ucwords($user->first_name . ' ' . $user->last_name, ' -'); ?>
                             </p>
                             <p class="text-bold mb-1">
                                 <?php echo ucwords($user->job_title, '- '); ?>
@@ -155,10 +155,12 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown fa  mx-2">
-                    <a class="nav-link dropdown-item dropdown-toggle btn border-0 text-bold flat" data-toggle="dropdown">
+                    <a class="nav-link dropdown-item dropdown-toggle btn border-0 text-bold flat"
+                       data-toggle="dropdown">
                         CMS Forms
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId" style="position:absolute">
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId"
+                        style="position:absolute">
                         <li>
                             <a class="dropdown-item" href="<?php echo site_url('cms-forms/start-change-process') ?>">
                                 New
@@ -184,32 +186,34 @@
                         </li>
                     </ul>
                 </li>
-                <?php
-                if ($user->can_change_gm) { ?>
-                    <li class="nav-item fa mx-2">
-                        <a href="#" class="nav-link btn border-0 border-0 text-bold flat" data-toggle="modal"
-                           data-target="#changeGM">Change GM</a>
-                    </li>
-                <?php }
-                ?>
-
-                <?php
-                if ($user->role === ROLE_MANAGER || $user->role == ROLE_SUPERINTENDENT) { ?>
-                    <li class="nav-item fa mx-2">
-                        <a href="#" class="nav-link btn border-0 border-0 text-bold flat" data-toggle="modal"
-                           data-target="#changeManager">Change Manager</a>
-                    </li>
-                <?php }
-                ?>
-
-                <?php
-                if ($user->can_change_dept_mgr) { ?>
-                    <li class="nav-item fa mx-2" title="Change Department Manager">
-                        <a href="<?php echo site_url('cms-forms/department-managers'); ?>"
-                           class="nav-link btn border-0 border-0 text-bold flat">Change Dept. Mgr.</a>
-                    </li>
-                <?php }
-                ?>
+                <li class="nav-item dropdown fa  mx-2">
+                    <a class="nav-link dropdown-item dropdown-toggle btn border-0 text-bold flat"
+                       data-toggle="dropdown">
+                        Roles
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId"
+                        style="position:absolute">
+                        <?php
+                        if ($user->role === ROLE_MANAGER || $user->role == ROLE_SUPERINTENDENT) { ?>
+                            <li><!--suppress HtmlUnknownAnchorTarget -->
+                                <a class="dropdown-item" data-toggle="modal"
+                                   href="#changeManager"><?php echo getDepartment($user->user_id) ?> Manager</a></li>
+                        <?php }
+                        ?>
+                        <?php
+                        if ($user->can_change_dept_mgr) { ?>
+                            <li><a href="<?php echo site_url('cms-forms/department-managers'); ?>"
+                                   class="dropdown-item">All Managers</a></li>
+                        <?php }
+                        ?>
+                        <?php
+                        if ($user->can_change_gm) { ?>
+                            <li><!--suppress HtmlUnknownAnchorTarget -->
+                                <a href="#changeGM" data-toggle="modal" class="dropdown-item">GM</a></li>
+                        <?php }
+                        ?>
+                    </ul>
+                </li>
             </ul>
             <?php
             /** @var array $payload */

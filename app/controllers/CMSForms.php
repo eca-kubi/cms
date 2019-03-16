@@ -97,7 +97,7 @@ class CMSForms extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $current_user = getUserSession();
-            $payload['action_log'] = getActionLog($cms_form_id);
+            //$payload['action_log'] = getActionLog($cms_form_id);
             $form_model = prepPostData(SECTION_HOD_ASSESSMENT, $cms_form_id);
             $payload['form'] = $form_model;
             $ret = $form_model->updateForm($cms_form_id);
@@ -810,7 +810,8 @@ class CMSForms extends Controller
                 // set action log
                 $remarks = "$user_name changed the GM to "
                     . " $gm_name";
-                (new CmsActionLogModel())->setAction(ACTION_CHANGED_GM)
+                $action_log_model = new CmsActionLogModel();
+                $action_log_model->setAction(ACTION_CHANGED_GM)
                     ->setPerformedBy(getUserSession()->user_id)
                     ->setRemarks($remarks)
                     ->insert();

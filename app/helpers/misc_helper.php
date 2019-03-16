@@ -272,15 +272,7 @@ function notifyGm($cms_form_id)
     ]);
 }
 
-/**To notify Gms for their approval
- * This function can be customized with the help of
- * its parameters for general notifications to GMs
- * @param $cms_form_id
- * @param null $message
- * @param null $action
- * @param null $action_options
- */
-function notifyGms($cms_form_id, $message = null, $action = null, $action_options = null)
+/*function notifyGms($cms_form_id, $message = null, $action = null, $action_options = null)
 {
     // get the hod or the change owner who approved the start change process ie. hod-assessment
     $change_owner = new User(getActionLog($cms_form_id, $action ? $action : ACTION_HOD_ASSESSMENT_COMPLETED,
@@ -295,7 +287,7 @@ function notifyGms($cms_form_id, $message = null, $action = null, $action_option
             . "<a href='$link'> $link</a>";
         insertEmail($subject, $m, $gm->email, concatNameWithUserId($gm->user_id));
     }
-}
+}*/
 
 /*function notifyDepartmentManagers($cms_form_id, $department_id, $message = null, $action = null, $action_options = null)
 {
@@ -612,39 +604,18 @@ function updateImpactAssessmentCompleteList($cms_form_id, $department_id)
 
 /**
  * @param $cms_form_id
- * @param string $action
- * @param array|null $cols
- * @param bool $single
- * @return array|object
  */
-function getActionLog($cms_form_id, $action = '', array $cols = null, $single = false)
+function getActionLog($cms_form_id)
 {
     $db = Database::getDbh();
-    $db->objectBuilder();
-    if (!empty($action)) {
-        $db = $db->where('cms_form_id', $cms_form_id)
-            ->objectBuilder()
-            ->where('action', $action);
-        if (!empty($cols)) {
-            foreach ($cols as $col => $val) {
-                $db = $db->where($col, $val);
-            }
-        }
-    } else {
-        $action_log = [];
-        $ret = $db->where('cms_form_id', $cms_form_id)
-            ->objectBuilder()
-            ->get('cms_action_log');
-        foreach ($ret as $value) {
-            $action_log[$value->action] = $value;
-        }
-        return $action_log;
+    $action_log = [];
+    $ret = $db->where('cms_form_id', $cms_form_id)
+        ->objectBuilder()
+        ->get('cms_action_log');
+    foreach ($ret as $value) {
+        $action_log[$value->action] = $value;
     }
-    if ($single) {
-        return $db->getOne('cms_action_log');
-    }
-
-    return $db->get('cms_action_log');
+    return $action_log;
 }
 
 function setActionLog($data)
@@ -675,15 +646,16 @@ function concatNameWithUserId($user_id)
     return ucwords($u->first_name . ' ' . $u->last_name, '- .');
 }
 
-function actionLog($cms_form_id, $action, $performed_by, $department_affected = null, $section_affected = null)
+/*function actionLog($cms_form_id, $action, $performed_by, $department_affected = null, $section_affected = null)
 {
-    return $log_id = (new CmsActionLogModel())->setAction($action)
+    $action_log_model = new CmsActionLogModel();
+    return $log_id = $action_log_model->setAction($action)
         ->setPerformedBy($performed_by)
         ->setCmsFormId($cms_form_id)
-        ->setDepartmentAffected($department_affected)
-        ->setSectionAffected($section_affected)
+       // ->setDepartmentAffected($department_affected)
+       // ->setSectionAffected($section_affected)
         ->insert();
-}
+}*/
 
 function echoDate($date, $return = false)
 {
@@ -1308,3 +1280,10 @@ function dbRollBack()
     $db = Database::getDbh();
     return $db->rollback();
 }
+
+/*function getActionLog($where) {
+    $db = Database::getDbh();
+    foreach ($where as $col=>$value) {
+        $db->where($col, $value);
+    }
+}*/
