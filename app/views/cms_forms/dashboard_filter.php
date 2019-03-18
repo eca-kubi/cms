@@ -105,16 +105,16 @@
                                                             <dd class="col-sm-8 product-description title">
                                                                 <span><?php echo $cms_form->title; ?></span>
                                                             </dd>
-                                                            <dt class="col-sm-4 text-sm-right">Originator</dt>
+                                                            <dt class="col-sm-4 text-sm-right">Originator:</dt>
                                                             <dd class="col-sm-8 product-description originator"><?php echo ucwords($originator->first_name . ' ' . $originator->last_name); ?>
                                                                 (<?php echo $originator->job_title; ?>)
                                                                 @ <?php echo $originator->department->department; ?></dd>
-                                                            <dt class="col-sm-4 text-sm-right">Date Raised</dt>
+                                                            <dt class="col-sm-4 text-sm-right">Date Raised:</dt>
                                                             <dd class="col-sm-8 product-description date_raised">
                                                                 <?php //echo formatDate($cms_form->date_raised, DFB_DT, DFF_DT);  ?>
                                                                 <?php echoDate($cms_form->date_raised); ?>
                                                             </dd>
-                                                            <dt class="col-sm-4 text-sm-right">Change Type</dt>
+                                                            <dt class="col-sm-4 text-sm-right">Change Type:</dt>
                                                             <dd class="col-sm-8 product-description change_type">
                                                                 <?php echo $cms_form->getChangeType(); ?>
                                                             </dd>

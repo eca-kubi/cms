@@ -32,6 +32,7 @@ heredoc;
                 <span class="mx-2"></span>
                 <?php
                 if ($payload['form']->project_leader_id === getUserSession()->user_id) { ?>
+                    <!--suppress HtmlUnknownAnchorTarget -->
                     <a
                             data-toggle="modal"
                             href="#uploadPlDoc"
@@ -53,24 +54,61 @@ heredoc;
         </div>
         <input type="hidden" id="cms_form_id" value="<?php echo $payload['form']->cms_form_id; ?>">
         <div id="section_6" class="collapse section border table-active"
-             style="position:relative; min-height: 520px;min-width: 100%">
+             style="position:relative; /*min-height: 520px*/;min-width: 100%">
             <?php
             if (isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id) && sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE) && !sectionCompleted($payload['form']->cms_form_id, SECTION_ACTION_LIST)) { ?>
                 <div id="action_list"></div>
             <?php } else {
                 ?>
-                <div id="action-list-read-only"></div>
+                <!--                <div id="action-list-read-only"></div>
+                -->
                 <div>
                     <table class="table-striped table-active table table-bordered table-user-information font-raleway mb-0">
-                        <?php if (!empty($payload['form']->project_leader_close_change)) { ?>
+                        <thead class="thead-default">
+                        <tr>
+                            <th colspan="4">
+                                <h6 class="font-italic mb-0">
+                                    <a href="#" class="no-link">Section 6 - Action List</a>
+                                </h6>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Action</th>
+                            <th>Person Responsible</th>
+                            <th>Completed</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $action_list = getActionList();
+                        foreach ($action_list as $al) { ?>
                             <tr>
-                                <td>
+                                <td><?php echo $al->action ?></td>
+                                <td><?php echo $al->person_responsible ?></td>
+                                <td><?php echo $al->completed ? 'Yes' : 'No' ?></td>
+                                <td><?php echo returnDate($al->date, true) ?></td>
+                            </tr>
+                        <?php }
+                        ?>
+                        <?php
+                        if (empty($action_list)) { ?>
+                            <tr class="text-center">
+                                <td colspan="4"><span class="badge border callout">No data!</span></td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                        <?php if (!empty($payload['form']->project_leader_close_change) && !empty($action_list)) { ?>
+                            <tr>
+                                <td colspan="4">
                                     Completed
                                     by <?php echo getNameJobTitleAndDepartment($payload['form']->project_leader_id); ?>
                                     on <?php echo returnDate($payload['form']->project_leader_close_change, true) ?>
                                 </td>
                             </tr>
                         <?php } ?>
+                        </tbody>
                     </table>
                 </div>
             <?php }

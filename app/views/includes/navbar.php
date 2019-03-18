@@ -202,12 +202,14 @@
                         ?>
                         <?php
                         if ($user->can_change_dept_mgr) { ?>
+                            <li class="dropdown-divider"></li>
                             <li><a href="<?php echo site_url('cms-forms/department-managers'); ?>"
                                    class="dropdown-item">All Managers</a></li>
                         <?php }
                         ?>
                         <?php
                         if ($user->can_change_gm) { ?>
+                            <li class="dropdown-divider"></li>
                             <li><!--suppress HtmlUnknownAnchorTarget -->
                                 <a href="#changeGM" data-toggle="modal" class="dropdown-item">GM</a></li>
                         <?php }

@@ -24,7 +24,8 @@
         <div class="col-11">
             <h5 class="font-raleway font-weight-bold mb-0">Change Proposal, Assessment & Implementation
             </h5>
-            <small class="text-bold"> [TITLE - REF]</small>
+            <small class="text-bold"> [<?php echo $payload['form']->title . '-' . $payload['form']->hod_ref_num ?>]
+            </small>
         </div>
         <div class="col-1">
             <img class="img-size-64" src="<?php echo site_url("public/assets/images/adamus.jpg") ?>" alt="">
@@ -225,6 +226,140 @@
                 <td class="text-right"><b>Completed:</b></td>
                 <td scope="row" class="">
                     <?php echo returnDate($payload['action_log'][ACTION_GM_ASSESSMENT_COMPLETED]->date, true); ?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered table-user-information font-raleway table-striped table-active">
+            <thead class="thead-default">
+            <tr>
+                <th colspan="2">
+                    <h6 class="font-italic mb-0">
+                        <a href="#" class="no-link">Section 5 - Implementation Authorization & Project Leader
+                            Acceptance</a>
+                    </h6>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="text-right" style="width:17%"><b>Authorized by:</b></td>
+                <td scope="row" style="width:83%">
+                    <?php echo getNameJobTitleAndDepartment($payload['action_log'][ACTION_HOD_AUTHORISATION_COMPLETED]->performed_by); ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right" style="width:17%"><b>HoD's Comment:</b></td>
+                <td>
+                    <?php echo $payload['form']->hod_authorization_comment; ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right"><b>Project Leader: </b></td>
+                <td scope="row" class="">
+                    <?php echo getNameJobTitleAndDepartment($payload['form']->project_leader_id); ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right"><b>Leader's Acceptance: </b></td>
+                <td scope="row" class="">
+                    <?php echo "<span class='text-success'>Accepted</span>" ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right"><b>Leader's Comment: </b></td>
+                <td scope="row" class="">
+                    <?php echo $payload['form']->project_leader_acceptance_comment; ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right"><b>Completed:</b></td>
+                <td scope="row" class="">
+                    <?php echo returnDate($payload['form']->project_leader_acceptance_date, true); ?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered table-user-information font-raleway table-striped table-active">
+            <thead class="thead-default">
+            <tr>
+                <th colspan="4">
+                    <h6 class="font-italic mb-0">
+                        <a href="#" class="no-link">Section 6 - Action List</a>
+                    </h6>
+                </th>
+            </tr>
+            <tr>
+                <th>Action</th>
+                <th>Person Responsible</th>
+                <th>Completed</th>
+                <th>Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $action_list = getActionList();
+            foreach ($action_list as $al) { ?>
+                <tr>
+                    <td><?php echo $al->action ?></td>
+                    <td><?php echo $al->person_responsible ?></td>
+                    <td><?php echo $al->completed ? 'Yes' : 'No' ?></td>
+                    <td><?php echo returnDate($al->date, true) ?></td>
+                </tr>
+            <?php }
+            ?>
+            </tbody>
+        </table>
+        <table class="table table-bordered table-user-information font-raleway table-striped table-active">
+            <thead class="thead-default">
+            <tr>
+                <th colspan="2">
+                    <h6 class="font-italic mb-0">
+                        <a href="#" class="no-link">Section 5 - Implementation Authorization & Project Leader
+                            Acceptance</a>
+                    </h6>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="text-justify" colspan="2">
+                    <div class="col-sm-12">
+                        <b class="text-bold">Closed
+                            by: </b><?php echo concatNameWithUserId($payload['action_log'][ACTION_PL_CLOSURE]->performed_by) ?>
+                        (Project Leader)
+                        on <?php echo returnDate($payload['form']->project_leader_close_change, true); ?>
+                    </div>
+                    <div class="col-sm-12">
+                        <b class="text-bold">Project Leader
+                            Comment: </b> <?php echo $payload['form']->pl_closure_comment ?>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-justify" colspan="2">
+                    <div class="col-sm-12">
+                        <b class="text-bold">Closed
+                            by: </b><?php echo concatNameWithUserId($payload['action_log'][ACTION_ORIGINATOR_CLOSURE]->performed_by) ?>
+                        (Originator)
+                        on <?php echo returnDate($payload['form']->originator_close_change, true); ?>
+                    </div>
+                    <div class="col-sm-12">
+                        <b class="text-bold">Originator
+                            Comment: </b> <?php echo $payload['form']->originator_closure_comment ?>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-justify" colspan="2">
+                    <div class="col-sm-12">
+                        <span class="text-bold">Closed by: </span> <?php echo concatNameWithUserId($payload['action_log'][ACTION_HOD_CLOSURE]->performed_by) ?>
+                        (HoD)
+                        on <?php echo returnDate($payload['form']->hod_close_change, true); ?>.
+                    </div>
+                    <div class="col-sm-12">
+                        <b class="text-bold">HoD Comment: </b> <?php echo $payload['form']->hod_closure_comment ?>
+                    </div>
                 </td>
             </tr>
             </tbody>

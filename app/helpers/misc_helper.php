@@ -1281,9 +1281,8 @@ function dbRollBack()
     return $db->rollback();
 }
 
-/*function getActionLog($where) {
+function getActionList()
+{
     $db = Database::getDbh();
-    foreach ($where as $col=>$value) {
-        $db->where($col, $value);
-    }
-}*/
+    return $db->objectBuilder()->get('cms_action_list');
+}

@@ -7,7 +7,7 @@ let URL_ROOT = '';
 let form_submit_count = 0;
 let CMS_FORM_ID = 0;
 let lists = [];
-let ANIMATE_FLASH = 'animated flash card infinite';
+//let ANIMATE_FLASH = 'animated flash card infinite';
 //=============================================================
 // Daterangepicker Plugin
 /*let date_rangepicker_options = {
@@ -63,7 +63,7 @@ $(document).ready(function () {
         $('.content-wrapper').css('margin-top', $('.navbar-fixed').height() + 'px');
     });
 
-    $('#add_cms_form').validator().on('submit', (e) => {
+    $('#add_cms_form').validator().on('submit', () => {
         let hod = $('#hod_id');
         if (hod.length === 0) return;
         if (hod.val() === '') {
@@ -327,7 +327,7 @@ $(document).ready(function () {
         columnMenu: true,
         sortable: true,
         groupable: true,
-        height: 500,
+        height: 520,
         resizable: true,
         pageable: {
             alwaysVisible: false,
@@ -611,12 +611,12 @@ let countFormGroup = function ($form) {
     return $form.find('.input-group').length;
 };
 
-let stopChangeProcess = function (e) {
+let stopChangeProcess = function () {
     //let redirect = window.location.href;
     window.location.href = $(this).attr('data-href');
 };
 
-let checkHODAssignment = function (e) {
+let checkHODAssignment = function () {
     let hod = $('#hod_id');
     if (hod.length === 0) return;
     if (hod.val() === '') {
