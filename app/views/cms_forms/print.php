@@ -15,17 +15,17 @@
     <link rel="stylesheet" href="<?php echo URL_ROOT; ?>/public/assets/css/fonts.css"/>
     <link rel="stylesheet"
           href="<?php echo URL_ROOT; ?>/public/custom-assets/css/custom.css?<?php echo microtime(); ?>"/>
-    <link rel="stylesheet" media="print"
+    <link rel="stylesheet" media="all"
           href="<?php echo URL_ROOT; ?>/public/custom-assets/css/print.css?<?php echo microtime(); ?>"/>
 </head>
 <body>
-<section class="content pt-5">
+<section class="content p-5" id="content">
     <header class="row container-fluid pt-3 border-bottom mb-5">
         <div class="col-11">
             <h5 class="font-raleway font-weight-bold mb-0">Change Proposal, Assessment & Implementation
             </h5>
-            <small class="text-bold"> [<?php echo $payload['form']->title . '-' . $payload['form']->hod_ref_num ?>]
-            </small>
+            <small class="text-bold">[<?php echo $payload['file_name']; ?>]</small>
+            <small class="text-bold d-none" id="file_name"><?php echo $payload['file_name']; ?></small>
         </div>
         <div class="col-1">
             <img class="img-size-64" src="<?php echo site_url("public/assets/images/adamus.jpg") ?>" alt="">
@@ -366,5 +366,102 @@
         </table>
     </div>
 </section>
+<script src="<?php echo URL_ROOT; ?>/public/assets/js/jquery.min.js"></script>
+<script src="<?php echo URL_ROOT; ?>/public/assets/js/jspdf.min.js"></script>
+<script src="<?php echo URL_ROOT; ?>/public/assets/js/html2canvas.min.js"></script>
+<script src="<?php echo URL_ROOT; ?>/public/assets/js/filesaver.js"></script>
+<script src="<?php echo URL_ROOT; ?>/public/assets/js/dom2img.min.js"></script>
+<script>
+
+    let getPng = function (element_id) {
+        let node = document.getElementById(element_id);
+        return domtoimage.toPng(node).then(function (dataUrl) {
+            //let img = new Image();
+            //img.src = dataUrl;
+            return dataUrl;
+        }).catch(function (error) {
+            console.error('oops, something went wrong!', error);
+        });
+    };
+
+    let getBlob = function (element_id) {
+        domtoimage.toBlob(document.getElementById(element_id))
+            .then(function (blob) {
+                window.saveAs(blob, 'my-node.png');
+            });
+    };
+
+    let genPDF = function (file_name) {
+        getPng('content').then(function (img) {
+            let doc = new jsPDF();
+            let marginLeft = 20;
+            let marginRight = 20;
+            doc.addImage(img, 'JPEG', marginLeft, marginRight);
+            doc.save(file_name);
+        }).catch(function (error) {
+            console.error('oops, something went wrong!', error);
+        });
+    };
+
+    let getJpeg = function (element_id) {
+        domtoimage.toJpeg(document.getElementById(element_id), {quality: 0.95})
+            .then(function (dataUrl) {
+                let link = document.createElement('a');
+                link.download = 'my-image-name.jpeg';
+                link.href = dataUrl;
+                link.click();
+            });
+    };
+
+    let genPdfH2C = function () {
+        html2canvas(document.body).then(function (canvas) {
+            // Export the canvas to its data URI representation
+            let base64image = canvas.toDataURL("image/png");
+
+            // Open the image in a new window
+            // window.open(base64image , "_blank");
+        });
+    };
+
+    let getPDF = function () {
+        let content = $("#content");
+        let HTML_Width = content.width();
+        let HTML_Height = content.height();
+        let top_left_margin = 15;
+        let PDF_Width = HTML_Width + (top_left_margin * 2);
+        let PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+        let canvas_image_width = HTML_Width;
+        let canvas_image_height = HTML_Height;
+
+        let totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+
+        html2canvas(content[0], {allowTaint: true}).then(function (canvas) {
+            canvas.getContext('2d');
+
+            console.log(canvas.height + "  " + canvas.width);
+
+
+            let imgData = canvas.toDataURL("image/jpeg", 1.0);
+            getPng('content').then(function (imgData) {
+                let pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+                pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+
+
+                for (let i = 1; i <= totalPDFPages; i++) {
+                    pdf.addPage(PDF_Width, PDF_Height);
+                    pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+                }
+
+                pdf.save("HTML-Document.pdf");
+            });
+
+        });
+    };
+    $(function () {
+        let file_name = $('#file_name').text() + '.pdf';
+        //genPDF(file_name);
+    })
+</script>
 </body>
 </html>

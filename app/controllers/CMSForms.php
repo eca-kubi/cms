@@ -1028,6 +1028,7 @@ class CMSForms extends Controller
         }
         $payload['title'] = 'Change Proposal, Assessment & Implementation';
         $payload['form'] = new CMSForm(['cms_form_id' => $cms_form_id]);
+        $payload['file_name'] = $payload['form']->title . '-' . $payload['form']->hod_ref_num;
         $payload['originator'] = new User($payload['form']->originator_id);
         $payload['hod'] = new User($payload['form']->hod_id);
         $payload['departments'] = (new DepartmentModel())->getAllDepartments();
@@ -1042,6 +1043,12 @@ class CMSForms extends Controller
             ->get('users');
         $this->view('cms_forms/print', $payload);
     }
+
+    function downloadChangeProcess($cms_form_id)
+    {
+        redirect('cms-forms/print/' . $cms_form_id);
+    }
+
 }
 
 ?>

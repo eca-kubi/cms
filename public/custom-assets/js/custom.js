@@ -535,11 +535,11 @@ function customBoolEditor(container, options) {
 }*/
 
 
-function dateTemplate(date) {
+/*function dateTemplate(date) {
     let m = new moment(date);
     return m.isValid() ? m.format("ddd, MMM D YYYY") : '';
     //return m.isValid() ? (m.calendar().split(" at"))[0] : '';
-}
+}*/
 
 function initList(id) {
     let options = {

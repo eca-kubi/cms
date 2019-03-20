@@ -132,9 +132,9 @@
                                                                         <i class=" badge small"> Details</i>
                                                                     </a>
                                                                     <?php if ($cms_form->state === STATUS_CLOSED) { ?>
-                                                                        <a href="<?php echo site_url("cms-forms/download-change-process/$cms_form->cms_form_id"); ?>"
+                                                                        <a href="<?php echo site_url("cms-forms/print/$cms_form->cms_form_id"); ?>"
                                                                            title="Download Change Process"
-                                                                           class="btn w3-btn badge bg-aqua-gradient">
+                                                                           class="btn w3-btn badge bg-aqua-gradient print-it">
                                                                             <i class="badge small">Download</i>
                                                                         </a>
                                                                     <?php } ?>
