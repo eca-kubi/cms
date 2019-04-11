@@ -133,9 +133,9 @@
                                                                 </a>
                                                                 <?php if ($cms_form->state === STATUS_CLOSED) { ?>
                                                                     <a href="<?php echo site_url("cms-forms/download-change-process/$cms_form->cms_form_id"); ?>"
-                                                                       title="Download Change Process"
+                                                                       title="Print Change Process"
                                                                        class="btn w3-btn badge bg-aqua-gradient">
-                                                                        <i class="badge small">Download</i>
+                                                                        <i class="badge small">Print</i>
                                                                     </a>
                                                                 <?php } ?>
                                                                 <?php

@@ -37,3 +37,11 @@ Append a message
 body {
     color: #212529;;
 }
+
+.chapter {
+    page-break-before: always
+}
+
+.heading {
+    page-break-after: avoid
+}

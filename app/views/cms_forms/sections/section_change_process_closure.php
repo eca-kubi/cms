@@ -430,7 +430,7 @@ heredoc;
             echo <<<heredoc
 <div class="alert text-success container-fluid text-bold text-center">
 <p class="text-center tada">Process Complete!</p>
-<p><small><a class="text-bold flash animated print-it" href="$print_url" style="color: #007bff; animation-iteration-count: infinite;">Click here to download the complete form.</a></small></p>
+<p><small><a class="text-bold flash animated print-it" href="$print_url" style="color: #007bff; animation-iteration-count: infinite;">Click here to print the completed form.</a></small></p>
 </div>
 heredoc;
 

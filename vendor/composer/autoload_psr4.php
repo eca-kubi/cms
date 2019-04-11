@@ -6,14 +6,18 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'setasign\\Fpdi\\' => array($vendorDir . '/setasign/fpdi/src'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'SMSGatewayMe\\Client\\' => array($vendorDir . '/smsgatewayme/client/lib'),
     'Respect\\Validation\\' => array($vendorDir . '/respect/validation/library'),
     'React\\Stream\\' => array($vendorDir . '/react/stream/src'),
     'React\\EventLoop\\' => array($vendorDir . '/react/event-loop/src'),
     'React\\ChildProcess\\' => array($vendorDir . '/react/child-process/src'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
+    'Mpdf\\' => array($vendorDir . '/mpdf/mpdf/src'),
     'Moment\\' => array($vendorDir . '/fightbulc/moment/src'),
     'GO\\' => array($vendorDir . '/peppeocchi/php-cron-scheduler/src/GO'),
+    'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
     'Cron\\' => array($vendorDir . '/mtdowling/cron-expression/src/Cron'),
 );
