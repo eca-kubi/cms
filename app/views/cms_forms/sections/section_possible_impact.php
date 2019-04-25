@@ -13,14 +13,15 @@ HoDs should add their comments under their respective departments.">
                 $can_assess_impact_for_dept = canAssessImpactForDept($department->department_id);
                 $questions = getImpactQuestions($department->department_id);
                 $impact_ass_status = new ImpactAssStatusModel(['department_id' => $department->department_id, 'cms_form_id' => $payload['form']->cms_form_id]);
+                $user = getUserSession();
                 if (!empty($questions)) { ?>
                     <div>
                         <h6 class="text-bold font-italic">
                             <a href="#<?php echo strtolower($department->department); ?>" data-toggle="collapse">
                                 <i class="fa <?php echo ICON_FA_PLUS ?>"></i> &nbsp;
-                                <?php
-                                echo $department->department;
-                                ?>
+                                <span style='<?php if ($user->department_id == $department->department_id) { ?>
+                                        color: green!important;
+                                <?php } ?>'><?php echo $department->department; ?></span>
                                 <?php
                                 if ($impact_ass_status->status === STATUS_IMPACT_ASSESSMENT_RESPONSE_PENDING) {
                                     echo echoInComplete();

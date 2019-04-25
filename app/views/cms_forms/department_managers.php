@@ -61,7 +61,8 @@ $user = getUserSession();
                             </thead>
                             <tbody>
                             <tr class="text-right">
-                                <td colspan="2"><input class="btn btn-outline-success" type="submit"></td>
+                                <td colspan="2"><input class="btn btn-outline-success" type="submit" value="Submit">
+                                </td>
                             </tr>
                             <?php
                             $departments = (new DepartmentModel())->getAllDepartments();
