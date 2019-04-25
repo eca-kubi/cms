@@ -9,7 +9,7 @@
             </li>
         </ul>
         <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ml-auto ml-auto">
             <!-- Messages Dropdown Menu -->
             <li class="nav-item dropdown d-none">
                 <a class="nav-link" data-toggle="dropdown" href="#">
