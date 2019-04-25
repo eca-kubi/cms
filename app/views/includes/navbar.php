@@ -187,7 +187,7 @@
                     </ul>
                 </li>
                 <?php
-                if ($user->role === ROLE_MANAGER || $user->role === ROLE_SUPERINTENDENT || $user->role) { ?>
+                if ($user->role === ROLE_MANAGER || $user->role === ROLE_SUPERINTENDENT) { ?>
                     <li class="nav-item dropdown fa  mx-2">
                         <a class="nav-link dropdown-item dropdown-toggle btn border-0 text-bold flat"
                            data-toggle="dropdown">
@@ -195,13 +195,9 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId"
                             style="position:absolute">
-                            <?php
-                            if ($user->role === ROLE_MANAGER || $user->role == ROLE_SUPERINTENDENT) { ?>
                                 <li><!--suppress HtmlUnknownAnchorTarget -->
                                     <a class="dropdown-item" data-toggle="modal"
                                        href="#changeManager"><?php echo getDepartment($user->user_id) ?> Manager</a></li>
-                            <?php }
-                            ?>
                             <?php
                             if ($user->can_change_dept_mgr) { ?>
                                 <li class="dropdown-divider"></li>
