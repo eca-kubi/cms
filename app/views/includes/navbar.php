@@ -187,7 +187,7 @@
                     </ul>
                 </li>
                 <?php
-                if ($user->role === ROLE_MANAGER || $user->role === ROLE_SUPERINTENDENT) { ?>
+                if ($user->role === ROLE_MANAGER || $user->role === ROLE_SUPERINTENDENT || $user->role) { ?>
                     <li class="nav-item dropdown fa  mx-2">
                         <a class="nav-link dropdown-item dropdown-toggle btn border-0 text-bold flat"
                            data-toggle="dropdown">
