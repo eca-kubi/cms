@@ -186,36 +186,40 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown fa  mx-2">
-                    <a class="nav-link dropdown-item dropdown-toggle btn border-0 text-bold flat"
-                       data-toggle="dropdown">
-                        Roles
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId"
-                        style="position:absolute">
-                        <?php
-                        if ($user->role === ROLE_MANAGER || $user->role == ROLE_SUPERINTENDENT) { ?>
-                            <li><!--suppress HtmlUnknownAnchorTarget -->
-                                <a class="dropdown-item" data-toggle="modal"
-                                   href="#changeManager"><?php echo getDepartment($user->user_id) ?> Manager</a></li>
-                        <?php }
-                        ?>
-                        <?php
-                        if ($user->can_change_dept_mgr) { ?>
-                            <li class="dropdown-divider"></li>
-                            <li><a href="<?php echo site_url('cms-forms/department-managers'); ?>"
-                                   class="dropdown-item">All Managers</a></li>
-                        <?php }
-                        ?>
-                        <?php
-                        if ($user->can_change_gm) { ?>
-                            <li class="dropdown-divider"></li>
-                            <li><!--suppress HtmlUnknownAnchorTarget -->
-                                <a href="#changeGM" data-toggle="modal" class="dropdown-item">GM</a></li>
-                        <?php }
-                        ?>
-                    </ul>
-                </li>
+                <?php
+                if ($user->role === ROLE_MANAGER || $user->role === ROLE_SUPERINTENDENT) { ?>
+                    <li class="nav-item dropdown fa  mx-2">
+                        <a class="nav-link dropdown-item dropdown-toggle btn border-0 text-bold flat"
+                           data-toggle="dropdown">
+                            Roles
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId"
+                            style="position:absolute">
+                            <?php
+                            if ($user->role === ROLE_MANAGER || $user->role == ROLE_SUPERINTENDENT) { ?>
+                                <li><!--suppress HtmlUnknownAnchorTarget -->
+                                    <a class="dropdown-item" data-toggle="modal"
+                                       href="#changeManager"><?php echo getDepartment($user->user_id) ?> Manager</a></li>
+                            <?php }
+                            ?>
+                            <?php
+                            if ($user->can_change_dept_mgr) { ?>
+                                <li class="dropdown-divider"></li>
+                                <li><a href="<?php echo site_url('cms-forms/department-managers'); ?>"
+                                       class="dropdown-item">All Managers</a></li>
+                            <?php }
+                            ?>
+                            <?php
+                            if ($user->can_change_gm) { ?>
+                                <li class="dropdown-divider"></li>
+                                <li><!--suppress HtmlUnknownAnchorTarget -->
+                                    <a href="#changeGM" data-toggle="modal" class="dropdown-item">GM</a></li>
+                            <?php }
+                            ?>
+                        </ul>
+                    </li>
+                <?php }
+                ?>
             </ul>
             <?php
             /** @var array $payload */
