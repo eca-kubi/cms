@@ -576,10 +576,10 @@ function completeSection($cms_form_id, $section)
     $value = $db->where('cms_form_id', $cms_form_id)
         ->getValue('cms_form', 'section_completed');
     $array = explode(',', $value);
-    $array[] = trim($section, ', \t\n\r\0\x0B');
+    $array[] = trim($section, ', ');
     $array = array_unique($array);
     $str = implode(',', $array);
-    $updateVal = trim($str, ', \t\n\r\0\x0B');
+    $updateVal = trim($str, ', ');
     return $db->where('cms_form_id', $cms_form_id)
         ->update('cms_form', ['section_completed' => $updateVal]);
 }
