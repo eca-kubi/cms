@@ -54,7 +54,7 @@ heredoc;
         </div>
         <input type="hidden" id="cms_form_id" value="<?php echo $payload['form']->cms_form_id; ?>">
         <div id="section_6"
-             class="section border table-active <?php if (empty($payload['form']->project_leader_close_change)) {
+             class="section border table-active <?php if (!empty($payload['form']->project_leader_close_change)) {
                  echo 'collapse';
              } ?>"
              style="position:relative; /*min-height: 520px*/;min-width: 100%">
