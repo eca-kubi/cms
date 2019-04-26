@@ -136,7 +136,7 @@ heredoc;
                                                 <small class="help-block with-errors"></small>
                                             </div>
                                             <div class="form-group mb-1">
-                                            <textarea name="pl_closure_comment" cols="30" rows="7"
+                                            <textarea name="originator_closure_comment" cols="30" rows="7"
                                                       class="form-control" placeholder="Comments" required></textarea>
                                                 <small class="help-block with-errors"></small>
                                             </div>
@@ -203,7 +203,7 @@ heredoc;
                                             <small class="help-block with-errors"></small>
                                         </div>
                                         <div class="form-group mb-1">
-                                            <textarea name="pl_closure_comment" cols="30" rows="7"
+                                            <textarea name="hod_closure_comment" cols="30" rows="7"
                                                       class="form-control" placeholder="Comments" required></textarea>
                                             <small class="help-block with-errors"></small>
                                         </div>
