@@ -5,7 +5,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION) &
         <div class="w-100 row border ml-0 p-1">
             <h6 class="text-bold font-italic col m-1">
                 <a href="#section_6" data-toggle="collapse">
-                    <i class="fa <?php echo ICON_FA_PLUS ?>"></i> Section 6 - Action List
+                    <i class="fa <?php echo ICON_FA_MINUS ?>"></i> Section 6 - Action List
                     <?php if (sectionCompleted($payload['form']->cms_form_id, SECTION_ACTION_LIST)) {
                         echo echoCompleted();
                     } else {
@@ -53,7 +53,10 @@ heredoc;
                 </span>
         </div>
         <input type="hidden" id="cms_form_id" value="<?php echo $payload['form']->cms_form_id; ?>">
-        <div id="section_6" class="collapse section border table-active"
+        <div id="section_6"
+             class="section border table-active <?php if (empty($payload['form']->project_leader_close_change)) {
+                 echo 'collapse';
+             } ?>"
              style="position:relative; /*min-height: 520px*/;min-width: 100%">
             <?php
             if (isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id) && sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE) && !sectionCompleted($payload['form']->cms_form_id, SECTION_ACTION_LIST)) { ?>
