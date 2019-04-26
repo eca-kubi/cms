@@ -353,7 +353,7 @@ $(document).ready(function () {
             {
                 field: 'date',
                 title: 'Date',
-                template: "#= dateTemplate(data.date) #"
+                template: "#= kendo.toString(kendo.parseDate(data.date), \"dd/MM/yyyy\") #"
             },
             {command: ["edit", "destroy"], title: "&nbsp;", width: "220px"}
         ],
