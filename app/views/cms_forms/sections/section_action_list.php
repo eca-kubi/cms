@@ -94,7 +94,7 @@ heredoc;
                         <?php
                         if (empty($action_list)) { ?>
                             <tr class="text-center">
-                                <td colspan="4"><span class="badge border callout">No data!</span></td>
+                                <td colspan="4"><span class="badge border callout callout-success">No data!</span></td>
                             </tr>
                             <?php
                         }

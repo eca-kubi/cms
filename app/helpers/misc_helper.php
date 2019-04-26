@@ -567,7 +567,7 @@ function sectionCompleted($cms_form_id, $section)
     if (empty($section_completed)) {
         return false;
     }
-    return in_array($section, explode(',', trim($section_completed, ',')));
+    return in_array($section, explode(',', trim($section_completed, ', ')));
 }
 
 function completeSection($cms_form_id, $section)
