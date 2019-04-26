@@ -9,11 +9,12 @@ HoDs should add their comments under their respective departments.">
         <div class="w-100  section collapse show p-2 mb-3 table-active" id="poss_imp">
             <?php /** @var array $payload */
             $department_count = count($payload['affected_departments']);
+            $user = getUserSession();
             foreach ($payload['affected_departments'] as $department) {
+                $form_id = "impact_assessment_form_$department->department_id";
                 $can_assess_impact_for_dept = canAssessImpactForDept($department->department_id);
                 $questions = getImpactQuestions($department->department_id);
                 $impact_ass_status = new ImpactAssStatusModel(['department_id' => $department->department_id, 'cms_form_id' => $payload['form']->cms_form_id]);
-                $user = getUserSession();
                 if (!empty($questions)) { ?>
                     <div>
                         <h6 class="text-bold font-italic">
@@ -36,7 +37,7 @@ HoDs should add their comments under their respective departments.">
                         <div class="w-100 section collapse" id="<?php echo strtolower($department->department); ?>"
                              data-parent="#poss_imp">
                             <form action="<?php echo site_url("cms-forms/impact-response/") . $payload['form']->cms_form_id . '/' . $department->department_id; ?>"
-                                  method="post" role="form" enctype="multipart/form-data" id="impact_assessment">
+                                  method="post" role="form" enctype="multipart/form-data" id="<?php echo $form_id; ?>">
                                 <fieldset>
                                     <table class="table table-bordered table-user-information font-raleway table-striped mb-0">
                                         <thead class="thead-default">
@@ -62,7 +63,7 @@ HoDs should add their comments under their respective departments.">
                                                     if ($impact_ass_status->getStatus() === STATUS_IMPACT_ASSESSMENT_RESPONSE_PENDING && $can_assess_impact_for_dept) { ?>
                                                         <label class="w-100">
                                                             <input type="radio" class="form-check m-auto cursor-pointer"
-                                                                   form="impact_assessment"
+                                                                   form="<?php echo $form_id; ?>"
                                                                    name="question_<?php echo $resp->cms_impact_response_id ?>" <?php echo $resp->response === 'Yes' ? 'checked' : ''; ?>
                                                                    value="Yes" required/>
                                                         </label>
@@ -77,7 +78,7 @@ HoDs should add their comments under their respective departments.">
                                                     if ($impact_ass_status->getStatus() === STATUS_IMPACT_ASSESSMENT_RESPONSE_PENDING && $can_assess_impact_for_dept) { ?>
                                                         <label class="w-100">
                                                             <input type="radio" class="form-check m-auto cursor-pointer"
-                                                                   form="impact_assessment"
+                                                                   form="<?php echo $form_id; ?>"
                                                                    name="question_<?php echo $resp->cms_impact_response_id ?>"
                                                                    value="No" <?php echo $resp->response === 'No' ? 'checked' : ''; ?>
                                                                    required/>
@@ -215,7 +216,7 @@ HoDs should add their comments under their respective departments.">
                                             <div class="col-sm-10">
                                                     <textarea class="form-control" name="hod_comment"
                                                               id="hod_comment" placeholder="Write your comment here..."
-                                                              form="impact_assessment"
+                                                              form="<?php echo $form_id; ?>"
                                                               required></textarea>
                                                 <small id="helpId" class="with-errors help-block"></small>
                                             </div>
@@ -227,7 +228,7 @@ HoDs should add their comments under their respective departments.">
                                                     <div class="checkbox">
                                                         <label>
                                                             <input type="checkbox" name="certify_details"
-                                                                   form="impact_assessment" required>
+                                                                   form="<?php echo $form_id; ?>" required>
                                                             <small class="text-bold">I hereby certify that the
                                                                 information
                                                                 provided above is true, complete and accurate.
@@ -243,7 +244,7 @@ HoDs should add their comments under their respective departments.">
                                             <div class="col-sm-10 text-sm-right">
                                                 <a href="javascript: window.history.back();"
                                                    class="btn bg-danger w3-btn d-none">Cancel</a>
-                                                <button type="submit" form="impact_assessment"
+                                                <button type="submit" form="<?php echo $form_id; ?>"
                                                         class="btn bg-success w3-btn">
                                                     Submit
                                                 </button>

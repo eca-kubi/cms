@@ -197,7 +197,8 @@ class CMSForms extends Controller
                 $data = array(
                     'subject' => $subject,
                     'performed_by' => concatNameWithUserId($current_user->user_id),
-                    'link' => $link
+                    'link' => $link,
+                    'department' => ((new DepartmentModel())->getDepartment($department_id))->department
                 );
                 insertEmailBulk('email_templates/impact_assessment_completed', $recipients, $data);
                 $data['performed_by'] = getNameJobTitleAndDepartment($current_user->user_id);
@@ -208,7 +209,7 @@ class CMSForms extends Controller
                 $impact_ass_status->setHodComment($_POST['hod_comment'])
                     ->setStatus(STATUS_IMPACT_ASSESSMENT_COMPLETED)
                     ->setCompletedBy($current_user->user_id)
-                    ->setApprovedBy(getUserSession()->user_id);
+                    ->setApprovedBy($current_user->user_id);
                 try {
                     $impact_ass_status->setCompletedDate((new DateTime())->format(DFB_DT));
                 } catch (Exception $e) {
