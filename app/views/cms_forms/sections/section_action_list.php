@@ -69,7 +69,7 @@ heredoc;
                 <div>
                     <table class="table-striped table-active table table-bordered table-user-information font-raleway mb-0">
                         <thead class="thead-default">
-                        <tr>
+                        <tr class="d-none">
                             <th colspan="4">
                                 <h6 class="font-italic mb-0">
                                     <a href="#" class="no-link">Section 6 - Action List</a>

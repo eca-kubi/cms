@@ -387,6 +387,7 @@ class CMSForms extends Controller
                 if ($ret) {
                     completeSection($cms_form_id, SECTION_ACTION_LIST);
                     $recipients[] = getDepartmentHod($form_model->department_id);
+                    $recipients[] = new User($form_model->originator_id);
                     $cur_mgr_id = getCurrentManager($form_model->department_id);
                     $recipients[] = new User($cur_mgr_id);
                     $recipients = array_unique_multidim_array($recipients, 'user_id');
@@ -436,12 +437,13 @@ class CMSForms extends Controller
                 dbStartTransaction();
                 $ret = $form_model->updateForm($cms_form_id, [
                     'originator_close_change' => (new DateTime())->format(DFB_DT),
-                    'originator_closure_comment' => $_POST['pl_closure_comment']
+                    'originator_closure_comment' => $_POST['originator_closure_comment']
                 ]);
                 if ($ret) {
                     $recipients[] = getDepartmentHod($form_model->department_id);
                     $cur_mgr_id = getCurrentManager($form_model->department_id);
                     $recipients[] = new User($cur_mgr_id);
+                    $recipients[] = new User($form_model->project_leader_id);
                     $recipients = array_unique_multidim_array($recipients, 'user_id');
                     $recipients = array_filter_multidim_by_obj_prop($recipients, 'user_id', $current_user->user_id, function ($a, $b) {
                         return $a != $b;
@@ -489,7 +491,7 @@ class CMSForms extends Controller
                 dbStartTransaction();
                 $ret = $form_model->updateForm($cms_form_id, [
                     'hod_close_change' => (new DateTime())->format(DFB_DT),
-                    'hod_closure_comment' => $_POST['pl_closure_comment'],
+                    'hod_closure_comment' => $_POST['hod_closure_comment'],
                     'state' => STATUS_CLOSED,
                     'date_closed' => now()
                 ]);
@@ -497,6 +499,8 @@ class CMSForms extends Controller
                     $recipients[] = getDepartmentHod($form_model->department_id);
                     $cur_mgr_id = getCurrentManager($form_model->department_id);
                     $recipients[] = new User($cur_mgr_id);
+                    $recipients[] = new User($form_model->originator_id);
+                    $recipients[] = new User($form_model->project_leader_id);
                     $recipients = array_unique_multidim_array($recipients, 'user_id');
                     $recipients = array_filter_multidim_by_obj_prop($recipients, 'user_id', $current_user->user_id, function ($a, $b) {
                         return $a != $b;
