@@ -5,7 +5,8 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION) &
         <div class="w-100 row border ml-0 p-1">
             <h6 class="text-bold font-italic col m-1">
                 <a href="#section_6" data-toggle="collapse">
-                    <i class="fa <?php echo ICON_FA_MINUS ?>"></i> Section 6 - Action List
+                    <i class="fa <?php echo !empty($payload['form']->project_leader_close_change) ? ICON_FA_PLUS : ICON_FA_MINUS ?>"></i>
+                    Section 6 - Action List
                     <?php if (sectionCompleted($payload['form']->cms_form_id, SECTION_ACTION_LIST)) {
                         echo echoCompleted();
                     } else {
