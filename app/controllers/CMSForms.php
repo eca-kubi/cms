@@ -591,17 +591,11 @@ class CMSForms extends Controller
             'subject' => genEmailSubject($cms_form_id)
         );
         $remarks = get_include_contents('action_remarks_templates/change_stopped', $arr);
-        /*(new CmsActionLogModel())->setAction(ACTION_CHANGE_CANCELLED)
-            ->setPerformedBy($user_id)
-            ->setCmsFormId($cms_form_id)
-            ->setRemarks($remarks)
-            ->setSectionAffected(SECTION_ALL)
-            ->insert();*/
         insertLog($cms_form_id, ACTION_CHANGE_STOPPED, $remarks, $current_user->user_id);
         $hods = getHodsWithCurrent($cms_form->department_id);
         foreach ($hods as $hod) {
             $arr = array(
-                'user_id' => $user_id,
+                'recipient_user_id' => $hod->user_id,
                 'performed_by' => $name,
                 'subject' => genEmailSubject($cms_form_id)
             );
