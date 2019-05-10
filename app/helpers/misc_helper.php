@@ -399,6 +399,14 @@ function getGms()
     return $result;
 }
 
+function getHSEManagers()
+{
+    return Database::getDbh()->where('staff_category', 'Management')
+        ->where('department_id', HSE_DEPARTMENT_ID)
+        ->objectBuilder()
+        ->get('users');
+}
+
 function getOriginatorId($cms_form_id)
 {
     return Database::getDbh()->where('cms_form_id', $cms_form_id)->getValue('cms_form', 'originator_id');
@@ -809,6 +817,7 @@ function getCurrentGM(): int
 {
     return (new CmsSettingsModel())->getValue('current_gm');
 }
+
 
 function its_logged_in_user($user_id)
 {

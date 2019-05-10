@@ -20,7 +20,7 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="" alt="User ..." class="img-size-50 mr-3 img-circle"/>
+                            <img src="" avatar="Brad Diesel" alt="User ..." class="img-size-50 mr-3 img-circle"/>
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     Brad Diesel
@@ -40,7 +40,7 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="" alt="User ..." class="img-size-50 img-circle mr-3"/>
+                            <img src="" avatar="John Pierce" alt="User ..." class="img-size-50 img-circle mr-3"/>
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     John Pierce
@@ -60,7 +60,7 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="" alt="User ..." class="img-size-50 img-circle mr-3"/>
+                            <img src="" avatar="Nora Silvester" alt="User ..." class="img-size-50 img-circle mr-3"/>
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     Nora Silvester
@@ -77,7 +77,7 @@
                         <!-- Message End -->
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                    <a href="#" class="dropdown-item dropdown-footer">See Active Change</a>
                 </div>
             </li>
             <li class="dropdown user user-menu">

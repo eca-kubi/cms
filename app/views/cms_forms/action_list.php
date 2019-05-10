@@ -64,7 +64,8 @@
                     <?php flash('flash'); ?>
                 </h5>
                 <h3 class="box-title text-bold">
-                    <?php echo $payload['title']; ?>
+                    <?php /** @var array $payload */
+                    echo $payload['title']; ?>
                 </h3>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse">
@@ -127,7 +128,7 @@
                     <div class="row p-2">
                         <h6 class="text-bold font-italic">
                             <a href="#section_2" data-toggle="collapse">
-                                <i class="fa fa-plus" data-id></i> Section 2 - Further Assesment by HOD
+                                <i class="fa fa-plus" data-id></i> Section 2 - Further Assessment by HOD
                                 <span class="text-muted">
                                     (Completed by HoD)
                                 </span>

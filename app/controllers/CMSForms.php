@@ -444,6 +444,15 @@ class CMSForms extends Controller
                     $cur_mgr_id = getCurrentManager($form_model->department_id);
                     $recipients[] = new User($cur_mgr_id);
                     $recipients[] = new User($form_model->project_leader_id);
+                    $recipients[] = new User(getCurrentGM());
+                    $hse_managers = getHSEManagers();
+                    $managers = getManagers();
+                    foreach ($hse_managers as $hse_manager) {
+                        $recipients[] = new User($hse_manager->user_id);
+                    }
+                    foreach ($managers as $manager) {
+                        $recipients[] = new User($manager->user_id);
+                    }
                     $recipients = array_unique_multidim_array($recipients, 'user_id');
                     $recipients = array_filter_multidim_by_obj_prop($recipients, 'user_id', $current_user->user_id, function ($a, $b) {
                         return $a != $b;
