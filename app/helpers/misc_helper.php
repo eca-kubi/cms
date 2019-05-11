@@ -316,14 +316,6 @@ function notifyAllHODs($cms_form_id)
     $data['link'] = site_url("cms-forms/view-change-process/$cms_form_id");
     $data['originator'] = getNameJobTitleAndDepartment($form_model->originator_id);
     insertEmailBulk('email_templates/notify_hods', $current_managers, $data);
-    /* foreach ($managers as $manager) {
-         $name = concatNameWithUserId($manager->user_id);
-         $body = "Hi, " . $name . ', ' . HTML_NEW_LINE .
-             "A Change Proposal raised by " . ($manager->user_id === $form_model->originator_id ? " you " : getNameJobTitleAndDepartment($form_model->originator_id)) .
-             " requires response to questions on Possible Impacts related to your department (" . $affected_department->department . "). " .
-             "Click this link if you wish to respond to the questions: " . '<a href="' . $link . '" />' . $link . '</a>';
-         insertEmail($subject, $body, $manager->email, $name);
-     }*/
 }
 
 function getManagers(): array
@@ -333,6 +325,13 @@ function getManagers(): array
         ->orWhere('role', ROLE_SUPERINTENDENT)
         ->objectBuilder()
         ->get('users');
+}
+
+function getCurrentManagers(): array
+{
+    return Database::getDbh()->join('users u', 'd.current_manager=u.user_id', 'LEFT')
+        ->objectBuilder()
+        ->get('departments d');
 }
 
 function isBudgetHigh($cms_form_id)
@@ -710,7 +709,7 @@ function getDepartmentHods($department_id)
 {
     $db = Database::getDbh();
     $ret = $db->where('department_id', $department_id)
-        ->where("(role = ? or role = ?)", Array(ROLE_SUPERINTENDENT, ROLE_MANAGER))
+        ->where("staff_category", 'Management')
         ->objectBuilder()
         ->get('users');
     return $ret;

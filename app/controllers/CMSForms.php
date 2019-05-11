@@ -69,9 +69,13 @@ class CMSForms extends Controller
                 if ($ret) {
                     flash_success('view-change-process');
                     $performed_by = concatNameWithUserId($current_user->user_id);
-                    $hods = getHodsWithCurrent($current_user->department_id);
-                    $hods[] = $current_user;
-                    $recipients = array_unique_multidim_array($hods, 'user_id');
+                    $recipients[] = $current_user;
+                    $hods[] = getCurrentManager($current_user->department_id);
+                    $hse_managers = getHSEManagers();
+                    foreach ($hse_managers as $hse_manager) {
+                        $recipients[] = new User($hse_manager->user_id);
+                    }
+                    $recipients = array_unique_multidim_array($recipients, 'user_id');
                     $subject = genEmailSubject($cms_form_id);
                     $data = array(
                         'subject' => $subject,
@@ -386,14 +390,10 @@ class CMSForms extends Controller
                 ]);
                 if ($ret) {
                     completeSection($cms_form_id, SECTION_ACTION_LIST);
-                    $recipients[] = getDepartmentHod($form_model->department_id);
+                    $recipients[] = new User(getCurrentManager($form_model->department_id));
                     $recipients[] = new User($form_model->originator_id);
-                    $cur_mgr_id = getCurrentManager($form_model->department_id);
-                    $recipients[] = new User($cur_mgr_id);
+                    $recipients[] = $current_user;
                     $recipients = array_unique_multidim_array($recipients, 'user_id');
-                    $recipients = array_filter_multidim_by_obj_prop($recipients, 'user_id', $current_user->user_id, function ($a, $b) {
-                        return $a != $b;
-                    });
                     foreach ($recipients as $recipient) {
                         $recipient_name = concatNameWithUserId($recipient['user_id']);
                         $data['role'] = $role;
@@ -440,23 +440,10 @@ class CMSForms extends Controller
                     'originator_closure_comment' => $_POST['originator_closure_comment']
                 ]);
                 if ($ret) {
-                    $recipients[] = getDepartmentHod($form_model->department_id);
-                    $cur_mgr_id = getCurrentManager($form_model->department_id);
-                    $recipients[] = new User($cur_mgr_id);
                     $recipients[] = new User($form_model->project_leader_id);
-                    $recipients[] = new User(getCurrentGM());
-                    $hse_managers = getHSEManagers();
-                    $managers = getManagers();
-                    foreach ($hse_managers as $hse_manager) {
-                        $recipients[] = new User($hse_manager->user_id);
-                    }
-                    foreach ($managers as $manager) {
-                        $recipients[] = new User($manager->user_id);
-                    }
+                    $recipients[] = $current_user;
+                    $recipients[] = new User(getCurrentManager($current_user->department_id));
                     $recipients = array_unique_multidim_array($recipients, 'user_id');
-                    $recipients = array_filter_multidim_by_obj_prop($recipients, 'user_id', $current_user->user_id, function ($a, $b) {
-                        return $a != $b;
-                    });
                     foreach ($recipients as $recipient) {
                         $recipient_name = concatNameWithUserId($recipient['user_id']);
                         $data['recipient_user_id'] = $recipient['user_id'];
@@ -505,15 +492,14 @@ class CMSForms extends Controller
                     'date_closed' => now()
                 ]);
                 if ($ret) {
-                    $recipients[] = getDepartmentHod($form_model->department_id);
-                    $cur_mgr_id = getCurrentManager($form_model->department_id);
-                    $recipients[] = new User($cur_mgr_id);
+                    $current_managers = getCurrentManagers();
+                    foreach ($current_managers as $current_manager) {
+                        $recipients[] = new User($current_manager->user_id);
+                    }
                     $recipients[] = new User($form_model->originator_id);
                     $recipients[] = new User($form_model->project_leader_id);
+                    $recipients[] = new User(getCurrentGM());
                     $recipients = array_unique_multidim_array($recipients, 'user_id');
-                    $recipients = array_filter_multidim_by_obj_prop($recipients, 'user_id', $current_user->user_id, function ($a, $b) {
-                        return $a != $b;
-                    });
                     foreach ($recipients as $recipient) {
                         $recipient_name = concatNameWithUserId($recipient['user_id']);
                         $data['recipient_user_id'] = $recipient['user_id'];
@@ -839,7 +825,7 @@ class CMSForms extends Controller
             $new_mgr = new User($_POST['mgr']);
             $current_mgr = getCurrentManager($department_id);
             if (!empty($current_mgr)) {
-                $current_mgr = new User(getCurrentManager($department_id));
+                $current_mgr = new User($current_mgr);
             }
             $department = new Department($department_id);
             $current_user = getUserSession();
