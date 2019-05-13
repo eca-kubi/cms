@@ -867,12 +867,13 @@ function isAllImpactAssessmentComplete($cms_form_id)
  */
 function getDepartment($user_id)
 {
-    return ((new User($user_id))->department)->department;
+    $department = new Department(getDepartmentID($user_id));
+    return $department->department;
 }
 
 function getDepartmentID($user_id)
 {
-    return ((new User($user_id))->department)->department_id;
+    return (new User($user_id))->department_id;
 }
 
 /**
