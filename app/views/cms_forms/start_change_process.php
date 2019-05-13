@@ -93,7 +93,7 @@ $user = getUserSession();
                                                 <div class="col-sm-8">
                                                     <input type="text"
                                                            class="form-control"
-                                                           value="<?php echo $user->department->department; ?>"
+                                                           value="<?php echo getDepartment($user->user_id); ?>"
                                                            aria-describedby="helpId" placeholder="" readonly/>
                                                     <small id="helpId" class="form-text with-errors help-block"></small>
                                                 </div>
