@@ -298,7 +298,7 @@
             </thead>
             <tbody>
             <?php
-            $action_list = getActionList();
+            $action_list = getActionList($payload['form']->cms_form_id);
             foreach ($action_list as $al) { ?>
                 <tr>
                     <td><?php echo $al->action ?></td>

@@ -245,7 +245,7 @@ heredoc;
                     </tbody>
                 </table>
             </div>
-            <div class="d-sm-none d-block">
+            <div class="d-none">
                 <table class="table table-bordered table-user-information font-raleway mb-0 table-striped table-active">
                     <thead class="thead-default d-none">
                     <tr>

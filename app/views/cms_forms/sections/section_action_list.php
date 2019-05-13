@@ -1,4 +1,5 @@
 <?php /** @var  array $payload */
+$current_user = getUserSession();
 //sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION) && !empty($payload['form']->project_leader_acceptance
 if (sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_AUTHORISATION) && sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE)) { ?>
     <div class="row p-2">
@@ -56,7 +57,7 @@ heredoc;
         <input type="hidden" id="cms_form_id" value="<?php echo $payload['form']->cms_form_id; ?>">
         <div id="section_6"
              class="section border table-active <?php echo empty($payload['form']->project_leader_close_change) ? 'collapse show' : 'collapse' ?>"
-             style="position:relative; /*min-height: 520px*/;min-width: 100%">
+             style="position:relative; <?php echo isProjectLeader($current_user->user_id, $payload['form']->cms_form_id) && empty($payload['form']->project_leader_close_change) ? 'min-height: 520px;' : ''; ?>min-width: 100%">
             <?php
             if (isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id) && sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE) && !sectionCompleted($payload['form']->cms_form_id, SECTION_ACTION_LIST)) { ?>
                 <div id="action_list"></div>
