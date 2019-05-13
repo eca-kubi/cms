@@ -49,43 +49,43 @@
             <tbody>
             <tr>
                 <td class="text-right" style="width:17%"><b>Originator: </b></td>
-                <td scope="row" style="width:83%">
+                <td style="width:83%">
                     <?php echo getNameJobTitleAndDepartment($payload['form']->originator_id) ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right" style="width:17%"><b>Description: </b></td>
-                <td scope="row" style="width:83%">
+                <td style="width:83%">
                     <?php echoIfEmpty($payload['form']->change_description, 'N/A'); ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right"><b>Advantages: </b></td>
-                <td scope="row" class="">
+                <td class="">
                     <?php echoIfEmpty($payload['form']->advantages, 'N/A'); ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right"><b>Alternatives: </b></td>
-                <td scope="row">
+                <td>
                     <?php echoIfEmpty($payload['form']->alternatives, 'N/A'); ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right"><b>Change Type:</b></td>
-                <td scope="row">
+                <td>
                     <?php echo $payload['form']->change_type; ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right"><b>Areas Affected: </b></td>
-                <td scope="row">
+                <td>
                     <?php echo $payload['form']->area_affected; ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right" style="width:17%"><b>Completed: </b></td>
-                <td scope="row" style="width:83%">
+                <td style="width:83%">
                     <?php echo returnDate($payload['action_log'][ACTION_START_CHANGE_PROCESS_COMPLETED]->date, true); ?>
                 </td>
             </tr>
@@ -104,26 +104,26 @@
             <tbody>
             <tr>
                 <td class="text-right" style="width:17%"><b>HoD:</b></td>
-                <td scope="row" style="width:83%">
+                <td style="width:83%">
                     <?php echo getNameJobTitleAndDepartment($payload['action_log'][ACTION_HOD_ASSESSMENT_COMPLETED]->performed_by); ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right" style="width:17%"><b>Status:</b></td>
-                <td scope="row" style="width:83%"
+                <td style="width:83%"
                     class="<?php echo ($payload['form']->hod_approval == STATUS_REJECTED || $payload['form']->hod_approval == STATUS_DELAYED) ? 'text-danger' : 'text-success'; ?>">
                     <?php echo ucwords($payload['form']->hod_approval); ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right"><b>Reasons: </b></td>
-                <td scope="row" class="">
+                <td class="">
                     <?php echo $payload['form']->hod_reasons; ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right"><b>Completed:</b></td>
-                <td scope="row" class="">
+                <td class="">
                     <?php echo returnDate($payload['action_log'][ACTION_HOD_ASSESSMENT_COMPLETED]->date, true); ?>
                 </td>
             </tr>
@@ -205,26 +205,26 @@
             <tbody>
             <tr>
                 <td class="text-right" style="width:17%"><b>GM:</b></td>
-                <td scope="row" style="width:83%">
+                <td style="width:83%">
                     <?php echo getNameJobTitleAndDepartment($payload['action_log'][ACTION_GM_ASSESSMENT_COMPLETED]->performed_by); ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right" style="width:17%"><b>Status:</b></td>
-                <td scope="row" style="width:83%"
+                <td style="width:83%"
                     class="<?php echo ($payload['form']->gm_approval == STATUS_REJECTED) ? 'text-danger' : 'text-success'; ?>">
                     <?php echo ucwords($payload['form']->gm_approval); ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right"><b>Reasons: </b></td>
-                <td scope="row" class="">
+                <td class="">
                     <?php echo $payload['form']->gm_approval_reasons; ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right"><b>Completed:</b></td>
-                <td scope="row" class="">
+                <td class="">
                     <?php echo returnDate($payload['action_log'][ACTION_GM_ASSESSMENT_COMPLETED]->date, true); ?>
                 </td>
             </tr>
@@ -244,7 +244,7 @@
             <tbody>
             <tr>
                 <td class="text-right" style="width:17%"><b>Authorized by:</b></td>
-                <td scope="row" style="width:83%">
+                <td style="width:83%">
                     <?php echo getNameJobTitleAndDepartment($payload['action_log'][ACTION_HOD_AUTHORISATION_COMPLETED]->performed_by); ?>
                 </td>
             </tr>
@@ -256,25 +256,25 @@
             </tr>
             <tr>
                 <td class="text-right"><b>Project Leader: </b></td>
-                <td scope="row" class="">
+                <td class="">
                     <?php echo getNameJobTitleAndDepartment($payload['form']->project_leader_id); ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right"><b>Leader's Acceptance: </b></td>
-                <td scope="row" class="">
+                <td class="">
                     <?php echo "<span class='text-success'>Accepted</span>" ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right"><b>Leader's Comment: </b></td>
-                <td scope="row" class="">
+                <td class="">
                     <?php echo $payload['form']->project_leader_acceptance_comment; ?>
                 </td>
             </tr>
             <tr>
                 <td class="text-right"><b>Completed:</b></td>
-                <td scope="row" class="">
+                <td class="">
                     <?php echo returnDate($payload['form']->project_leader_acceptance_date, true); ?>
                 </td>
             </tr>
