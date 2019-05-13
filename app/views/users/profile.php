@@ -144,13 +144,11 @@
                                             </td>
                                         </tr>
                                         <tr class="d-none">
-                                            <td scope="row">Managers</td>
+                                            <td scope="row">Manager</td>
                                             <td>
                                                 <?php
-                                                foreach ($payload['mgrs'] as $key => $value) {
-                                                    ?>
-
-                                                <?php } ?>
+                                                echo $payload['mgrs'];
+                                                ?>
                                             </td>
                                         </tr>
 
