@@ -1290,10 +1290,12 @@ function dbRollBack()
     return $db->rollback();
 }
 
-function getActionList()
+function getActionList($cms_form_id)
 {
     $db = Database::getDbh();
-    return $db->objectBuilder()->get('cms_action_list');
+    return $db->objectBuilder()
+        ->where('cms_form_id', $cms_form_id)
+        ->get('cms_action_list');
 }
 
 /**

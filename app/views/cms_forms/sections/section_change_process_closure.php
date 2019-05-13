@@ -22,10 +22,8 @@ heredoc;
             </h6>
         </div>
         <div id="section_7"
-             class="section border w-100 <?php if (!empty($payload['form']->hod_close_change)) {
-                 echo 'collapse';
-             } ?>">
-            <div class="d-sm-block d-none">
+             class="section border collapse w-100 <?php echo empty($payload['form']->hod_close_change) ? 'collapse show' : 'collapse' ?>">
+            <div class="">
                 <table class="table table-bordered table-user-information font-raleway mb-0 table-striped table-active">
                     <thead class="thead-default d-none">
                     <tr>
@@ -39,7 +37,7 @@ heredoc;
                         if ($payload['form']->project_leader_id == getUserSession()->user_id
                             && sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE)) { ?>
                             <tr>
-                                <td class="text-right" scope="row" style="width:30%">
+                                <td class="text-right" style="width:30%">
                                     <b>Project Leader to Close Process: </b>
                                 </td>
                                 <td style="width:70%">
@@ -84,7 +82,7 @@ heredoc;
                         } else {
                             echo <<<heredoc
                         <tr>
-                            <td class="" colspan="2" scope="row" style="width:100%">
+                            <td class="" colspan="2" style="width:100%">
                                 <b>Closure by Project Leader: <i class="text-danger">Pending</i></b>
                             </td>
                         </tr>
@@ -112,7 +110,7 @@ heredoc;
                         if ($payload['form']->originator_id === getUserSession()->user_id && !empty($payload['form']->project_leader_close_change)
                         ) { ?>
                             <tr>
-                                <td class="text-right" scope="row" style="width:30%">
+                                <td class="text-right" style="width:30%">
                                     <b>Originator to Close Process: </b>
                                 </td>
                                 <td style="width:70%">
@@ -154,7 +152,7 @@ heredoc;
                         <?php } else {
                             echo <<<heredoc
                         <tr>
-                            <td class="" colspan="2" scope="row" style="width:100%">
+                            <td class="" colspan="2"  style="width:100%">
                                 <b>Closure by Originator: <i class="text-danger">Pending</i></b>
                             </td>
                         </tr>
@@ -180,7 +178,7 @@ heredoc;
                     <?php
                     if (empty($payload['form']->hod_close_change)) {
                         if (isCurrentManager($payload['form']->department_id, getUserSession()->user_id) && !empty($payload['form']->originator_close_change)) { ?>
-                            <td class="text-right" scope="row" style="width:17%">
+                            <td class="text-right" style="width:17%">
                                 <b>HoD to Close Process: </b>
                             </td>
                             <td style="width:83%">
@@ -203,8 +201,8 @@ heredoc;
                                             <small class="help-block with-errors"></small>
                                         </div>
                                         <div class="form-group mb-1">
-                                            <textarea name="hod_closure_comment" cols="30" rows="7"
-                                                      class="form-control" placeholder="Comments" required></textarea>
+                                            <textarea name="hod_closure_comment" cols="30" rows="7" class="form-control"
+                                                      placeholder="Comments" required></textarea>
                                             <small class="help-block with-errors"></small>
                                         </div>
                                         <span>
@@ -220,7 +218,8 @@ heredoc;
                         <?php } else {
                             echo <<<heredoc
                         <tr>
-                            <td class="" colspan="2" scope="row" style="width:100%">
+                      
+                            <td class="" colspan="2"  style="width:100%">
                                 <b>Closure by Project Owner (HoD): <i class="text-danger">Pending</i></b>
                             </td>
                         </tr>

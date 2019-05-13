@@ -55,9 +55,7 @@ heredoc;
         </div>
         <input type="hidden" id="cms_form_id" value="<?php echo $payload['form']->cms_form_id; ?>">
         <div id="section_6"
-             class="section border table-active <?php if (!empty($payload['form']->project_leader_close_change)) {
-                 echo 'collapse';
-             } ?>"
+             class="section border table-active <?php echo empty($payload['form']->project_leader_close_change) ? 'collapse show' : 'collapse' ?>"
              style="position:relative; /*min-height: 520px*/;min-width: 100%">
             <?php
             if (isProjectLeader(getUserSession()->user_id, $payload['form']->cms_form_id) && sectionCompleted($payload['form']->cms_form_id, SECTION_PL_ACCEPTANCE) && !sectionCompleted($payload['form']->cms_form_id, SECTION_ACTION_LIST)) { ?>
@@ -66,8 +64,8 @@ heredoc;
                 ?>
                 <!--                <div id="action-list-read-only"></div>
                 -->
-                <div>
-                    <table class="table-striped table-active table table-bordered table-user-information font-raleway mb-0">
+                <div style="overflow: auto">
+                    <table class="table-striped table-active table table-responsive table-bordered table-user-information font-raleway mb-0 d-table">
                         <thead class="thead-default">
                         <tr class="d-none">
                             <th colspan="4">
@@ -85,7 +83,7 @@ heredoc;
                         </thead>
                         <tbody>
                         <?php
-                        $action_list = getActionList();
+                        $action_list = getActionList($payload['form']->cms_form_id);
                         foreach ($action_list as $al) { ?>
                             <tr>
                                 <td><?php echo $al->action ?></td>
