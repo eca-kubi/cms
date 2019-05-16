@@ -25,7 +25,7 @@ class CMSForms extends Controller
     public function Dashboard($filter = '')
     {
         if (!isLoggedIn()) {
-            redirect('users/login');
+            redirect('users/login/cms-forms/dashboard/' . $filter);
         }
         $payload['title'] = 'CMS Dashboard';
         $payload['active'] = CMSFormModel::getActive();
@@ -47,7 +47,7 @@ class CMSForms extends Controller
     public function StartChangeProcess()
     {
         if (!isLoggedIn()) {
-            redirect('users/login');
+            redirect('users/login' . '/cms-forms/start-change-process');
         }
         $current_user = getUserSession();
         $payload['title'] = 'New Change Proposal Form';
@@ -541,7 +541,7 @@ class CMSForms extends Controller
             redirect('cms-forms/dashboard');
         }
         if (!isLoggedIn()) {
-            redirect("users/login/$cms_form_id");
+            redirect("users/login/cms-forms/view-change-process/$cms_form_id");
         }
         $payload['title'] = 'Change Proposal, Assessment & Implementation';
         $payload['form'] = new CMSForm(['cms_form_id' => $cms_form_id]);
@@ -859,7 +859,7 @@ class CMSForms extends Controller
     public function departmentManagers()
     {
         if (!isLoggedIn()) {
-            redirect("users/login");
+            redirect("users/login/cms-forms/department-managers");
         }
         $payload = array();
         $payload['title'] = 'Department Managers';
@@ -1018,7 +1018,7 @@ class CMSForms extends Controller
             redirect('cms-forms/dashboard');
         }
         if (!isLoggedIn()) {
-            redirect("users/login/$cms_form_id");
+            redirect("users/login/cms-forms/print/$cms_form_id");
         }
         $payload['title'] = 'Change Proposal, Assessment & Implementation';
         $payload['form'] = new CMSForm(['cms_form_id' => $cms_form_id]);

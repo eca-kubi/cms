@@ -12,19 +12,20 @@ class Users extends Controller
     }
 
 
-    function login($cms_form_id = '')
+    function login($redirect_url = '')
     {
+        $payload['title'] = 'CMS Login';
+        $payload['redirect_url'] = $redirect_url;
         if (isLoggedIn()) {
-            goBack();
+            //goBack();
+            redirect('cms-forms/dashboard');
         }
-        $this->payload['title'] = 'CMS Login';
-        $this->payload['cms_form_id'] = $cms_form_id;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $this->payload['post'] = validatePost('login_form');
-            $post = $this->payload['post'];
+            $payload['post'] = validatePost('login_form');
+            $post = $payload['post'];
             if(!empty($post->staff_id_err) || !empty($post->password_err))   {
                 flash('flash_login', 'Invalid Username/Password', 'alert text-danger text-center');
-                $this->view('users/login', $this->payload);
+                $this->view('users/login', $payload);
             }
             else {
                 $loggedInUser = UserModel::login($post->staff_id, $post->password);
@@ -34,17 +35,16 @@ class Users extends Controller
                     /*if ($loggedInUser['default_password']) {
                         flash('flash_dashboard', "<a class='text-warning' href='#change_password_modal' data-toggle='modal'><i class='fa fa-warning'></i> Set a new Password </a> <= ", 'alert text-danger text-sm text-center', '&nbsp;');
                     }*/
-                    $u = new \User($loggedInUser['user_id']);
+                    $u = new User($loggedInUser['user_id']);
                 	createUserSession($u);
-                    if (!empty($cms_form_id)) {
-                        redirect("cms-forms/view-change-process/$cms_form_id");
+                    if (!empty($redirect_url)) {
+                        redirect($redirect_url);
                     }
                     redirect('cms-forms/dashboard');
                 }
             }
         } else {
-            //$this->payload['post'] = validatePost('login_form');
-            $this->view('users/login', $this->payload);
+            $this->view('users/login', $payload);
         }
     }
 
@@ -235,7 +235,7 @@ class Users extends Controller
         $post = array();
         $user = getUserSession();
         if (!isLoggedIn()) {
-            redirect('users/login');
+            redirect('users/login/users/profile/' . $user_id);
         }
         if (empty($user_id) || !userExists($user_id)) {
             $user_id = $user->user_id;

@@ -28,8 +28,12 @@ class Core
                 if (isset($url[1])) {
                     if (method_exists($this->currentController, $url[1])) {
                         $this->currentMethod = $url[1];
+                        $url_one = $url[1];
                         unset($url[1]);
                         $this->params = $url ? array_values($url) : [];
+                        if ($url_one == 'login') {
+                            $this->params = [implode('/', $this->params)];
+                        }
                         call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
                         return;
                     } else {

@@ -231,7 +231,7 @@ body {
                 <div class="row">
                     <div class="col mb-2">
                         <div id="user_login">
-                            <form action="<?php echo site_url('users/login/' . $payload['cms_form_id']) ?>"
+                            <form action="<?php echo site_url('users/login/' . $payload['redirect_url']) ?>"
                                   enctype="multipart/form-data"
                                   method="post" role="form"
                                   data-toggle="validator">
