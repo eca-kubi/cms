@@ -1225,7 +1225,13 @@ function prepPostData($section, $cms_form_id = '')
         }
     } elseif ($section === SECTION_RISK_ASSESSMENT) {
         $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-        $all_depts = Database::getDbh()->getValue('departments', 'department_id', null);
+        $temp = Database::getDbh()->getValue('departments', 'department_id', null);
+        $all_depts = [];
+        foreach ($temp as $dept) {
+            if (Database::getDbh()->where('department_id', $dept)->has('cms_impact_question')) {
+                $all_depts[] = $dept;
+            }
+        }
         $form_model->affected_dept = implode(',', $all_depts);
     }
     return $form_model;
