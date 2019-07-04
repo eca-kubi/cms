@@ -21,8 +21,8 @@ define('DB_USER', 'appiahmakuta');
 define('DB_PASS', 'gmail300');
 define('DB_NAME', 'mtn_subscribers');
 
-const TABLE1 = 'subscribers';
-const TABLE2 = 'subscribers2';
+const TABLE1 = 'from_mtn';
+const TABLE2 = 'from_adamus';
 $db = Database::getDbh();
 $subscribers = [];
 $subscribers = $db->objectBuilder()
