@@ -6,12 +6,12 @@
  * Time: 7:25 PM
  * This script will be used to update mtn bill
  * Logic is as follows (very simple):
- *  SELECT ALL SUBSCRIBERS FROM TABLE1
+ *  SELECT ALL SUBSCRIBERS FROM TABLE1 (MTN Table)
  *  FOR EACH SUBSCRIBER
  *      IF PHONE NUMBER EXISTS
  *          UPDATE TABLE1
  *      ELSE
- *          INSERT NEW SUBSCRIBER (PHONE NUMBER, AMOUNT) INTO TABLE2
+ *          INSERT NEW SUBSCRIBER (PHONE NUMBER, AMOUNT) INTO TABLE2 (Adamus Table)
  * END
  */
 require_once 'autoload.php';
