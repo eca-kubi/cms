@@ -15,4 +15,3 @@ echo <<<heredoc
 Click this link for details: <a href="$link">$link</a>
 heredoc;
 
-
