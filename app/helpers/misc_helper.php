@@ -732,8 +732,7 @@ function getDepartmentHod($department_id)
 function getCurrentManager($department_id)
 {
     $db = Database::getDbh();
-    return $db->where('department_id', $department_id)
-        ->getValue('departments', 'current_manager');
+    return $db->where('department_id', $department_id)->getValue('departments', 'current_manager');
 }
 
 function getHodsWithCurrent($department_id)

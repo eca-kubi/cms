@@ -873,11 +873,11 @@ class CMSForms extends Controller
                 if (!empty($mgr)) {
                     $dept_id = getDepartmentID($mgr);
                     $department = new Department($dept_id);
-                    $current_mgr = getCurrentManager($dept_id);
+                    $current_mgr_id = getCurrentManager($dept_id);
                     $new_mgr = new User($mgr);
                     $new_mgr_name = concatNameWithUserId($new_mgr->user_id);
                     $subject = SUBJECT_MANAGER_CHANGED . " for " . $department->department;
-                    if ($current_mgr !== (int)$mgr) {
+                    if ($current_mgr_id !== (int)$mgr) {
                         $recipients[] = new User($mgr);
                         $ret = $db->where('department_id', $dept_id)
                             ->update('departments', array('current_manager' => $mgr));
@@ -892,13 +892,13 @@ class CMSForms extends Controller
                                 'recipient_department' => $department->department
                             );
                             $body = get_include_contents('email_templates/change_manager', $data);
-                            insertEmail($subject, $body, $new_mgr->email, $new_mgr_name);
-                            if (!empty($current_mgr)) {
-                                $current_mgr = new User($current_mgr);
+                            // insertEmail($subject, $body, $new_mgr->email, $new_mgr_name);
+                            if (!empty($current_mgr_id)) {
+                                $current_mgr = new User($current_mgr_id);
                                 $current_mgr_name = concatNameWithUserId($current_mgr->user_id);
                                 $data['recipient_user_id'] = $current_mgr->user_id;
                                 $body = get_include_contents('email_templates/change_manager', $data);
-                                insertEmail($subject, $body, $current_mgr->email, $current_mgr_name);
+                                //insertEmail($subject, $body, $current_mgr->email, $current_mgr_name);
                             }
                             $data['performed_by'] = getNameJobTitleAndDepartment($current_user->user_id);
                             $data['new_mgr'] = getNameJobTitleAndDepartment($new_mgr->user_id);

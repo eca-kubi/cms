@@ -74,9 +74,7 @@ class UserModel extends Model
     public function getUser(int $user_id)
     {
         return (object)
-        Database::getDbh()->where('user_id', $user_id)->
-        objectBuilder()->
-        getOne('users u');
+        Database::getDbh()->where('user_id', $user_id)->objectBuilder()->getOne('users u');
     }
 
     public function getUserWhere(array $condition_array)

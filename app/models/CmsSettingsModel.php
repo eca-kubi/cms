@@ -8,7 +8,7 @@
 
 class CmsSettingsModel
 {
-    private static $table = 'cms_settings';
+    private static $table = 'settings';
     //private $prop;
     //private $value;
     private $db;
