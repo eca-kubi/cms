@@ -19,7 +19,7 @@ a[href^="http"]:not(.no-link)::after {
 Append a message
 */
 #main::after {
-    content: "Copyright 2019 Adamus IT";
+    content: "Copyright 2022 Adamus IT";
     display: block;
     text-align: center;
     font-size: 10px;

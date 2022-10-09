@@ -156,10 +156,10 @@ class CMSFormModel extends Model implements \JsonSerializable
         return false;
     }
 
-    public function insert()
+    public function insert(?array $data=null)
     {
         $db = Database::getDbh();
-        $data = $this->jsonSerialize();
+        $data = $data?: $this->jsonSerialize();
         unset($data['cms_form_id']);
         $ret = $db->insert(self::$table, $data);
         if ($ret) {
@@ -918,7 +918,8 @@ class CMSFormModel extends Model implements \JsonSerializable
 
     public function add(array $insertData)
     {
-        return Database::getDbh()->insert(self::$table, $insertData);
+//        return Database::getDbh()->insert(self::$table, $insertData);
+        return $this->insert($insertData);
     }
 
     public function updateForm($cms_form_id, array $insertData = null)

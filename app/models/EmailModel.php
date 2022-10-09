@@ -1,7 +1,7 @@
 <?php
 class EmailModel extends Model
 {
-    public static $table = 'cms_email';
+    public static $table = 'emails';
 
     public function __construct()
     {
@@ -18,7 +18,7 @@ class EmailModel extends Model
         return (object)
             Database::getDbh()->where('email_id', $email_id)->
                         objectBuilder()->
-                        getOne('cms_email');
+                        getOne('emails');
     }
 
     // Verify existence of column value

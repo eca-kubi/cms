@@ -1,6 +1,6 @@
 <?php /** @var  array $payload */
 if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
-    if (isCurrentManager($payload['form']->department_id, getUserSession()->user_id) && sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
+    if ((isCurrentManager($payload['form']->department_id, getUserSession()->user_id) || isOriginator($payload['form']->cms_form_id, getUserSession()->user_id)) && sectionCompleted($payload['form']->cms_form_id, SECTION_HOD_ASSESSMENT)) {
         ?>
         <div class="row p-2">
             <form class="w-100"
@@ -46,7 +46,7 @@ if (!sectionCompleted($payload['form']->cms_form_id, SECTION_RISK_ASSESSMENT)) {
                                         <div class="input-group">
                                             <input accept="<?php echo DOC_FILE_TYPES; ?>"
                                                    class="form-control" multiple="multiple"
-                                                   name="risk_attachment[]"
+                                                   name="file[]"
                                                    data-dely="1000"
                                                    required type="file"/>
                                             <div class="input-group-append cursor-pointer"

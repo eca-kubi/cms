@@ -33,7 +33,7 @@
                             <div class="col-sm-12 form-group">
                                 <div class="input-group">
                                     <input accept="<?php echo DOC_FILE_TYPES; ?>"
-                                           class="form-control" name="additional_info[]"
+                                           class="form-control" name="file[]"
                                            required type="file"/>
                                     <div class="input-group-append cursor-pointer"
                                          title="Click to add more files.">

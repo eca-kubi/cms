@@ -129,30 +129,31 @@
             </tr>
             </tbody>
         </table>
-        <table class="table table-bordered table-user-information font-raleway table-striped table-active">
-            <thead class="thead-default">
-            <tr>
-                <th colspan="3">
-                    <h6 class="font-italic mb-0">
-                        <a href="#" class="no-link">Section 3 - Risk & Impact Assessment</a>
-                    </h6>
-                </th>
-            </tr>
-            <?php
-            $department_count = count($payload['affected_departments']);
-            foreach ($payload['affected_departments'] as $department) {
-            $can_assess_impact_for_dept = canAssessImpactForDept($department->department_id);
+        <?php
+        $department_count = count($payload['affected_departments']);
+        foreach ($payload['affected_departments'] as $department) {
             $questions = getImpactQuestions($department->department_id);
             $impact_ass_status = new ImpactAssStatusModel(['department_id' => $department->department_id, 'cms_form_id' => $payload['form']->cms_form_id]);
-            if (!empty($questions)) { ?>
-            <tr>
-                <th colspan="3" class="text-bold">Impact Assessment for <?php echo $department->department ?></th>
-            </tr>
-            <tr>
-                <th>Will this change:</th>
-                <th class="text-center">Yes</th>
-                <th class="text-center">No</th>
-            </tr>
+        ?>
+        <table class="table table-bordered table-user-information font-raleway table-striped table-active">
+            <thead class="thead-default">
+                <tr>
+                    <th colspan="3">
+                        <h6 class="font-italic mb-0">
+                            <a href="#" class="no-link">Section 3 - Risk & Impact Assessment</a>
+                        </h6>
+                    </th>
+                </tr>
+                <?php
+                if (!empty($questions)) { ?>
+                <tr>
+                    <th colspan="3" class="text-bold">Impact Assessment for <?php echo $department->department ?></th>
+                </tr>
+                <tr>
+                    <th>Will this change:</th>
+                    <th class="text-center">Yes</th>
+                    <th class="text-center">No</th>
+                </tr>
             </thead>
             <tbody>
             <?php foreach ($questions as $question) {
@@ -188,10 +189,10 @@
                 </td>
             </tr>
             <?php }
-            }
             ?>
             </tbody>
         </table>
+        <?php } ?>
         <table class="table table-bordered table-user-information font-raleway table-striped table-active">
             <thead class="thead-default">
             <tr>
@@ -315,8 +316,7 @@
             <tr>
                 <th colspan="2">
                     <h6 class="font-italic mb-0">
-                        <a href="#" class="no-link">Section 5 - Implementation Authorization & Project Leader
-                            Acceptance</a>
+                        <a href="#" class="no-link">Section 7 - Change Process Closure</a>
                     </h6>
                 </th>
             </tr>
@@ -326,7 +326,7 @@
                 <td class="text-justify" colspan="2">
                     <div class="col-sm-12">
                         <b class="text-bold">Closed
-                            by: </b><?php echo concatNameWithUserId($payload['action_log'][ACTION_PL_CLOSURE]->performed_by) ?>
+                            by: </b><?php echo getFullName($payload['action_log'][ACTION_PL_CLOSURE]->performed_by) ?>
                         (Project Leader)
                         on <?php echo returnDate($payload['form']->project_leader_close_change, true); ?>
                     </div>
@@ -340,7 +340,7 @@
                 <td class="text-justify" colspan="2">
                     <div class="col-sm-12">
                         <b class="text-bold">Closed
-                            by: </b><?php echo concatNameWithUserId($payload['action_log'][ACTION_ORIGINATOR_CLOSURE]->performed_by) ?>
+                            by: </b><?php echo getFullName($payload['action_log'][ACTION_ORIGINATOR_CLOSURE]->performed_by) ?>
                         (Originator)
                         on <?php echo returnDate($payload['form']->originator_close_change, true); ?>
                     </div>
@@ -353,7 +353,7 @@
             <tr>
                 <td class="text-justify" colspan="2">
                     <div class="col-sm-12">
-                        <span class="text-bold">Closed by: </span> <?php echo concatNameWithUserId($payload['action_log'][ACTION_HOD_CLOSURE]->performed_by) ?>
+                        <span class="text-bold">Closed by: </span> <?php echo getFullName($payload['action_log'][ACTION_HOD_CLOSURE]->performed_by) ?>
                         (HoD)
                         on <?php echo returnDate($payload['form']->hod_close_change, true); ?>.
                     </div>

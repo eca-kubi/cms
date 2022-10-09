@@ -1,15 +1,37 @@
-ErrorDocument 404 /errors/error/404
-ErrorDocument 400 /errors/error/400
-ErrorDocument 401 /errors/error/401
-ErrorDocument 403 /errors/error/403
-ErrorDocument 404 /errors/error/404
-ErrorDocument 500 /errors/error/500
 <IfModule rewrite_module>
   Options -MultiViews
   RewriteEngine on
   RewriteRule ^$ public/ [L,QSA]
   RewriteRule ^(.*)$ public/$1 [L,QSA]
 </IfModule>
-php_flag display_errors On
-php_value data.timezone 'Africa/Accra'
+php_value date.timezone 'Africa/Accra'
+php_flag file_uploads On
+php_value upload_max_filesize 100M
+php_value post_max_size 105M
+php_value max_execution_time 90
+php_value xdebug.remote_mode  req
+php_flag xdebug.remote_enable On
 php_flag xdebug.remote_autostart On
+
+
+# PHP error handling for development servers
+php_flag display_startup_errors off
+php_flag display_errors off
+php_flag html_errors on
+php_flag log_errors on
+php_flag ignore_repeated_errors off
+php_flag ignore_repeated_source off
+php_flag report_memleaks on
+php_flag track_errors on
+php_value docref_root 0
+php_value docref_ext 0
+php_value error_log C:/xampp/htdocs/cms/PHP_errors.log
+# [see footnote 3] # php_value error_reporting 999999999
+php_value error_reporting -1
+php_value log_errors_max_len 0
+
+<Files PHP_errors.log>
+ Order allow,deny
+ Deny from all
+ Satisfy All
+</Files>

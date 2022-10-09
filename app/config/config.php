@@ -37,7 +37,7 @@ const SMS_GATEWAY_DEVICE_ID = '104720';
 const SMS_GATEWAY_DEVICE_NAME = 'blu';
 const SMS_GATEWAY_DEVICE_PHONE_NUM = '+233547468603';
 const SMS_GATEWAY_API_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTUyNjA2OTI2OCwiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjQ1OTU3LCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.9YUK41Yb_ghaErrbBsfU7Pj_J57jrfOum-5AJI-yBOo';
-const INTRANET = 'http://intranet.arlgh.com';
+const INTRANET = 'https://intranet.arlgh.com';
 const DFF = 'd-m-Y'; //date format for front-end
 const DFB = 'Y-m-d'; //date format for back-end
 const DFF_DT = 'd-m-Y h:i a';
@@ -125,7 +125,11 @@ const ACTION_ADDITIONAL_FILE_UPLOADED = 'additional file uploaded';
 const ACTION_RISK_ASSESSMENT_DOCUMENT_UPLOADED = 'risk assessment document uploaded';
 const ACTION_PROJECT_DOCUMENT_UPLOADED = 'project document uploaded';
 const SUBJECT_MANAGER_CHANGED = 'CMS Manager Changed';
-const ROLE_MANAGER = 'Manager';
+const ROLE_SITE_MANAGEMENT = 'Site Management';
+const ROLE_MANAGEMENT = 'Management';
+const ROLE_SUPERVISORS = 'Supervisors';
+const ROLE_SENIOR_SUPERVISORS = 'Senior Supervisors';
+const ROLE_ADMINISTRATION = 'Administration';
 const ROLE_SUPERINTENDENT = 'Superintendent';
 
 define('STATE', [

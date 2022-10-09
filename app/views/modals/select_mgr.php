@@ -26,10 +26,10 @@ $user = getUserSession();
 
                             <?php
                             $department_id = getUserSession()->department_id;
-                            $members = getDepartmentMembers($department_id);
+                            $members = getDepartmentMembersWithRole($department_id, [ROLE_SENIOR_SUPERVISORS, ROLE_MANAGEMENT, ROLE_SITE_MANAGEMENT]);
                             $current_mgr = getCurrentManager($department_id);
                             if (isset($current_mgr)) {
-                                echo "<label class='w-100 text-center'><label class='badge badge-outline-success' for=\"current_mgr\">Current Manager <i>(" . concatNameWithUserId($current_mgr) . ")</i>  </label></label> ";
+                                echo "<label class='w-100 text-center'><label class='badge badge-outline-success' for=\"current_mgr\">Current Manager <i>(" . getFullName($current_mgr) . ")</i>  </label></label> ";
                             }
                             ?>
                         </div>
@@ -60,7 +60,7 @@ $user = getUserSession();
                                         foreach ($members as $member) { ?>
                                             <option value="<?php echo $member->user_id ?>" <?php if ($current_mgr === $member->user_id) {
                                                 echo 'selected';
-                                            } ?>><?php echo concatNameWithUserId($member->user_id); ?></option>
+                                            } ?>><?php echo getFullName($member->user_id); ?></option>
                                         <?php }
                                         ?>
                                     </select>

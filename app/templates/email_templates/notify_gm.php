@@ -8,6 +8,6 @@
 $echoYou = 'echoYou';
 
 echo <<<heredoc
-Hi $recipient_name, this Change Proposal ($subject) owned by $hod requires your approval as GM.
+Change Proposal ($subject) owned by $hod requires your approval as GM.
 Click this link for more details: <a href="$link">$link</a>
 heredoc;

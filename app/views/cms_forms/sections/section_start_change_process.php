@@ -6,6 +6,7 @@
                 <?php echo echoCompleted(); ?>
             </a>
             <span class="mx-2"></span>
+            <?php if($payload['form']->additional_info){ ?>
             <a
                     href="<?php /** @var array $payload */
                     echo URL_ROOT . '/cms-forms/download-additional-info/' . $payload['form']->cms_form_id; ?>"
@@ -14,6 +15,7 @@
                     class="">
                 <span class="text-sm badge badge-success"> <i class="fa fa-file-download"></i> Download Attached Documents</span>
             </a>
+            <?php } ?>
             <?php
             if (canUploadFile($payload['form']->cms_form_id)) { ?>
                 <span class="mx-2"></span>
@@ -21,10 +23,10 @@
                         data-toggle="modal"
                         href="#uploadAddDoc"
                         target="_blank"
-                        title="Upload More Documents"
+                        title="Upload Documents"
                         class="">
                     <span class="text-sm badge badge-info"> <i
-                                class="fa fa-file-upload"></i> Upload More Documents</span>
+                                class="fa fa-file-upload"></i> Upload Documents</span>
                 </a>
             <?php }
             ?>
