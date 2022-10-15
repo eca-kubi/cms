@@ -10,7 +10,7 @@
     "alexistm/simple-json-php": "^5.0",
     "ext-zip": "*",
     "tecnickcom/tcpdf": "^6.2",
-    "mpdf/mpdf": "^8.0"
+    "vlucas/phpdotenv": "^5.4"
   },
   "repositories": [
     {

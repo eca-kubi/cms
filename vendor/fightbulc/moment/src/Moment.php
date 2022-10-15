@@ -88,7 +88,7 @@ class Moment extends \DateTime
      * @param null|\DateTimeZone    $timezone optional timezone to parse the string with
      * @param null|FormatsInterface $formatsInterface optional interface to use for {@see $format}.
      *
-     * @return static
+     * @return static|false         Returns a new Moment instance or FALSE on failure.
      * @throws MomentException
      */
     public static function createFromFormat($format, $time, $timezone = null, FormatsInterface $formatsInterface = null)
@@ -109,6 +109,11 @@ class Moment extends \DateTime
         $date = $timezone ?
             parent::createFromFormat($format, $time, $timezone) :
             parent::createFromFormat($format, $time);
+
+        if ($date === false)
+        {
+            return false;
+        }
 
         return static::fromDateTime($date);
     }
@@ -760,7 +765,7 @@ class Moment extends \DateTime
      *
      * @return Moment
      */
-    private function addTime($type = 'day', $value = 1)
+    protected function addTime($type = 'day', $value = 1)
     {
         if ($this->immutableMode)
         {
@@ -1223,7 +1228,7 @@ class Moment extends \DateTime
      *
      * @return Moment
      */
-    private function setRawDateTimeString($rawDateTimeString)
+    protected function setRawDateTimeString($rawDateTimeString)
     {
         if ($this->immutableMode)
         {
@@ -1248,7 +1253,7 @@ class Moment extends \DateTime
      *
      * @return Moment
      */
-    private function setTimezoneString($timezoneString)
+    protected function setTimezoneString($timezoneString)
     {
         if ($this->immutableMode)
         {
@@ -1364,6 +1369,12 @@ class Moment extends \DateTime
             }
         }
 
+        // raw timestamp
+        elseif (strpos($rawDateTime, '@') === 0)
+        {
+            $momentDateTime = '@' . $this->format('U');
+        }
+
         // without time
         else
         {
@@ -1400,7 +1411,7 @@ class Moment extends \DateTime
      *
      * @return Moment
      */
-    private function subtractTime($type = 'day', $value = 1)
+    protected function subtractTime($type = 'day', $value = 1)
     {
         if ($this->immutableMode)
         {
