@@ -187,7 +187,7 @@
                     </ul>
                 </li>
                 <?php
-                if ($user->can_change_dept_mgr || $user->can_change_gm) { ?>
+                if (canChangeDeptMgr() || canChangeGM()) { ?>
                     <li class="nav-item dropdown fa  mx-2">
                         <a class="nav-link dropdown-item dropdown-toggle btn border-0 text-bold flat"
                            data-toggle="dropdown">
@@ -199,14 +199,14 @@
                                     <a class="dropdown-item" data-toggle="modal"
                                        href="#changeManager"><?php echo getDepartment($user->user_id) ?> Manager</a></li>
                             <?php
-                            if ($user->can_change_dept_mgr) { ?>
+                            if (isITAdmin($user->user_id)) { ?>
                                 <li class="dropdown-divider"></li>
                                 <li><a href="<?php echo site_url('cms-forms/department-managers'); ?>"
                                        class="dropdown-item">All Managers</a></li>
                             <?php }
                             ?>
                             <?php
-                            if ($user->can_change_gm) { ?>
+                            if (canChangeGM()) { ?>
                                 <li class="dropdown-divider"></li>
                                 <li><!--suppress HtmlUnknownAnchorTarget -->
                                     <a href="#changeGM" data-toggle="modal" class="dropdown-item">GM</a></li>

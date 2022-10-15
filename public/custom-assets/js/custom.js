@@ -128,7 +128,8 @@ $(document).ready(function () {
             liveSearch: true,
             virtualization: true,
             showTick: false,
-            showContent: false
+            showContent: false,
+            size: 200
         })
         .on('loaded.bs.select show.bs.select', function () {
             $('.replace-multiple-select').remove();

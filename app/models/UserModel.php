@@ -69,7 +69,7 @@ class UserModel extends Model
     /**
      * Summary of getUser
      * @param mixed $user_id
-     * @return object|false
+     * @return object|UserModel|false
      */
     public function getUser(int $user_id)
     {

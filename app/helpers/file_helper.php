@@ -125,9 +125,10 @@ function uploadCSV($table)
     return $result;
 }
 
-function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
+function uploadFile($path = PATH_ADDITIONAL_INFO): array
 {
-    $cms = new CMSFormModel($cms_form_id);
+    $file = 'file';
+//    $cms = new CMSFormModel($cms_form_id);
 
     $result = array();
     $result['success'] = false;
@@ -142,7 +143,7 @@ function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
             $temp = explode('.', $_FILES[$file]['name'][$key]);
             $extension = end($temp);
             if ($_FILES[$file]['size'][$key] > 0) {
-                $filename = str_replace(',', '', $_FILES[$file]['name'][$key]);
+                $filename = str_replace(',', '', $_FILES[$file]['name'][$key]); // Remove commas in file names because file names would be concatenated using comma
                 $filetype = $_FILES[$file]['type'][$key];
                 $file_error = $_FILES[$file]['error'][$key];
                 if ((($filetype == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
@@ -152,10 +153,11 @@ function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
                         || ($filetype == 'text/plain')
                     )
                     || in_array($extension, $allowedExts)) {
-                    if ($file_error > 0) {
+                    if ($file_error) {
                         $result['success'] = false;
-                        $result['reason'] = $_FILES['file']['error'] . '<br>';
+                        $result['reason'] = $file_error . '(' . $filename . ')';
                     } else {
+                        //$ref = getDeptRef(getUserSession()->department_id);
                         /*$ref = $cms->getHodRefNum();
                         if (empty($ref)) {
                             $db_file = getDeptRef(getUserSession()->department_id) . "_$file_count.$extension";
@@ -163,26 +165,27 @@ function uploadFile($file, $cms_form_id, $path = PATH_ADDITIONAL_INFO)
                             $db_file = $ref . "_$file_count.$extension";
                         }*/
                         //$db_file = 'c_' . $cms_form_id . '_u_' . getUserSession()->user_id . "_k_$key." . $extension;
-                        $dir = $path . "$cms_form_id\\";
-                        if (!file_exists($dir)) {
-                            mkdir($dir, 0777, true);
+
+                        //$dir = $path . "$ref\\";
+                        if (!file_exists($path)) {
+                            mkdir($path, 0777, true);
                         }
-                        $result['success'] = move_uploaded_file($_FILES[$file]['tmp_name'][$key], $dir . "$filename");
+                        $result['success'] = move_uploaded_file($_FILES[$file]['tmp_name'][$key], $path . "\\$filename");
                         $result['file'] = trim($result['file'] . ',' . $filename, ',');
                         if (!$result['success']) {
-                            $result['reason'] = 'An error occurred while uploading file!';
+                            $result['reason'] = 'An error occurred while uploading the file: ' . $filename;
                             return $result;
-                        }/* else {
-                            $file_count = $file_count + 1;
-                        }*/
+                        }
                     }
                 } else {
-                    $result['reason'] = 'Please upload a risk assessment document in word, pdf, txt, or any Microsoft Office-Supported format (xlsx, csv...)!';
+                    $result['reason'] = 'The document format is unsupported. Please upload a document in word, pdf, txt, or any Microsoft Office-Supported format (xlsx, csv...)!';
                 }
             } else {
                 $result['success'] = true;
             }
         }
+    } else {
+        $result['reason'] = 'An error has prevented the document from being uploaded.';
     }
     return $result;
 }

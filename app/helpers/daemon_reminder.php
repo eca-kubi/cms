@@ -46,7 +46,7 @@ while (true) {
                 $subject = genEmailSubject($cms_form_id);
                 $hods = getHodsWithCurrent($dept_id);
                 foreach ($hods as $hod) {
-                    $recipient_name = concatNameWithUserId($hod->user_id);
+                    $recipient_name = getFullName($hod->user_id);
                     $message['department'] = $department->department;
                     $message['recipient'] = $recipient_name;
                     $message['link'] = site_url("cms-forms/view-change-process/$cms_form_id");

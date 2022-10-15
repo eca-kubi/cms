@@ -248,8 +248,8 @@ $user = getUserSession();
                                                 <div class="col-sm-8 form-group">
                                                     <div class="input-group">
                                                         <input accept="<?php echo DOC_FILE_TYPES; ?>"
-                                                               class="form-control" name="additional_info[]"
-                                                               required type="file"/>
+                                                               class="form-control" name="file[]"
+                                                                type="file"/>
                                                         <div class="input-group-append cursor-pointer"
                                                              title="Click to add more files.">
                                                             <div class="input-group-text add-input"><i
@@ -350,7 +350,7 @@ $user = getUserSession();
                                                 </label>
                                                 <div class="col-sm-8">
                                                     <input class="form-control" id="hod" name="hod" readonly type="text"
-                                                           value="<?php echo concatNameWithUserId($hod) ?>"
+                                                           value="<?php echo getFullName($hod) ?>"
                                                            data-validate="true" required>
                                                     <input type="hidden" id="hod_id" name="hod_id"
                                                            value="<?php echo $hod ?>">

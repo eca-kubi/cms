@@ -63,7 +63,7 @@ if (sectionCompleted($payload['form']->cms_form_id, SECTION_GM_ASSESSMENT)) {
                                                 <?php
                                                 foreach ($payload['department_members'] as $department_member) { ?>
                                                     <option value="<?php echo $department_member->user_id; ?>">
-                                                        <?php echo concatNameWithUserId($department_member->user_id) .
+                                                        <?php echo getFullName($department_member->user_id) .
                                                             " ($department_member->job_title)";
                                                         ?>
                                                     </option>

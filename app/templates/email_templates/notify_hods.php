@@ -11,8 +11,7 @@ $you_they = array(
     'they' => $originator
 );
 echo <<<heredoc
-Hi $recipient_name,
-your input is required to complete the impact assessment for your department ($recipient_department) 
-for this Change Implementation Procedure ($subject) raised by {$echoYou($you_they, $user_id)}. <br>
+Your input is required to complete the impact assessment for your department ($recipient_department) 
+for this Change Implementation Procedure ($subject) raised by {$echoYou($you_they, $originator_id)}. <br>
 Click this link for details: <a href="$link">$link</a>
 heredoc;

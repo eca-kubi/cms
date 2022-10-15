@@ -259,17 +259,17 @@
     },
     {
         "name": "myclabs/deep-copy",
-        "version": "1.8.1",
-        "version_normalized": "1.8.1.0",
+        "version": "1.9.1",
+        "version_normalized": "1.9.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/myclabs/DeepCopy.git",
-            "reference": "3e01bdad3e18354c3dce54466b7fbe33a9f9f7f8"
+            "reference": "e6828efaba2c9b79f4499dae1d66ef8bfa7b2b72"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/3e01bdad3e18354c3dce54466b7fbe33a9f9f7f8",
-            "reference": "3e01bdad3e18354c3dce54466b7fbe33a9f9f7f8",
+            "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/e6828efaba2c9b79f4499dae1d66ef8bfa7b2b72",
+            "reference": "e6828efaba2c9b79f4499dae1d66ef8bfa7b2b72",
             "shasum": ""
         },
         "require": {
@@ -283,7 +283,7 @@
             "doctrine/common": "^2.6",
             "phpunit/phpunit": "^7.1"
         },
-        "time": "2018-06-11T23:09:50+00:00",
+        "time": "2019-04-07T13:18:21+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -666,17 +666,17 @@
     },
     {
         "name": "respect/validation",
-        "version": "1.1.29",
-        "version_normalized": "1.1.29.0",
+        "version": "1.1.30",
+        "version_normalized": "1.1.30.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Respect/Validation.git",
-            "reference": "f8c90fa36859ca41c766efcf0c476d58913a7767"
+            "reference": "9bafee191d9c560827105a849e2b29d8446f0f6f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Respect/Validation/zipball/f8c90fa36859ca41c766efcf0c476d58913a7767",
-            "reference": "f8c90fa36859ca41c766efcf0c476d58913a7767",
+            "url": "https://api.github.com/repos/Respect/Validation/zipball/9bafee191d9c560827105a849e2b29d8446f0f6f",
+            "reference": "9bafee191d9c560827105a849e2b29d8446f0f6f",
             "shasum": ""
         },
         "require": {
@@ -686,7 +686,7 @@
         "require-dev": {
             "egulias/email-validator": "~1.2 || ~2.1",
             "mikey179/vfsstream": "^1.5",
-            "phpunit/phpunit": "~4.0",
+            "phpunit/phpunit": "~4.0 || ~5.0",
             "symfony/validator": "~2.6.9",
             "zendframework/zend-validator": "~2.3"
         },
@@ -698,7 +698,7 @@
             "symfony/validator": "Use Symfony validator through Respect\\Validation",
             "zendframework/zend-validator": "Use Zend Framework validator through Respect\\Validation"
         },
-        "time": "2018-11-04T21:58:45+00:00",
+        "time": "2019-03-31T13:27:49+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -839,17 +839,17 @@
     },
     {
         "name": "symfony/polyfill-mbstring",
-        "version": "v1.10.0",
-        "version_normalized": "1.10.0.0",
+        "version": "v1.11.0",
+        "version_normalized": "1.11.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-mbstring.git",
-            "reference": "c79c051f5b3a46be09205c73b80b346e4153e494"
+            "reference": "fe5e94c604826c35a32fa832f35bd036b6799609"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/c79c051f5b3a46be09205c73b80b346e4153e494",
-            "reference": "c79c051f5b3a46be09205c73b80b346e4153e494",
+            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/fe5e94c604826c35a32fa832f35bd036b6799609",
+            "reference": "fe5e94c604826c35a32fa832f35bd036b6799609",
             "shasum": ""
         },
         "require": {
@@ -858,11 +858,11 @@
         "suggest": {
             "ext-mbstring": "For best performance"
         },
-        "time": "2018-09-21T13:07:52+00:00",
+        "time": "2019-02-06T07:57:58+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.9-dev"
+                "dev-master": "1.11-dev"
             }
         },
         "installation-source": "dist",

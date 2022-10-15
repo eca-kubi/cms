@@ -1,9 +1,10 @@
-<?php require_once APP_ROOT . '\views\includes\header.php'; ?>
-<?php require_once APP_ROOT . '\views\includes\navbar.php'; ?>
-<?php require_once APP_ROOT . '\views\includes\sidebar.php'; ?>
 <?php
-$user = getUserSession();
+require_once APP_ROOT . '\views\includes\header.php';
+require_once APP_ROOT . '\views\includes\navbar.php';
+require_once APP_ROOT . '\views\includes\sidebar.php';
 ?>
+
+<?php $user = getUserSession(); ?>
     <!-- .content-wrapper -->
     <div class="content-wrapper animated fadeInRight" style="margin-top: <?php echo NAVBAR_MT; ?>">
         <!-- .content-header-->
@@ -68,7 +69,7 @@ $user = getUserSession();
                             $departments = (new DepartmentModel())->getAllDepartments();
                             foreach ($departments as $department) {
                                 $current_mgr = getCurrentManager($department->department_id);
-                                $members = getDepartmentMembers($department->department_id);
+                                $members = getDepartmentMembersWithRole($department->department_id, [ROLE_SITE_MANAGEMENT, ROLE_MANAGEMENT, ROLE_SENIOR_SUPERVISORS]);
                                 ?>
                                 <tr>
                                     <td><?php echo $department->department; ?></td>
@@ -80,17 +81,14 @@ $user = getUserSession();
                                             <option class="d-none"></option>
                                             <?php
                                             foreach ($members as $member) { ?>
-                                                <option value="<?php echo $member->user_id ?>" <?php if ($current_mgr === $member->user_id) {
-                                                    echo 'selected';
-                                                } ?>><?php echo concatNameWithUserId($member->user_id); ?></option>
-                                            <?php }
-                                            ?>}
-                                            ?>
+                                                <option value="<?php echo $member->user_id ?>"   <?php if ($current_mgr === $member->user_id) echo 'selected'; ?>>
+                                                    <?php echo getFullName($member->user_id); ?>
+                                                </option>
+                                            <?php } ?>
                                         </select>
                                     </td>
                                 </tr>
-                            <?php }
-                            ?>
+                            <?php } ?>
                             <tr class="text-right">
                                 <td colspan="2"><input class="btn btn-outline-success" type="submit" value="Submit">
                                 </td>

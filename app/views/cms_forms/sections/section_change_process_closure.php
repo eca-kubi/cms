@@ -52,7 +52,7 @@ heredoc;
                                                            id="project_leader_close_change"
                                                            value="<?php echo STATUS_CLOSED ?>" required/>
                                                     <label class="form-check-label"
-                                                           for="project_leader_close_change">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
+                                                           for="project_leader_close_change">I <?php echo getFullName(getUserSession()->user_id) ?>
                                                         -the Project Leader
                                                         for this Project- certify that all issues raised have been
                                                         addressed and the project has been implemented
@@ -69,7 +69,7 @@ heredoc;
                                             <span>
                                             <a class="btn small badge badge-success"
                                                onclick="$(this).siblings('#close').click();"
-                                               href="javascript:">Close</a>
+                                               href="javascript:">Close this Change Process</a>
                                         <b class="small"> <== Click this button to close this change process </b>
                                         <input type="submit" class="d-none" value="Close" id="close">
                                         </span>
@@ -93,7 +93,7 @@ heredoc;
                             <td class="text-justify" colspan="2">
                                 <div class="col-sm-12 p-0">
                                     <b class="text-bold">Closed
-                                        by: </b><?php echo concatNameWithUserId($payload['action_log'][ACTION_PL_CLOSURE]->performed_by) ?>
+                                        by: </b><?php echo getFullName($payload['action_log'][ACTION_PL_CLOSURE]->performed_by) ?>
                                     (Project Leader)
                                     on <?php echo returnDate($payload['form']->project_leader_close_change, true); ?>
                                 </div>
@@ -125,7 +125,7 @@ heredoc;
                                                            name="originator_close_change" id="originator_close_change"
                                                            value="<?php echo STATUS_CLOSED ?>" required>
                                                     <label class="form-check-label"
-                                                           for="originator_close_change">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
+                                                           for="originator_close_change">I <?php echo getFullName(getUserSession()->user_id) ?>
                                                         -the Originator
                                                         of this Project- certify that the project implementation is
                                                         successful.
@@ -142,7 +142,7 @@ heredoc;
                                                 <input type="submit" class="d-none" value="Close" id="close">
                                                 <a class="btn small badge badge-success"
                                                    onclick="$(this).siblings('#close').click();"
-                                                   href="javascript:">Close</a>
+                                                   href="javascript:">Close this Change Process</a>
                                                 <b class="small"> <== Click this button to close this change process </b>
                                             </span>
                                         </form>
@@ -163,7 +163,7 @@ heredoc;
                             <td class="text-justify" colspan="2">
                                 <div class="col-sm-12 p-0">
                                     <b class="text-bold">Closed
-                                        by: </b><?php echo concatNameWithUserId($payload['action_log'][ACTION_ORIGINATOR_CLOSURE]->performed_by) ?>
+                                        by: </b><?php echo getFullName($payload['action_log'][ACTION_ORIGINATOR_CLOSURE]->performed_by) ?>
                                     (Originator)
                                     on <?php echo returnDate($payload['form']->originator_close_change, true); ?>
                                 </div>
@@ -192,7 +192,7 @@ heredoc;
                                                        id="hod_close_change" value="<?php echo STATUS_CLOSED ?>"
                                                        required/>
                                                 <label class="form-check-label"
-                                                       for="hod_close_change">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
+                                                       for="hod_close_change">I <?php echo getFullName(getUserSession()->user_id) ?>
                                                     -the Owner
                                                     of this Project- certify the project has been implemented
                                                     successfully.
@@ -208,7 +208,7 @@ heredoc;
                                         <span>
                                             <a class="btn small badge badge-success"
                                                onclick="$(this).siblings('#close').click();"
-                                               href="javascript:">Close</a>
+                                               href="javascript:">Close this Change Process</a>
                                             <b class="small"> <== Click this button to close this change process </b>
                                             <input type="submit" class="d-none" value="Close" id="close">
                                         </span>
@@ -230,7 +230,7 @@ heredoc;
                         <tr>
                             <td class="text-justify" colspan="2" style="width:100%">
                                 <div class="col-sm-12 p-0">
-                                    <span class="text-bold">Closed by: </span> <?php echo concatNameWithUserId($payload['action_log'][ACTION_HOD_CLOSURE]->performed_by) ?>
+                                    <span class="text-bold">Closed by: </span> <?php echo getFullName($payload['action_log'][ACTION_HOD_CLOSURE]->performed_by) ?>
                                     (HoD)
                                     on <?php echo returnDate($payload['form']->hod_close_change, true); ?>.
                                 </div>
@@ -275,7 +275,7 @@ heredoc;
                                                                id="project_leader_close_change2"
                                                                value="<?php echo STATUS_CLOSED ?>" required/>
                                                         <label class="form-check-label text-justify"
-                                                               for="project_leader_close_change2">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
+                                                               for="project_leader_close_change2">I <?php echo getFullName(getUserSession()->user_id) ?>
                                                             - the Project Leader
                                                             of this Project- certify that all issues raised have been
                                                             addressed and the project has been implemented
@@ -300,7 +300,7 @@ heredoc;
                             <td class="text-justify" colspan="2">
                                 <div class="col-sm-12">
                                     <b class="text-bold">Closed
-                                        by: </b><?php echo concatNameWithUserId($payload['action_log'][ACTION_PL_CLOSURE]->performed_by) ?>
+                                        by: </b><?php echo getFullName($payload['action_log'][ACTION_PL_CLOSURE]->performed_by) ?>
                                     (Project Leader)
                                     on <?php echo returnDate($payload['form']->project_leader_close_change, true); ?>
                                 </div>
@@ -332,7 +332,7 @@ heredoc;
                                                                id="originator_close_change2"
                                                                value="<?php echo STATUS_CLOSED ?>" required/>
                                                         <label class="form-check-label text-justify"
-                                                               for="originator_close_change2">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
+                                                               for="originator_close_change2">I <?php echo getFullName(getUserSession()->user_id) ?>
                                                             -the Originator
                                                             of this Project- certify that the project implementation is
                                                             successful.</label>
@@ -356,7 +356,7 @@ heredoc;
                             <td class="text-justify" colspan="2">
                                 <div class="col-sm-12">
                                     <b class="text-bold">Closed
-                                        by: </b><?php echo concatNameWithUserId($payload['action_log'][ACTION_ORIGINATOR_CLOSURE]->performed_by) ?>
+                                        by: </b><?php echo getFullName($payload['action_log'][ACTION_ORIGINATOR_CLOSURE]->performed_by) ?>
                                     (Originator)
                                     on <?php echo returnDate($payload['form']->originator_close_change, true); ?>
                                 </div>
@@ -387,7 +387,7 @@ heredoc;
                                                                id="hod_close_change2"
                                                                value="<?php echo STATUS_CLOSED ?>" required/>
                                                         <label class="form-check-label text-justify"
-                                                               for="hod_close_change2">I <?php echo concatNameWithUserId(getUserSession()->user_id) ?>
+                                                               for="hod_close_change2">I <?php echo getFullName(getUserSession()->user_id) ?>
                                                             -the Owner
                                                             of this Project- certify the project has been implemented
                                                             successfully.</label>
@@ -409,7 +409,7 @@ heredoc;
                         <tr>
                             <td class="text-justify" colspan="2">
                                 <div class="col-sm-12">
-                                    <span class="text-bold">Closed by: </span> <?php echo concatNameWithUserId($payload['action_log'][ACTION_HOD_CLOSURE]->performed_by) ?>
+                                    <span class="text-bold">Closed by: </span> <?php echo getFullName($payload['action_log'][ACTION_HOD_CLOSURE]->performed_by) ?>
                                     (HoD)
                                     on <?php echo returnDate($payload['form']->hod_close_change, true); ?>.
                                 </div>

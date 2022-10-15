@@ -315,14 +315,14 @@ function notifyAllHODs($cms_form_id)
     $data['subject'] = genEmailSubject($cms_form_id);
     $data['link'] = site_url("cms-forms/view-change-process/$cms_form_id");
     $data['originator'] = getNameJobTitleAndDepartment($form_model->originator_id);
+    $data['originator_id'] = $form_model->originator_id;
     insertEmailBulk('email_templates/notify_hods', $current_managers, $data);
 }
 
 function getManagers(): array
 {
     $db = Database::getDbh();
-    return $db->where('role', ROLE_MANAGER)
-        ->orWhere('role', ROLE_SUPERINTENDENT)
+    return $db->where('role', ROLE_MANAGEMENT)
         ->objectBuilder()
         ->get('users');
 }
@@ -387,23 +387,18 @@ function getGms()
 {
     $result = [];
     $managers = Database::getDbh()
-        ->where('staff_category', 'Management')
+        ->where('role', ROLE_SITE_MANAGEMENT)
+        ->orderBy('user_role_level')
+        ->orderBy('first_name', 'asc')
         ->objectBuilder()
         ->get('users');
-    foreach ($managers as $manager) {
-        if (in_array($manager->job_title, GMs)) {
-            $result[] = $manager;
-        }
-    }
-    return $result;
+
+    return $managers;
 }
 
 function getHSEManagers()
 {
-    return Database::getDbh()->where('staff_category', 'Management')
-        ->where('department_id', HSE_DEPARTMENT_ID)
-        ->objectBuilder()
-        ->get('users');
+    return getDepartmentMembersWithRole(HSE_DEPARTMENT_ID, [ROLE_MANAGEMENT]);
 }
 
 function getOriginatorId($cms_form_id)
@@ -501,6 +496,26 @@ function canAssessImpactForDept($department_id)
     /*$u = (new User(getUserSession()->user_id));
     return (($u->department_id == $department_id) && $u->can_assess_impact);*/
     return getCurrentManager($department_id) === getUserSession()->user_id;
+}
+
+function canChangeDeptMgr(){
+
+    return Database::getDbh()->where('user_id', getUserSession()->user_id)
+        ->where('can_change_dept_mgr', 1)
+        ->getValue('users', 'can_change_dept_mgr');
+
+}
+
+function canChangeGM(){
+
+    return Database::getDbh()->where('user_id', getUserSession()->user_id)
+        ->where('can_change_gm', 1)
+        ->getValue('users', 'can_change_gm');
+}
+
+function isITAdmin($user_id): bool
+{
+    return Database::getDbh()->where('user_id', $user_id)->getValue('users', 'is_it_admin');
 }
 
 function populateImpactResponse(array $affected_depts, $cms_form_id)
@@ -645,7 +660,7 @@ function concatName(array $parts, $capitalize = true)
     return $full_name;
 }
 
-function concatNameWithUserId($user_id)
+function getFullName($user_id) : string
 {
     if (empty($user_id)) {
         return "";
@@ -723,7 +738,7 @@ function getDepartmentHod($department_id)
 {
     $db = Database::getDbh();
     $ret = $db->where('department_id', $department_id)
-        ->where('role', ROLE_MANAGER)
+        ->where('role', ROLE_MANAGEMENT)
         ->objectBuilder()
         ->getOne('users');
     return $ret;
@@ -735,8 +750,15 @@ function getCurrentManager($department_id)
     return $db->where('department_id', $department_id)->getValue('departments', 'current_manager');
 }
 
+/**
+ * @deprecated
+ * @param $department_id
+ * @return array
+ */
 function getHodsWithCurrent($department_id)
 {
+    trigger_error('Method ' . __METHOD__ . ' is deprecated. Please use getDepartmentMembersWithRole instead.', E_USER_DEPRECATED);
+
     $mgrs = [];
     $current_mgr_id = getCurrentManager($department_id);
     if ($current_mgr_id) {
@@ -753,7 +775,7 @@ function isDepartmentManager($department_id, $user_id)
 {
     $db = Database::getDbh();
     $is_dept_mgr = $db->where('department_id', $department_id)
-        ->where('role', ROLE_MANAGER)
+        ->where('role', ROLE_MANAGEMENT)
         ->where('user_id', $user_id)
         ->has('users');
     return $is_dept_mgr;
@@ -799,12 +821,14 @@ function echoInComplete($append = '')
 function insertEmail($subject, $body, $recipient_address, $recipient_name)
 {
     $email_model = new EmailModel();
+    // Apply template
+    $body = get_include_contents('email_templates/main', ['recipient_name'=>$recipient_name, 'body' => $body, 'subject' => $subject]);
+
     return $email_model->add([
         'subject' => $subject,
-        'body' => $body,
+        'content' => $body,
         'recipient_address' => $recipient_address,
-        'recipient_name' => $recipient_name,
-        //'sender_user_id' => getUserSession()->user_id
+        'recipient_name' => $recipient_name
     ]);
 }
 
@@ -888,7 +912,7 @@ function getJobTitle($user_id)
 function getNameJobTitleAndDepartment($user_id)
 {
     $user = new User($user_id);
-    return concatNameWithUserId($user_id) .
+    return getFullName($user_id) .
         " - " . $user->job_title . " @ " .
         getDepartment($user_id);
 }
@@ -922,11 +946,13 @@ function getDeptRef($department_id)
 {
     $db = Database::getDbh();
     $ref = '';
-    $ret = $db->where('department_id', $department_id)
-        ->get('cms_form');
+    $count = $db->where('department_id', $department_id)
+        ->getValue("cms_form", "count(department_id)");
+//    $ret = $db->where('department_id', $department_id)
+//        ->get('cms_form');
     $department = new Department($department_id);
     $short_name = $department->short_name;
-    $count = count($ret) + 1 . "";
+    $count = ($count + 1 ). "";
     $char_count = strlen($count);
     if ($char_count === 1) {
         $ref = '00' . $count;
@@ -1013,6 +1039,23 @@ function getDepartmentMembers($department_id)
     return $db->where('department_id', $department_id)
         ->objectBuilder()
         ->get('users');
+}
+
+/**
+ * @param $department_id
+ * @param array $role
+ * @return array|User[]
+ * @throws Exception
+ */
+function getDepartmentMembersWithRole($department_id, array $role)
+{
+    $db = Database::getDbh();
+    $members = $db->where('department_id', $department_id)
+        ->where('role', $role, 'IN')
+        ->orderBy('user_role_level')
+        ->objectBuilder()
+        ->get('users');
+    return $members;
 }
 
 function script($content)
@@ -1171,9 +1214,10 @@ function array_unique_multidim_array($array, $key)
 function insertEmailBulk($template_file, $recipients, $data)
 {
     foreach ($recipients as $recipient) {
-        $recipient = (array)$recipient;
-        $recipient_name = concatNameWithUserId($recipient['user_id']);
+        $recipient = (array)$recipient; // Convert to array incase it is an stdClass. Todo: Check if it is already an array.
+        $recipient_name = getFullName($recipient['user_id']);
         $recipient_department = getDepartment($recipient['user_id']);
+        $data['recipient_first_name'] = $recipient['first_name'];
         $data['recipient_name'] = $recipient_name;
         $data['recipient_department'] = $recipient_department;
         $data['user_id'] = $recipient['user_id'];
@@ -1189,7 +1233,6 @@ function prepPostData($section, $cms_form_id = '')
     $current_user = getUserSession();
     $form_model = new CMSFormModel();
     if ($section === SECTION_START_CHANGE_PROCESS) {
-        $form_model = new CMSFormModel();
         $form_model->change_description = $_POST['change_description'];
         $form_model->advantages = $_POST['advantages'];
         $form_model->alternatives = $_POST['alternatives'];
@@ -1209,10 +1252,10 @@ function prepPostData($section, $cms_form_id = '')
         $form_model->hod_ref_num = getDeptRef($current_user->department_id);
         $form_model->department_id = $current_user->department_id;
         $form_model->title = $_POST['title'];
-        // upload additional info
         $form_model->hod_id = $_POST['hod_id'];
     } elseif ($section === SECTION_HOD_ASSESSMENT) {
         $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
+        $form_model->hod_id = getCurrentManager($form_model->department_id);
         $form_model->hod_approval = $_POST['hod_approval'];
         $form_model->hod_reasons = $_POST['hod_reasons'];
         if ($form_model->hod_approval == STATUS_REJECTED) {

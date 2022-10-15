@@ -73,7 +73,7 @@ class Users extends Controller
                     $reset_link = site_url("users/reset-password/$md5_email/$pass");
                     $link = "<a href='$reset_link'>Click To Reset password</a>";
                     $data['title'] = 'Password Reset';
-                    $recipient = concatNameWithUserId($ret['user_id']);
+                    $recipient = getFullName($ret['user_id']);
                     $subject = 'Change Management System [Password Reset]';
                     $body = 'Hello ' . $recipient . ', ' . HTML_NEW_LINE .
                         'If you have requested to change your password kindly use this link below to do so; else ignore this message.' . HTML_NEW_LINE .
@@ -174,7 +174,7 @@ class Users extends Controller
                             setActionLog([
                                 'action' => ACTION_PASSWORD_RESET,
                                 'performed_by' => $user_id,
-                                'remarks' => 'Password reset by ' . concatNameWithUserId($user_id)
+                                'remarks' => 'Password reset by ' . getFullName($user_id)
                             ]);
                             redirect('users/login');
                         }

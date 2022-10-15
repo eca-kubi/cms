@@ -243,7 +243,7 @@ body {
                                         <div class="col-sm-12">
                                             <input type="text" id="staff_id" name="staff_id"
                                                    class="<?php //echo !empty($payload['post']->staff_id_err)? 'border-danger-4': '' ?>"
-                                                   placeholder="STAFF ID" aria-describedby="helpId"
+                                                   placeholder="USER ID" aria-describedby="helpId"
                                                    value="<?php echo !empty($payload['post']->staff_id)? $payload['post']->staff_id: '' ?>" required />
                                             <small class="with-errors help-block d-block">
                                                 <?php //echo isset($payload['post']->staff_id_err)? $payload['post']->staff_id_err: '' ?>

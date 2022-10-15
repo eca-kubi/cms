@@ -7,6 +7,6 @@
  */
 $echoYou = 'echoYou';
 echo <<<heredoc
-Hi $recipient_name, GM ($performed_by) has $approval_status your Change Proposal ($subject). <br>
+GM ($performed_by) has $approval_status your Change Proposal ($subject). <br>
 Click this link for more details: <a href="$link">$link</a>
 heredoc;

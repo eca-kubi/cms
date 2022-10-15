@@ -50,48 +50,43 @@ class CMSForms extends Controller
             redirect('users/login' . '/cms-forms/start-change-process');
         }
         $current_user = getUserSession();
+        if(isCurrentManager($current_user->department_id, $current_user->user_id))  {
+            flash_error('dashboard', 'An HoD cannot initiate a Change Procedure.');
+            redirect('cms-forms');
+        }
         $payload['title'] = 'New Change Proposal Form';
         $payload['ref_num'] = $payload['reference'] = getDeptRef($current_user->department_id);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $form_model = prepPostData(SECTION_START_CHANGE_PROCESS);
+            $result = uploadFile(PATH_ADDITIONAL_INFO. $form_model->hod_ref_num);
+            if ($result['success']) {
+                $form_model->additional_info = $result['file'];
+            } else {
+                flash_error('start-change-process', $result['reason']);
+                redirect('cms-forms/start-change-process/');
+            }
             $cms_form_id = $form_model->insert();
-            if ($cms_form_id) {
-                $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-                $result = uploadFile('additional_info', $cms_form_id, PATH_ADDITIONAL_INFO);
-                $ret = false;
-                if ($result['success']) {
-                    $form_model->additional_info = $result['file'];
-                    $ret = $form_model->updateForm($cms_form_id);
-                } else {
-                    flash_error('start-change-process');
-                    redirect('cms-forms/start-change-process/');
-                }
-                if ($ret) {
-                    flash_success('view-change-process');
-                    $performed_by = concatNameWithUserId($current_user->user_id);
-                    $recipients[] = $current_user;
-                    $hods[] = getCurrentManager($current_user->department_id);
-                    $hse_managers = getHSEManagers();
-                    foreach ($hse_managers as $hse_manager) {
-                        $recipients[] = new User($hse_manager->user_id);
-                    }
-                    $recipients = array_unique_multidim_array($recipients, 'user_id');
-                    $subject = genEmailSubject($cms_form_id);
-                    $data = array(
-                        'subject' => $subject,
-                        'performed_by' => $performed_by,
-                        'link' => site_url("cms-forms/view-change-process/$cms_form_id")
-                    );
-                    insertEmailBulk('email_templates/change_raised', $recipients, $data);
-                    $data['performed_by'] = getNameJobTitleAndDepartment($current_user->user_id);
-                    $remarks = get_include_contents('action_remarks_templates/change_raised', $data);
-                    insertLog($cms_form_id, ACTION_START_CHANGE_PROCESS_COMPLETED, $remarks, $current_user->user_id);
-                    completeSection($cms_form_id, SECTION_START_CHANGE_PROCESS);
-                    redirect('cms-forms/view-change-process/' . $cms_form_id);
-                } else {
-                    flash_error('start_change_process');
-                    redirect('cms-forms/start-change-process/');
-                }
+            if($cms_form_id ){
+                flash_success('view-change-process');
+                $hod = new User(getCurrentManager($current_user->department_id));
+                $hse_managers = getHSEManagers();
+                $recipients = array_merge($hse_managers);
+                $recipients[] = $hod;
+                $recipients[] = $current_user;
+                // Ensure recipients are unique
+                $recipients = array_unique_multidim_array($recipients, 'user_id');
+                $subject = genEmailSubject($cms_form_id);
+                $data = array(
+                    'subject' => $subject,
+                    'performed_by' => getFullName($current_user->user_id),
+                    'link' => site_url("cms-forms/view-change-process/$cms_form_id")
+                );
+                insertEmailBulk('email_templates/change_raised', $recipients, $data);
+                $data['performed_by'] = getNameJobTitleAndDepartment($current_user->user_id);
+                $remarks = get_include_contents('action_remarks_templates/change_raised', $data);
+                insertLog($cms_form_id, ACTION_START_CHANGE_PROCESS_COMPLETED, $remarks, $current_user->user_id);
+                completeSection($cms_form_id, SECTION_START_CHANGE_PROCESS);
+                redirect('cms-forms/view-change-process/' . $cms_form_id);
             }
         }
         $this->view('cms_forms/start_change_process', $payload);
@@ -114,16 +109,16 @@ class CMSForms extends Controller
             $subject = genEmailSubject($cms_form_id);
             $data = array(
                 'subject' => $subject,
-                'performed_by' => concatNameWithUserId($current_user->user_id),
+                'performed_by' => getFullName($current_user->user_id),
                 'link' => $link,
                 'approval_status' => $form_model->hod_approval,
             );
-            $dept_mgr = getDepartmentHod($current_user->department_id);
+            //$dept_mgr = getDepartmentHod($current_user->department_id); // No need the current user is the current hod
+//            if (!empty($dept_mgr)) {
+//                $recipients[] = $dept_mgr;
+//            }
             $recipients[] = new User($form_model->originator_id);
-            $recipients[] = $current_user;
-            if (!empty($dept_mgr)) {
-                $recipients[] = $dept_mgr;
-            }
+            $recipients[] = $current_user; // Current user is the current hod
             $recipients = array_unique_multidim_array($recipients, 'user_id');
             insertEmailBulk('email_templates/hod_assessment', $recipients, $data);
             $data['performed_by'] = getNameJobTitleAndDepartment($current_user->user_id);
@@ -191,16 +186,16 @@ class CMSForms extends Controller
                 //flash_success();
                 $recipients[] = new User(getCurrentManager($form_model->department_id));
                 $recipients[] = new User($form_model->originator_id);
-                $dept_mgr = getDepartmentHod($form_model->department_id);
-                if (!empty($dept_mgr)) {
-                    $recipients[] = $dept_mgr;
-                }
+//                $dept_mgr = getDepartmentHod($form_model->department_id);
+//                if (!empty($dept_mgr)) {
+//                    $recipients[] = $dept_mgr;
+//                }
                 $recipients = array_unique_multidim_array($recipients, 'user_id');
                 $link = site_url("cms-forms/view-change-process/$cms_form_id");
                 $subject = genEmailSubject($cms_form_id);
                 $data = array(
                     'subject' => $subject,
-                    'performed_by' => concatNameWithUserId($current_user->user_id),
+                    'performed_by' => getFullName($current_user->user_id),
                     'link' => $link,
                     'department' => ((new DepartmentModel())->getDepartment($department_id))->department
                 );
@@ -228,13 +223,13 @@ class CMSForms extends Controller
                     if (isAllImpactAssessmentComplete($cms_form_id)) {
                         $current_gm = new User(getCurrentGM());
                         $data = array(
-                            'recipient_name' => concatNameWithUserId($current_gm->user_id),
+                            'recipient_name' => getFullName($current_gm->user_id),
                             'subject' => $subject,
-                            'hod' => getNameJobTitleAndDepartment($current_user->user_id),
+                            'hod' => getNameJobTitleAndDepartment(getCurrentManager($form_model->department_id)),
                             'link' => $link
                         );
                         $body = get_include_contents('email_templates/notify_gm', $data);
-                        insertEmail($subject, $body, $current_gm->email, concatNameWithUserId($current_gm->user_id));
+                        insertEmail($subject, $body, $current_gm->email, getFullName($current_gm->user_id));
                         completeSection($cms_form_id, SECTION_IMPACT_ASSESSMENT);
                     }
                 } else {
@@ -252,7 +247,7 @@ class CMSForms extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
             $originator = new User($form_model->originator_id);
-            $hod = getDepartmentHod($form_model->department_id);
+            //$hod = getDepartmentHod($form_model->department_id);
             $current_user = getUserSession();
             $current_hod = getCurrentManager($form_model->department_id);
             $subject = genEmailSubject($cms_form_id);
@@ -269,14 +264,14 @@ class CMSForms extends Controller
             }
             if ($form_model->updateForm($cms_form_id)) {
                 flash_success();
-                $data['performed_by'] = concatNameWithUserId($current_user->user_id);
+                $data['performed_by'] = getFullName($current_user->user_id);
                 $data['subject'] = $subject;
                 $data['link'] = site_url("cms-forms/view-change-process/$cms_form_id");
                 $data['approval_status'] = $form_model->gm_approval;
                 $recipients[] = new User($current_hod);
-                if (!empty($hod)) {
+                /*if (!empty($hod)) {
                     $recipients[] = $hod;
-                }
+                }*/
                 $recipients[] = $originator;
                 $recipients = array_unique_multidim_array($recipients, 'user_id');
                 insertEmailBulk('email_templates/gm_assessment', $recipients, $data);
@@ -298,7 +293,7 @@ class CMSForms extends Controller
             $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
             $originator = new User($form_model->originator_id);
             $current_mgr = new User(getCurrentManager($form_model->department_id));
-            $dept_hod = getDepartmentHod($form_model->department_id);
+//            $dept_hod = getDepartmentHod($form_model->department_id);
             $link = site_url("cms-forms/view-change-process/$cms_form_id");
             $subject = genEmailSubject($cms_form_id);
             $_POST = filterPost();
@@ -313,9 +308,9 @@ class CMSForms extends Controller
             $ret = $form_model->updateForm($cms_form_id);
             if ($ret) {
                 flash_success();
-                if (!empty($dept_hod)) {
-                    $recipients[] = $dept_hod;
-                }
+//                if (!empty($dept_hod)) {
+//                    $recipients[] = $dept_hod;
+//                }
                 $recipients[] = $originator;
                 $recipients[] = $current_mgr;
                 $recipients = array_unique_multidim_array($recipients, 'user_id');
@@ -323,17 +318,17 @@ class CMSForms extends Controller
                     return $a != $b;
                 });
                 $template_data = array(
-                    'performed_by' => concatNameWithUserId($current_user->user_id),
+                    'performed_by' => getFullName($current_user->user_id),
                     'subject' => $subject,
                     'link' => $link
                 );
                 insertEmailBulk('email_templates/hod_authorization', $recipients, $template_data);
                 $remarks = get_include_contents('action_remarks_templates/hod_authorization', $template_data);
                 insertLog($cms_form_id, ACTION_HOD_AUTHORISATION_COMPLETED, $remarks, $current_user->user_id);
-                $template_data['project_leader'] = concatNameWithUserId($project_leader->user_id);
-                $template_data['project_owner'] = concatNameWithUserId($current_user->user_id);
+                $template_data['project_leader'] = getFullName($project_leader->user_id);
+                $template_data['project_owner'] = getFullName($current_user->user_id);
                 $body = get_include_contents('email_templates/pl_selected', $template_data);
-                insertEmail($subject, $body, $project_leader->email, concatNameWithUserId($project_leader->user_id));
+                insertEmail($subject, $body, $project_leader->email, getFullName($project_leader->user_id));
                 completeSection($cms_form_id, SECTION_HOD_AUTHORISATION);
             } else {
                 flash_error();
@@ -359,7 +354,7 @@ class CMSForms extends Controller
                 flash_success();
                 completeSection($cms_form_id, SECTION_PL_ACCEPTANCE);
                 $data = [
-                    'performed_by' => concatNameWithUserId($current_user->user_id),
+                    'performed_by' => getFullName($current_user->user_id),
                     'subject' => genEmailSubject($cms_form_id)
                 ];
                 $remarks = get_include_contents('action_remarks_templates/pl_acceptance', $data);
@@ -395,7 +390,7 @@ class CMSForms extends Controller
                     $recipients[] = $current_user;
                     $recipients = array_unique_multidim_array($recipients, 'user_id');
                     foreach ($recipients as $recipient) {
-                        $recipient_name = concatNameWithUserId($recipient['user_id']);
+                        $recipient_name = getFullName($recipient['user_id']);
                         $data['role'] = $role;
                         $data['recipient_user_id'] = $recipient['user_id'];
                         $body = get_include_contents('email_templates/change_closed', $data);
@@ -445,7 +440,7 @@ class CMSForms extends Controller
                     $recipients[] = new User(getCurrentManager($current_user->department_id));
                     $recipients = array_unique_multidim_array($recipients, 'user_id');
                     foreach ($recipients as $recipient) {
-                        $recipient_name = concatNameWithUserId($recipient['user_id']);
+                        $recipient_name = getFullName($recipient['user_id']);
                         $data['recipient_user_id'] = $recipient['user_id'];
                         $data['role'] = $role;
                         $body = get_include_contents('email_templates/change_closed', $data);
@@ -492,7 +487,7 @@ class CMSForms extends Controller
                     'date_closed' => now()
                 ]);
                 if ($ret) {
-                    $current_managers = getCurrentManagers();
+                    $current_managers = getCurrentManagers(); // Todo: Filter for affected HoDs only
                     foreach ($current_managers as $current_manager) {
                         $recipients[] = new User($current_manager->user_id);
                     }
@@ -501,7 +496,7 @@ class CMSForms extends Controller
                     $recipients[] = new User(getCurrentGM());
                     $recipients = array_unique_multidim_array($recipients, 'user_id');
                     foreach ($recipients as $recipient) {
-                        $recipient_name = concatNameWithUserId($recipient['user_id']);
+                        $recipient_name = getFullName($recipient['user_id']);
                         $data['recipient_user_id'] = $recipient['user_id'];
                         $data['role'] = $role;
                         $body = get_include_contents('email_templates/change_closed', $data);
@@ -587,7 +582,7 @@ class CMSForms extends Controller
         );
         $remarks = get_include_contents('action_remarks_templates/change_stopped', $arr);
         insertLog($cms_form_id, ACTION_CHANGE_STOPPED, $remarks, $current_user->user_id);
-        $hods = getHodsWithCurrent($cms_form->department_id);
+        $hods = getDepartmentMembersWithRole($cms_form->department_id, [ROLE_MANAGEMENT, ROLE_SENIOR_SUPERVISORS]);
         foreach ($hods as $hod) {
             $arr = array(
                 'recipient_user_id' => $hod->user_id,
@@ -595,7 +590,7 @@ class CMSForms extends Controller
                 'subject' => genEmailSubject($cms_form_id)
             );
             $body = get_include_contents('email_templates/change_stopped', $arr);
-            insertEmail($subject, $body, $hod->email, concatNameWithUserId($hod->user_id));
+            insertEmail($subject, $body, $hod->email, getFullName($hod->user_id));
         }
         // todo: send email to hod (change owner)
         flash($flash = "flash_" . the_method(), "Change stopped successfully!", 'text-sm text-center text-success alert');
@@ -629,11 +624,11 @@ class CMSForms extends Controller
         if (!file_exists('zip')) {
             mkdir('zip', 0777, true);
         }
-        $zipname = 'zip/' . $title . "_$cms_form_id.zip";
+        $zipname = 'zip/' . $title . "_$ref.zip";
         $zip = new ZipArchive;
         $zip->open($zipname, ZipArchive::CREATE);
         foreach ($files as $file) {
-            $the_file = PATH_ADDITIONAL_INFO . "$cms_form_id\\" . $file;
+            $the_file = PATH_ADDITIONAL_INFO . "$ref\\" . $file;
             $zip->addFile($the_file, basename($the_file));
         }
         $zip->close();
@@ -647,7 +642,7 @@ class CMSForms extends Controller
                 header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
                 echo 'File not readable';
             } else {
-                header("Content-Disposition: attachment; filename=\"$title.$ref.zip\"");
+                header("Content-Disposition: attachment; filename='$title.$ref.zip'");
                 header("Content-Type: " . "application/zip");
                 readfile($zipname);
                 exit;
@@ -668,11 +663,11 @@ class CMSForms extends Controller
         if (!file_exists('zip')) {
             mkdir('zip', 0777, true);
         }
-        $zipname = 'zip/' . $title . "_$cms_form_id.zip";
+        $zipname = 'zip/' . $title . "_$ref.zip";
         $zip = new ZipArchive;
         $zip->open($zipname, ZipArchive::CREATE);
         foreach ($files as $file) {
-            $the_file = PATH_RISK_ATTACHMENT . "$cms_form_id\\" . $file;
+            $the_file = PATH_RISK_ATTACHMENT . "$ref\\" . $file;
             $zip->addFile($the_file, basename($the_file));
         }
         $zip->close();
@@ -686,7 +681,7 @@ class CMSForms extends Controller
                 header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
                 echo 'File not readable';
             } else {
-                header("Content-Disposition: attachment; filename=\"$title.$ref.zip\"");
+                header("Content-Disposition: attachment; filename='$title.$ref.zip'");
                 header("Content-Type: " . "application/zip");
                 readfile($zipname);
                 exit;
@@ -707,11 +702,11 @@ class CMSForms extends Controller
         if (!file_exists('zip')) {
             mkdir('zip', 0777, true);
         }
-        $zipname = 'zip/' . $title . "_$cms_form_id.zip";
+        $zipname = 'zip/' . $title . "_$ref.zip";
         $zip = new ZipArchive;
         $zip->open($zipname, ZipArchive::CREATE);
         foreach ($files as $file) {
-            $the_file = PATH_PL_DOCUMENTS . "$cms_form_id\\" . $file;
+            $the_file = PATH_PL_DOCUMENTS . "$ref\\" . $file;
             $zip->addFile($the_file, basename($the_file));
         }
         $zip->close();
@@ -725,7 +720,7 @@ class CMSForms extends Controller
                 header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
                 echo 'File not readable';
             } else {
-                header("Content-Disposition: attachment; filename=\"$title.$ref.zip\"");
+                header("Content-Disposition: attachment; filename='$title.$ref.zip'");
                 header("Content-Type: " . "application/zip");
                 readfile($zipname);
                 exit;
@@ -795,11 +790,12 @@ class CMSForms extends Controller
             $flash = "flash_" . the_method();
             $db = Database::getDbh();
             $gm = $_POST['gm'];
-            $gm_name = concatNameWithUserId($gm);
+            $gm_name = getFullName($gm);
             $user = getUserSession();
-            $user_name = concatNameWithUserId($user->user_id);
+            $user_name = getFullName($user->user_id);
             $ret = $db->where('prop', 'current_gm')
-                ->update('cms_settings', array('value' => $gm));
+                ->orWhere('prop', 'nmr_power_user')
+                ->update('settings', array('value' => $gm));
             if ($ret) {
                 // set action log
                 $remarks = "$user_name changed the GM to "
@@ -834,10 +830,10 @@ class CMSForms extends Controller
             if ($ret) {
                 $data = array(
                     'subject' => SUBJECT_MANAGER_CHANGED . " for " . $department->department,
-                    'performed_by' => concatNameWithUserId($current_user->user_id),
+                    'performed_by' => getFullName($current_user->user_id),
                     'performed_by_user_id' => $current_user->user_id,
                     'new_mgr_user_id' => $new_mgr->user_id,
-                    'new_mgr_name' => concatNameWithUserId($new_mgr->user_id)
+                    'new_mgr_name' => getFullName($new_mgr->user_id)
                 );
                 $recipients[] = $current_mgr;
                 $recipients[] = new User($new_mgr->user_id);
@@ -875,7 +871,7 @@ class CMSForms extends Controller
                     $department = new Department($dept_id);
                     $current_mgr_id = getCurrentManager($dept_id);
                     $new_mgr = new User($mgr);
-                    $new_mgr_name = concatNameWithUserId($new_mgr->user_id);
+                    $new_mgr_name = getFullName($new_mgr->user_id);
                     $subject = SUBJECT_MANAGER_CHANGED . " for " . $department->department;
                     if ($current_mgr_id !== (int)$mgr) {
                         $recipients[] = new User($mgr);
@@ -884,7 +880,7 @@ class CMSForms extends Controller
                         if ($ret) {
                             $data = array(
                                 'subject' => $subject,
-                                'performed_by' => concatNameWithUserId($current_user->user_id),
+                                'performed_by' => getFullName($current_user->user_id),
                                 'performed_by_user_id' => $current_user->user_id,
                                 'new_mgr_user_id' => $new_mgr->user_id,
                                 'new_mgr_name' => $new_mgr_name,
@@ -895,7 +891,7 @@ class CMSForms extends Controller
                             // insertEmail($subject, $body, $new_mgr->email, $new_mgr_name);
                             if (!empty($current_mgr_id)) {
                                 $current_mgr = new User($current_mgr_id);
-                                $current_mgr_name = concatNameWithUserId($current_mgr->user_id);
+                                $current_mgr_name = getFullName($current_mgr->user_id);
                                 $data['recipient_user_id'] = $current_mgr->user_id;
                                 $body = get_include_contents('email_templates/change_manager', $data);
                                 //insertEmail($subject, $body, $current_mgr->email, $current_mgr_name);
@@ -925,7 +921,7 @@ class CMSForms extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
             $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-            $result = uploadFile('additional_info', $cms_form_id, PATH_ADDITIONAL_INFO);
+            $result = uploadFile(PATH_ADDITIONAL_INFO . $form_model->hod_ref_num);
             if ($result['success']) {
                 $files = explode(',', trim($result['file'] . ',' . $form_model->additional_info, ','));
                 $files = implode(',', array_unique($files));
@@ -933,7 +929,7 @@ class CMSForms extends Controller
                 if ($ret) {
                     flash_success('', 'File upload success!');
                 } else {
-                    flash_error('', 'An error occurred!');
+                    flash_error();
                 }
                 $remarks = get_include_contents('action_remarks_templates/additional_doc_uploaded', array(
                     'file_name' => $result['file'],
@@ -942,7 +938,7 @@ class CMSForms extends Controller
                 ));
                 insertLog($cms_form_id, ACTION_ADDITIONAL_FILE_UPLOADED, $remarks, $current_user->user_id);
             } else {
-                flash_error('', 'An error occurred!');
+                flash_error();
             }
         }
         goBack();
@@ -955,7 +951,7 @@ class CMSForms extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
             $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-            $result = uploadFile('additional_info', $cms_form_id, PATH_RISK_ATTACHMENT);
+            $result = uploadFile( PATH_RISK_ATTACHMENT. $form_model->hod_ref_num);
             if ($result['success']) {
                 $files = explode(',', trim($result['file'] . ',' . $form_model->risk_attachment, ','));
                 $files = array_unique($files);
@@ -970,10 +966,10 @@ class CMSForms extends Controller
                     ));
                     insertLog($cms_form_id, ACTION_RISK_ASSESSMENT_DOCUMENT_UPLOADED, $remarks, $current_user->user_id);
                 } else {
-                    flash_error('', 'An error occurred!');
+                    flash_error();
                 }
             } else {
-                flash_error('', 'An error occurred!');
+                flash_error();
             }
         }
         goBack();
@@ -986,7 +982,7 @@ class CMSForms extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_POST = filterPost();
             $form_model = new CMSFormModel(['cms_form_id' => $cms_form_id]);
-            $result = uploadFile('additional_info', $cms_form_id, PATH_PL_DOCUMENTS);
+            $result = uploadFile(PATH_PL_DOCUMENTS. $form_model->hod_ref_num);
             if ($result['success']) {
                 $files = explode(',', trim($result['file'] . ',' . $form_model->pl_documents, ','));
                 $files = array_unique($files);
@@ -1001,10 +997,10 @@ class CMSForms extends Controller
                     ));
                     insertLog($cms_form_id, ACTION_PROJECT_DOCUMENT_UPLOADED, $remarks, $current_user->user_id);
                 } else {
-                    flash_error('', 'An error occurred!');
+                    flash_error();
                 }
             } else {
-                flash_error('', 'An error occurred!');
+                flash_error();
             }
         }
         goBack();
@@ -1029,12 +1025,12 @@ class CMSForms extends Controller
         $payload['affected_departments'] = getAffectedDepartments($cms_form_id);
         $payload['cms_questions'] = getImpactQuestions();
         $payload['action_log'] = getActionLog($cms_form_id);
-        $payload['gms'] = getGms();
-        $payload['department_members'] = Database::getDbh()->where('department_id', getUserSession()->department_id)
-            /*->where('role', 'Manager', '<>')
-            ->where('role', 'Superintendent', '<>')*/
+        $payload['gms'] = getCurrentGM();
+/*        $payload['department_members'] = Database::getDbh()->where('department_id', getUserSession()->department_id)
+//            ->where('role', 'Manager', '<>')
+//            ->where('role', 'Superintendent', '<>')
             ->objectBuilder()
-            ->get('users');
+            ->get('users');*/
         $this->view('cms_forms/print', $payload);
     }
 

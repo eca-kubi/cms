@@ -7,7 +7,6 @@
  */
 $echoYou = 'echoYou';
 echo <<<heredoc
-Hi $project_leader,
 $project_owner has selected you as Project Leader for Change Application ($subject).
 Click this link to accept: <a href="$link">$link</a>
 heredoc;

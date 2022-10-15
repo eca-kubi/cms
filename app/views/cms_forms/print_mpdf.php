@@ -334,7 +334,7 @@
                 <td class="text-justify" colspan="2">
                     <div class="col-sm-12">
                         <b class="text-bold">Closed
-                            by: </b><?php echo concatNameWithUserId($payload['action_log'][ACTION_PL_CLOSURE]->performed_by) ?>
+                            by: </b><?php echo getFullName($payload['action_log'][ACTION_PL_CLOSURE]->performed_by) ?>
                         (Project Leader)
                         on <?php echo returnDate($payload['form']->project_leader_close_change, true); ?>
                     </div>
@@ -348,7 +348,7 @@
                 <td class="text-justify" colspan="2">
                     <div class="col-sm-12">
                         <b class="text-bold">Closed
-                            by: </b><?php echo concatNameWithUserId($payload['action_log'][ACTION_ORIGINATOR_CLOSURE]->performed_by) ?>
+                            by: </b><?php echo getFullName($payload['action_log'][ACTION_ORIGINATOR_CLOSURE]->performed_by) ?>
                         (Originator)
                         on <?php echo returnDate($payload['form']->originator_close_change, true); ?>
                     </div>
@@ -361,7 +361,7 @@
             <tr>
                 <td class="text-justify" colspan="2">
                     <div class="col-sm-12">
-                        <span class="text-bold">Closed by: </span> <?php echo concatNameWithUserId($payload['action_log'][ACTION_HOD_CLOSURE]->performed_by) ?>
+                        <span class="text-bold">Closed by: </span> <?php echo getFullName($payload['action_log'][ACTION_HOD_CLOSURE]->performed_by) ?>
                         (HoD)
                         on <?php echo returnDate($payload['form']->hod_close_change, true); ?>.
                     </div>

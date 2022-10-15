@@ -25,9 +25,7 @@
                             <?php
                             $gms = getGms();
                             $current_gm = getCurrentGM();
-                            if (isset($current_gm)) {
-                                echo "<label class='w-100 text-center'><label class='badge badge-outline-success' for=\"current_gm\">Current GM <i>(" . concatNameWithUserId($current_gm) . ")</i>  </label></label> ";
-                            }
+                            echo "<label class='w-100 text-center'><label class='badge badge-outline-success' for=\"current_gm\">Current GM <i>(" . getFullName($current_gm) . ")</i>  </label></label> ";
                             ?>
                         </div>
                     </div>
@@ -56,7 +54,7 @@
                                         foreach ($gms as $gm) { ?>
                                             <option value="<?php echo $gm->user_id ?>" <?php if ($current_gm === $gm->user_id) {
                                                 echo 'selected';
-                                            } ?>><?php echo concatNameWithUserId($gm->user_id); ?></option>
+                                            } ?>><?php echo getFullName($gm->user_id); ?></option>
                                         <?php }
                                         ?>
                                     </select>
