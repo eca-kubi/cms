@@ -1,8 +1,9 @@
 <?php
+
 // DB Params
 define('DB_HOST', 'localhost');
 define('DB_USER', 'appiahmakuta');
-define('DB_PASS', 'gmail300');
+define('DB_PASS', $_ENV['DB_PASS']);
 define('DB_NAME', 'sms');
 
 define('NAVBAR_MT', '109.516px');
@@ -27,16 +28,16 @@ define('DATE_FORMATS', [
 define("BUTTONS", [
     'back' => '<a class="btn w3-btn bg-gray w3-small" href="javascript:history.go(-1)" role="button"><i class="fa fa-arrow-alt-circle-left"></i> Go back</a>'
 ]);
-define('MY_PRIVATE_KEY', md5('my-private-key-daemon'));
+define('MY_PRIVATE_KEY', md5($_ENV['MY_PRIVATE_KEY']));
 
 const NO_PROFILE = 'no_profile.jpg';
 const DEFAULT_PROFILE_PIC = "no_profile.jpg";
 const SMS_GATEWAY_EMAIL = 'appiahmakuta70@gmail.com';
-const SMS_GATEWAY_PASSWORD = 'gmail300';
+define("SMS_GATEWAY_PASSWORD", $_ENV['SMS_GATEWAY_PASSWORD']);
 const SMS_GATEWAY_DEVICE_ID = '104720';
 const SMS_GATEWAY_DEVICE_NAME = 'blu';
 const SMS_GATEWAY_DEVICE_PHONE_NUM = '+233547468603';
-const SMS_GATEWAY_API_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTUyNjA2OTI2OCwiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjQ1OTU3LCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.9YUK41Yb_ghaErrbBsfU7Pj_J57jrfOum-5AJI-yBOo';
+define("SMS_GATEWAY_API_KEY", $_ENV['SMS_GATEWAY_API_KEY']);
 const INTRANET = 'https://intranet.arlgh.com';
 const DFF = 'd-m-Y'; //date format for front-end
 const DFB = 'Y-m-d'; //date format for back-end

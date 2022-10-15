@@ -21,3 +21,7 @@ spl_autoload_register(function ($class_name) {
     }
 });
 require_once '../../vendor/autoload.php';
+
+// .Env file loader
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();

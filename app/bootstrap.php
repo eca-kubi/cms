@@ -19,6 +19,11 @@ spl_autoload_register(function($class_name){
 require_once '../vendor/autoload.php';
 //Load Telerik Library
 require_once '../app/libraries/Kendo/Autoload.php';
+
+// .Env file loader
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
   // Load Config
 require_once 'config/host.php';
 require_once 'config/config.php';
