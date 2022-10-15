@@ -268,3 +268,5 @@ __pycache__/
 /public/assets/uploads/*
 
 vendor
+
+.env
